@@ -241,11 +241,6 @@ export default function StatsPanel({
                     {stat.label}
                   </div>
                 </div>
-
-                {/* Decorative Subtle Icon Background Element */}
-                <div className="3xl:text-[10rem] 4xl:text-[12rem] 5xl:text-[15rem] 3xl:-right-8 3xl:-bottom-8 4xl:-right-10 4xl:-bottom-10 5xl:-right-12 5xl:-bottom-12 pointer-events-none absolute -right-6 -bottom-6 text-9xl font-black text-zinc-100/30 transition-transform duration-300 ease-out select-none group-hover:translate-x-1 group-hover:translate-y-1 group-hover:scale-105">
-                  0{idx + 1}
-                </div>
               </div>
             );
           })}

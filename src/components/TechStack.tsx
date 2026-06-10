@@ -93,7 +93,10 @@ function Panel({ label, heading, items }: { label: string; heading: string; item
         </h3>
       </div>
 
-      <div ref={ref} className="3xl:gap-4 grid grid-cols-3 gap-3 sm:grid-cols-4">
+      <div
+        ref={ref}
+        className="3xl:gap-4 grid grid-cols-2 gap-3 min-[380px]:grid-cols-3 sm:grid-cols-4"
+      >
         {items.map((item, idx) => (
           <IconTile key={item.slug} item={item} visible={visible} delay={idx * 60} />
         ))}

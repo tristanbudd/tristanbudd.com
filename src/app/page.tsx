@@ -10,24 +10,17 @@ import TechStack from "../components/TechStack";
 import { getYearsOfExperience } from "../lib/utils";
 
 /**
- * Fetches the total public commit count for a GitHub user via the Search Commits API.
- * Falls back to 0 on any error (e.g. rate-limited, network failure).
+ * Fetches the total all-time contribution count for a GitHub user. Falls back to 0 on any error.
  */
-async function getGitHubCommitCount(username: string): Promise<number> {
+async function getGitHubContributions(username: string): Promise<number> {
   try {
-    const res = await fetch(
-      `https://api.github.com/search/commits?q=author:${username}&per_page=1`,
-      {
-        headers: {
-          Accept: "application/vnd.github+json",
-          "X-GitHub-Api-Version": "2022-11-28",
-        },
-        next: { revalidate: 3600 }, // Re-fetch at most once per hour
-      }
-    );
+    const res = await fetch(`https://github-contributions-api.jogruber.de/v4/${username}`, {
+      next: { revalidate: 3600 },
+    });
     if (!res.ok) return 0;
-    const data = (await res.json()) as { total_count?: number };
-    return data.total_count ?? 0;
+    const data = (await res.json()) as { total?: Record<string, number> };
+    if (!data.total) return 0;
+    return Object.values(data.total).reduce((sum, n) => sum + n, 0);
   } catch {
     return 0;
   }
@@ -86,7 +79,7 @@ export default async function Home() {
   // Derived stats
   const yearsOfExperience = getYearsOfExperience();
   const techStackCount = languages.length + tools.length;
-  const githubContributions = await getGitHubCommitCount("tristanbudd");
+  const githubContributions = await getGitHubContributions("tristanbudd");
 
   const stats = [
     { value: yearsOfExperience, label: "Years of Experience", approximate: true },
