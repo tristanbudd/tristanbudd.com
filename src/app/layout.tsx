@@ -4,10 +4,11 @@
  */
 
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Syne, Cinzel, Outfit } from "next/font/google";
 
 import "./globals.css";
 import { Providers } from "./providers";
+import ScreenSizeNotice from "@/components/ScreenSizeNotice";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,6 +18,24 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+const syne = Syne({
+  variable: "--font-syne",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const cinzel = Cinzel({
+  variable: "--font-cinzel",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const outfit = Outfit({
+  variable: "--font-outfit",
+  subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -77,11 +96,14 @@ export default function RootLayout({
   return (
     <html
       lang="en-GB"
-      className={`${geistSans.variable} ${geistMono.variable} h-full scroll-smooth antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${syne.variable} ${cinzel.variable} ${outfit.variable} h-full scroll-smooth antialiased`}
       suppressHydrationWarning
     >
-      <body className="flex min-h-full flex-col">
-        <Providers>{children}</Providers>
+      <body className="flex min-h-full flex-col" suppressHydrationWarning>
+        <Providers>
+          <ScreenSizeNotice />
+          {children}
+        </Providers>
       </body>
     </html>
   );

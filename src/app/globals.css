@@ -14,6 +14,9 @@
   --color-secondary: var(--secondary);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-syne: var(--font-syne);
+  --font-cinzel: var(--font-cinzel);
+  --font-outfit: var(--font-outfit);
 }
 
 /* Body */
@@ -62,4 +65,27 @@ html.lenis body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #a1a1aa;
+}
+
+/* Screen Size Notice visibility and scrollbar lock */
+#screen-size-notice {
+  display: none;
+}
+
+@media (max-width: 319px), (max-height: 399px) {
+  #screen-size-notice {
+    display: flex !important;
+  }
+  html,
+  body {
+    overflow: hidden !important;
+    height: 100% !important;
+    width: 100% !important;
+  }
+}
+
+/* Hide background content when mobile menu is active to prevent glitches and gaps */
+body.mobile-menu-active main,
+body.mobile-menu-active footer {
+  visibility: hidden;
 }

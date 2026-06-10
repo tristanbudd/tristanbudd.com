@@ -1,17 +1,44 @@
-export default function Home() {
-  return (
-    <div className="mx-auto flex w-full flex-col gap-10 px-4 py-8 font-sans transition-[max-width] duration-500 ease-in-out sm:max-w-screen-sm md:max-w-3xl md:py-16 lg:max-w-5xl">
-      {/* Header */}
-      <header
-        role="banner"
-        aria-label="Header"
-        className="text-secondary border-2 border-dashed border-zinc-400 bg-zinc-100/50 p-6 text-center text-sm font-medium"
-      >
-        Header
-      </header>
+"use client";
 
-      {/* Main Content */}
-      <main role="main" className="flex flex-col gap-10">
+import Header from "../components/Header";
+
+export default function Home() {
+  const navItems = [
+    {
+      label: "Placeholder 1",
+      href: "#",
+      dropdownItems: [
+        { label: "Sub Item A", href: "#" },
+        { label: "Sub Item B", href: "#" },
+      ],
+    },
+    {
+      label: "Placeholder 2",
+      href: "#",
+    },
+    {
+      label: "Placeholder 3",
+      href: "#",
+      dropdownItems: [
+        { label: "Sub Item C", href: "#" },
+        { label: "Sub Item D", href: "#" },
+      ],
+    },
+    {
+      label: "Placeholder 4",
+      href: "#",
+    },
+  ];
+
+  return (
+    <div className="bg-background flex min-h-screen flex-col">
+      <Header navItems={navItems} ctaText="Placeholder CTA" ctaHref="#" />
+
+      {/* Main Content Area */}
+      <main
+        role="main"
+        className="mx-auto flex w-full flex-col gap-10 px-4 py-8 font-sans transition-all duration-500 ease-in-out sm:max-w-screen-sm md:max-w-3xl md:py-16 lg:max-w-5xl xl:max-w-6xl 2xl:max-w-7xl"
+      >
         {/* Hero */}
         <section aria-label="Hero Section">
           <div className="flex min-h-[250px] flex-col items-center justify-center border-2 border-dashed border-zinc-400 bg-zinc-100/50 p-16 text-center">
@@ -68,13 +95,15 @@ export default function Home() {
         </section>
       </main>
 
-      {/* Footer */}
+      {/* Footer Area */}
       <footer
         role="contentinfo"
         aria-label="Footer"
-        className="text-secondary border-2 border-dashed border-zinc-400 bg-zinc-100/50 p-6 text-center text-sm font-medium"
+        className="mx-auto w-full px-4 pb-8 transition-all duration-500 ease-in-out sm:max-w-screen-sm md:max-w-3xl lg:max-w-5xl xl:max-w-6xl 2xl:max-w-7xl"
       >
-        Footer
+        <div className="text-secondary border-2 border-dashed border-zinc-400 bg-zinc-100/50 p-6 text-center text-sm font-medium">
+          Footer
+        </div>
       </footer>
     </div>
   );
