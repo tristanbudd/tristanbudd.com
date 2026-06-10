@@ -1,3 +1,8 @@
+/**
+ * @file ScreenSizeNotice.tsx
+ * @description Screen size (too small) notice component.
+ */
+
 import { Maximize2 } from "lucide-react";
 
 export default function ScreenSizeNotice() {

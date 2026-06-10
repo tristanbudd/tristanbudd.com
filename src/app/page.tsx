@@ -6,6 +6,7 @@
 import Header from "../components/Header";
 import Hero from "../components/Hero";
 import StatsPanel from "../components/StatsPanel";
+import TechStack from "../components/TechStack";
 
 export default function Home() {
   const navItems = [
@@ -43,7 +44,33 @@ export default function Home() {
     { value: 15, label: "Tech Stack", approximate: true },
   ];
 
-  // TODO: Add proceadural / deferred section rendering.
+  // TODO: Add procedural / deferred section rendering.
+
+  const languages = [
+    { name: "PHP", slug: "php" },
+    { name: "TypeScript", slug: "typescript" },
+    { name: "JavaScript", slug: "javascript" },
+    { name: "Python", slug: "python" },
+    { name: "SQL", slug: "sqlite" },
+    { name: "HTML", slug: "html5" },
+    { name: "CSS", slug: "css" },
+    { name: "Dart", slug: "dart" },
+    { name: "R", slug: "r" },
+  ];
+
+  const tools = [
+    { name: "Laravel", slug: "laravel" },
+    { name: "React", slug: "react" },
+    { name: "Next.js", slug: "nextdotjs" },
+    { name: "Node.js", slug: "nodedotjs" },
+    { name: "Tailwind CSS", slug: "tailwindcss" },
+    { name: "Docker", slug: "docker" },
+    { name: "Git", slug: "git" },
+    { name: "PostgreSQL", slug: "postgresql" },
+    { name: "MySQL", slug: "mysql" },
+    { name: "Linux", slug: "linux" },
+    { name: "Figma", slug: "figma" },
+  ];
 
   return (
     <div className="bg-background flex min-h-screen flex-col">
@@ -52,7 +79,7 @@ export default function Home() {
       {/* Main Content Area */}
       <main
         role="main"
-        className="3xl:max-w-440 4xl:max-w-560 5xl:max-w-720 mx-auto flex w-full flex-col gap-10 px-4 pt-0 pb-8 font-sans transition-all duration-500 ease-in-out sm:max-w-screen-sm md:max-w-3xl md:pb-16 lg:max-w-5xl xl:max-w-6xl 2xl:max-w-7xl"
+        className="3xl:max-w-440 4xl:max-w-560 5xl:max-w-720 mx-auto flex w-full flex-col px-4 pt-0 pb-8 font-sans transition-all duration-500 ease-in-out sm:max-w-screen-sm md:max-w-3xl md:pb-16 lg:max-w-5xl xl:max-w-6xl 2xl:max-w-7xl"
       >
         {/* Hero */}
         <Hero
@@ -65,53 +92,8 @@ export default function Home() {
         {/* Stats Panel */}
         <StatsPanel stats={stats} title="Track Record" subtitle="By the numbers" />
 
-        {/* 3-Column Grid */}
-        <section
-          aria-label="Feature Grid Section"
-          className="grid grid-cols-1 gap-6 md:grid-cols-3"
-        >
-          <div className="flex min-h-[150px] items-center justify-center border-2 border-dashed border-zinc-400 bg-zinc-100/50 p-8 text-center">
-            <span className="text-secondary text-sm font-medium">Grid Item 1</span>
-          </div>
-          <div className="flex min-h-[150px] items-center justify-center border-2 border-dashed border-zinc-400 bg-zinc-100/50 p-8 text-center">
-            <span className="text-secondary text-sm font-medium">Grid Item 2</span>
-          </div>
-          <div className="flex min-h-[150px] items-center justify-center border-2 border-dashed border-zinc-400 bg-zinc-100/50 p-8 text-center">
-            <span className="text-secondary text-sm font-medium">Grid Item 3</span>
-          </div>
-        </section>
-
-        {/* Split Content Section */}
-        <section
-          aria-label="Split Content Section"
-          className="grid grid-cols-1 gap-6 md:grid-cols-2"
-        >
-          <div className="flex min-h-[200px] items-center justify-center border-2 border-dashed border-zinc-400 bg-zinc-100/50 p-10 text-center">
-            <span className="text-secondary text-sm font-medium">Split Column Left</span>
-          </div>
-          <div className="flex min-h-[200px] items-center justify-center border-2 border-dashed border-zinc-400 bg-zinc-100/50 p-10 text-center">
-            <span className="text-secondary text-sm font-medium">Split Column Right</span>
-          </div>
-        </section>
-
-        {/* Cards Section */}
-        <section
-          aria-label="Cards Section"
-          className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4"
-        >
-          <div className="flex min-h-[120px] items-center justify-center border-2 border-dashed border-zinc-400 bg-zinc-100/50 p-6 text-center">
-            <span className="text-secondary text-xs font-medium">Card Item 1</span>
-          </div>
-          <div className="flex min-h-[120px] items-center justify-center border-2 border-dashed border-zinc-400 bg-zinc-100/50 p-6 text-center">
-            <span className="text-secondary text-xs font-medium">Card Item 2</span>
-          </div>
-          <div className="flex min-h-[120px] items-center justify-center border-2 border-dashed border-zinc-400 bg-zinc-100/50 p-6 text-center">
-            <span className="text-secondary text-xs font-medium">Card Item 3</span>
-          </div>
-          <div className="flex min-h-[120px] items-center justify-center border-2 border-dashed border-zinc-400 bg-zinc-100/50 p-6 text-center">
-            <span className="text-secondary text-xs font-medium">Card Item 4</span>
-          </div>
-        </section>
+        {/* Tech Stack */}
+        <TechStack title="Tech Stack" subtitle="Built with" languages={languages} tools={tools} />
       </main>
 
       {/* Footer Area */}
