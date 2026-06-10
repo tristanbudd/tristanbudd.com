@@ -4,6 +4,7 @@
  */
 
 import Header from "../components/Header";
+import Hero from "../components/Hero";
 import StatsPanel from "../components/StatsPanel";
 
 export default function Home() {
@@ -51,14 +52,15 @@ export default function Home() {
       {/* Main Content Area */}
       <main
         role="main"
-        className="mx-auto flex w-full flex-col gap-10 px-4 py-8 font-sans transition-all duration-500 ease-in-out sm:max-w-screen-sm md:max-w-3xl md:py-16 lg:max-w-5xl xl:max-w-6xl 2xl:max-w-7xl"
+        className="3xl:max-w-440 4xl:max-w-560 5xl:max-w-720 mx-auto flex w-full flex-col gap-10 px-4 pt-0 pb-8 font-sans transition-all duration-500 ease-in-out sm:max-w-screen-sm md:max-w-3xl md:pb-16 lg:max-w-5xl xl:max-w-6xl 2xl:max-w-7xl"
       >
         {/* Hero */}
-        <section aria-label="Hero Section">
-          <div className="flex min-h-[250px] flex-col items-center justify-center border-2 border-dashed border-zinc-400 bg-zinc-100/50 p-16 text-center">
-            <span className="text-secondary text-sm font-medium">Hero Section</span>
-          </div>
-        </section>
+        <Hero
+          title="Tristan Budd"
+          subtitle="An aspiring software developer & engineer with a strong foundation in building robust digital solutions. Experienced in delivering high-quality projects both independently and collaboratively, always seeking innovative challenges."
+          ctaText="Placeholder CTA"
+          ctaHref="#"
+        />
 
         {/* Stats Panel */}
         <StatsPanel stats={stats} title="Track Record" subtitle="By the numbers" />

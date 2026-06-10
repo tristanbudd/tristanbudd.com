@@ -167,18 +167,18 @@ export default function StatsPanel({
   return (
     <section
       aria-label="Statistics Panel"
-      className="font-outfit w-full py-12 transition-all duration-500 ease-in-out sm:py-16"
+      className="font-outfit 3xl:py-24 4xl:py-32 5xl:py-40 3xl:scroll-mt-36 4xl:scroll-mt-44 5xl:scroll-mt-52 w-full scroll-mt-24 py-12 transition-all duration-500 ease-in-out sm:scroll-mt-28 sm:py-16"
     >
       <div className="mx-auto flex flex-col gap-10">
         {(title || subtitle) && (
           <div className="flex flex-col gap-2 text-center md:text-left">
             {subtitle && (
-              <span className="text-xs font-bold tracking-widest text-zinc-500 uppercase">
+              <span className="3xl:text-sm 4xl:text-base 5xl:text-lg text-xs font-bold tracking-widest text-zinc-500 uppercase">
                 {subtitle}
               </span>
             )}
             {title && (
-              <h2 className="text-3xl font-extrabold tracking-tight text-zinc-900 sm:text-4xl">
+              <h2 className="3xl:text-5xl 4xl:text-6xl 5xl:text-7xl text-3xl font-extrabold tracking-tight text-zinc-900 sm:text-4xl">
                 {title}
               </h2>
             )}
@@ -203,15 +203,15 @@ export default function StatsPanel({
             return (
               <div
                 key={`${stat.label}-${idx}`}
-                className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-zinc-200/60 bg-white/40 p-8 shadow-xs backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-zinc-300 hover:bg-white/80 hover:shadow-md"
+                className="group 3xl:p-12 3xl:rounded-3xl 5xl:p-16 5xl:rounded-4xl relative flex flex-col justify-between overflow-hidden rounded-2xl border border-zinc-200/60 bg-white/40 p-8 shadow-xs backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-zinc-300 hover:bg-white/80 hover:shadow-md"
               >
                 {/* Top Accent Gradient Border */}
-                <div className="absolute top-0 left-0 h-[3px] w-full origin-left scale-x-0 bg-gradient-to-r from-zinc-700 via-black to-zinc-800 transition-transform duration-300 group-hover:scale-x-100" />
+                <div className="absolute top-0 left-0 h-[3px] w-full origin-left scale-x-0 bg-linear-to-r from-zinc-700 via-black to-zinc-800 transition-transform duration-300 group-hover:scale-x-100" />
 
-                <div className="flex flex-col gap-3">
-                  <div className="flex items-baseline text-4xl font-extrabold tracking-tight text-black sm:text-5xl">
+                <div className="3xl:gap-5 5xl:gap-7 flex flex-col gap-3">
+                  <div className="3xl:text-6xl 4xl:text-7xl 5xl:text-8xl flex items-baseline text-4xl font-extrabold tracking-tight text-black sm:text-5xl">
                     {stat.prefix && (
-                      <span className="mr-1 text-2xl font-bold text-zinc-400 sm:text-3xl">
+                      <span className="3xl:text-4xl 4xl:text-5xl 5xl:text-6xl mr-1 text-2xl font-bold text-zinc-400 sm:text-3xl">
                         {stat.prefix}
                       </span>
                     )}
@@ -223,20 +223,20 @@ export default function StatsPanel({
                       unit={stat.unit}
                     />
                     {(stat.suffix || stat.approximate) && (
-                      <span className="text-zinc-650 ml-1 text-2xl font-bold sm:text-3xl">
+                      <span className="text-zinc-650 3xl:text-4xl 4xl:text-5xl 5xl:text-6xl ml-1 text-2xl font-bold sm:text-3xl">
                         {stat.suffix || ""}
                         {stat.approximate && "+"}
                       </span>
                     )}
                   </div>
 
-                  <div className="text-sm leading-relaxed font-semibold tracking-wider text-zinc-600 uppercase">
+                  <div className="3xl:text-base 4xl:text-lg 5xl:text-xl text-sm leading-relaxed font-semibold tracking-wider text-zinc-600 uppercase">
                     {stat.label}
                   </div>
                 </div>
 
                 {/* Decorative Subtle Icon Background Element */}
-                <div className="pointer-events-none absolute -right-6 -bottom-6 text-9xl font-black text-zinc-100/30 transition-transform duration-300 ease-out select-none group-hover:translate-x-1 group-hover:translate-y-1 group-hover:scale-105">
+                <div className="3xl:text-[10rem] 4xl:text-[12rem] 5xl:text-[15rem] 3xl:-right-8 3xl:-bottom-8 4xl:-right-10 4xl:-bottom-10 5xl:-right-12 5xl:-bottom-12 pointer-events-none absolute -right-6 -bottom-6 text-9xl font-black text-zinc-100/30 transition-transform duration-300 ease-out select-none group-hover:translate-x-1 group-hover:translate-y-1 group-hover:scale-105">
                   0{idx + 1}
                 </div>
               </div>
