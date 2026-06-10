@@ -35,8 +35,19 @@
 }
 
 @utility hide-on-short-mobile {
-  @media (max-width: 1023.98px) and (max-height: 720px) {
-    display: none !important;
+  transition:
+    max-height 0.5s ease-in-out,
+    opacity 0.5s ease-in-out,
+    visibility 0.5s ease-in-out;
+  max-height: 480px;
+  opacity: 1;
+  visibility: visible;
+
+  @media (max-width: 1023.98px) and (max-height: 650px) {
+    max-height: 0px !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    overflow: hidden !important;
   }
 }
 
@@ -90,12 +101,19 @@ html.lenis body {
 
 /* Screen Size Notice visibility and scrollbar lock */
 #screen-size-notice {
-  display: none;
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  transition:
+    opacity 0.5s ease-in-out,
+    visibility 0.5s ease-in-out;
 }
 
 @media (max-width: 319px), (max-height: 399px) {
   #screen-size-notice {
-    display: flex !important;
+    opacity: 1;
+    pointer-events: auto;
+    visibility: visible !important;
   }
   html,
   body {

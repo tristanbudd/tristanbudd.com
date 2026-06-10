@@ -41,7 +41,7 @@ export default function Hero({
   return (
     <section
       aria-label="Introduction Hero"
-      className="font-outfit 3xl:max-h-[1080px] 4xl:max-h-[1200px] 5xl:max-h-[1440px] relative max-h-[900px] w-full pt-36 pb-20 lg:flex lg:min-h-screen lg:flex-col lg:items-center lg:justify-center lg:pt-40 lg:pb-28"
+      className="font-outfit 3xl:max-h-[1080px] 4xl:max-h-[1200px] 5xl:max-h-[1440px] relative max-h-[900px] w-full pt-36 pb-20 transition-all duration-500 ease-in-out lg:flex lg:min-h-screen lg:flex-col lg:items-center lg:justify-center lg:pt-40 lg:pb-28"
     >
       <div className="w-full lg:flex lg:flex-1 lg:items-center lg:justify-center">
         <div className="grid w-full grid-cols-1 items-center gap-6 lg:grid-cols-12 lg:gap-12">
