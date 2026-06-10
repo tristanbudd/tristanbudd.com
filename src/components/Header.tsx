@@ -1,3 +1,10 @@
+"use client";
+
+/**
+ * @file Header.tsx
+ * @description Desktop and mobile navigation header component with logo effects and dropdown menus.
+ */
+
 import { useLenis } from "lenis/react";
 import { ArrowRight, ChevronDown, Loader2, Menu, X } from "lucide-react";
 import Link from "next/link";
@@ -196,7 +203,7 @@ export default function Header({
                 <div
                   className={`flex flex-col transition-transform duration-300 ease-in-out ${isRefreshing ? "-translate-y-1/2" : "translate-y-0"}`}
                 >
-                  <div className="flex h-8 flex-col justify-center pr-4 text-left text-xl leading-[0.85] font-extrabold tracking-normal text-current uppercase transition-colors duration-300 group-hover:translate-x-1 group-hover:text-zinc-800 sm:h-10 sm:text-2xl">
+                  <div className="flex h-8 flex-col justify-center pr-4 text-left text-xl leading-[0.85] font-extrabold tracking-normal text-current uppercase transition-all duration-300 group-hover:translate-x-0.5 group-hover:text-zinc-800 sm:h-10 sm:text-2xl">
                     <span>Tristan</span>
                     <span>Budd</span>
                   </div>

@@ -1,6 +1,10 @@
-"use client";
+/**
+ * @file page.tsx
+ * @description Main entry page for the portfolio site. Implements hero, header, and stats layout.
+ */
 
 import Header from "../components/Header";
+import StatsPanel from "../components/StatsPanel";
 
 export default function Home() {
   const navItems = [
@@ -30,6 +34,16 @@ export default function Home() {
     },
   ];
 
+  // TODO: Replace with real values.
+  const stats = [
+    { value: 8, label: "Years of Experience", approximate: true },
+    { value: 42, label: "Projects Completed", approximate: true },
+    { value: 2400, label: "GitHub Contributions", approximate: true },
+    { value: 15, label: "Tech Stack", approximate: true },
+  ];
+
+  // TODO: Add proceadural / deferred section rendering.
+
   return (
     <div className="bg-background flex min-h-screen flex-col">
       <Header navItems={navItems} ctaText="Placeholder CTA" ctaHref="#" />
@@ -45,6 +59,9 @@ export default function Home() {
             <span className="text-secondary text-sm font-medium">Hero Section</span>
           </div>
         </section>
+
+        {/* Stats Panel */}
+        <StatsPanel stats={stats} title="Track Record" subtitle="By the numbers" />
 
         {/* 3-Column Grid */}
         <section
