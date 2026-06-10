@@ -199,6 +199,7 @@ export default function StatsPanel({
           {stats.map((stat, idx) => {
             // Item-level animate overrides panel-level animate
             const shouldAnimate = stat.animate !== undefined ? stat.animate : panelAnimate;
+            const isError = stat.value === 0;
 
             return (
               <div
@@ -210,23 +211,29 @@ export default function StatsPanel({
 
                 <div className="3xl:gap-5 5xl:gap-7 flex flex-col gap-3">
                   <div className="3xl:text-6xl 4xl:text-7xl 5xl:text-8xl flex items-baseline text-4xl font-extrabold tracking-tight text-black sm:text-5xl">
-                    {stat.prefix && (
-                      <span className="3xl:text-4xl 4xl:text-5xl 5xl:text-6xl mr-1 text-2xl font-bold text-zinc-400 sm:text-3xl">
-                        {stat.prefix}
-                      </span>
-                    )}
-                    <CountUp
-                      value={stat.value}
-                      duration={stat.duration || 2000}
-                      animate={shouldAnimate}
-                      decimals={stat.decimals}
-                      unit={stat.unit}
-                    />
-                    {(stat.suffix || stat.approximate) && (
-                      <span className="text-zinc-650 3xl:text-4xl 4xl:text-5xl 5xl:text-6xl ml-1 text-2xl font-bold sm:text-3xl">
-                        {stat.suffix || ""}
-                        {stat.approximate && "+"}
-                      </span>
+                    {isError ? (
+                      <span>ERROR</span>
+                    ) : (
+                      <>
+                        {stat.prefix && (
+                          <span className="3xl:text-4xl 4xl:text-5xl 5xl:text-6xl mr-1 text-2xl font-bold text-zinc-400 sm:text-3xl">
+                            {stat.prefix}
+                          </span>
+                        )}
+                        <CountUp
+                          value={stat.value}
+                          duration={stat.duration || 2000}
+                          animate={shouldAnimate}
+                          decimals={stat.decimals}
+                          unit={stat.unit}
+                        />
+                        {(stat.suffix || stat.approximate) && (
+                          <span className="text-zinc-650 3xl:text-4xl 4xl:text-5xl 5xl:text-6xl ml-1 text-2xl font-bold sm:text-3xl">
+                            {stat.suffix || ""}
+                            {stat.approximate && "+"}
+                          </span>
+                        )}
+                      </>
                     )}
                   </div>
 

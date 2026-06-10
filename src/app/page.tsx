@@ -1,14 +1,41 @@
 /**
  * @file page.tsx
- * @description Main entry page for the portfolio site. Implements hero, header, and stats layout.
+ * @description Main entry page for the portfolio site. Implements hero, header, stats, and tech stack layout.
  */
 
 import Header from "../components/Header";
 import Hero from "../components/Hero";
 import StatsPanel from "../components/StatsPanel";
 import TechStack from "../components/TechStack";
+import { getYearsOfExperience } from "../lib/utils";
 
-export default function Home() {
+/**
+ * Fetches the total public commit count for a GitHub user via the Search Commits API.
+ * Falls back to 0 on any error (e.g. rate-limited, network failure).
+ */
+async function getGitHubCommitCount(username: string): Promise<number> {
+  try {
+    const res = await fetch(
+      `https://api.github.com/search/commits?q=author:${username}&per_page=1`,
+      {
+        headers: {
+          Accept: "application/vnd.github+json",
+          "X-GitHub-Api-Version": "2022-11-28",
+        },
+        next: { revalidate: 3600 }, // Re-fetch at most once per hour
+      }
+    );
+    if (!res.ok) return 0;
+    const data = (await res.json()) as { total_count?: number };
+    return data.total_count ?? 0;
+  } catch {
+    return 0;
+  }
+}
+
+const PROJECTS_COMPLETED = 0;
+
+export default async function Home() {
   const navItems = [
     {
       label: "Placeholder 1",
@@ -18,10 +45,7 @@ export default function Home() {
         { label: "Sub Item B", href: "#" },
       ],
     },
-    {
-      label: "Placeholder 2",
-      href: "#",
-    },
+    { label: "Placeholder 2", href: "#" },
     {
       label: "Placeholder 3",
       href: "#",
@@ -30,21 +54,8 @@ export default function Home() {
         { label: "Sub Item D", href: "#" },
       ],
     },
-    {
-      label: "Placeholder 4",
-      href: "#",
-    },
+    { label: "Placeholder 4", href: "#" },
   ];
-
-  // TODO: Replace with real values.
-  const stats = [
-    { value: 8, label: "Years of Experience", approximate: true },
-    { value: 42, label: "Projects Completed", approximate: true },
-    { value: 2400, label: "GitHub Contributions", approximate: true },
-    { value: 15, label: "Tech Stack", approximate: true },
-  ];
-
-  // TODO: Add procedural / deferred section rendering.
 
   const languages = [
     { name: "PHP", slug: "php" },
@@ -70,6 +81,18 @@ export default function Home() {
     { name: "MySQL", slug: "mysql" },
     { name: "Linux", slug: "linux" },
     { name: "Figma", slug: "figma" },
+  ];
+
+  // Derived stats
+  const yearsOfExperience = getYearsOfExperience();
+  const techStackCount = languages.length + tools.length;
+  const githubContributions = await getGitHubCommitCount("tristanbudd");
+
+  const stats = [
+    { value: yearsOfExperience, label: "Years of Experience", approximate: true },
+    { value: PROJECTS_COMPLETED, label: "Projects Completed", approximate: true },
+    { value: githubContributions, label: "GitHub Contributions", approximate: true },
+    { value: techStackCount, label: "Tech Stack", approximate: false },
   ];
 
   return (

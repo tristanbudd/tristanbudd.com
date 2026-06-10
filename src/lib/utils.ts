@@ -42,3 +42,19 @@ export function formatCompactNumber(num: number): { value: string; suffix: strin
   const formatted = num.toFixed(1).replace(/\.0$/, "");
   return { value: formatted, suffix: "" };
 }
+
+/**
+ * Returns the number of full years elapsed since September 1st 2020,
+ * (experience is only counted once a full year has passed.
+ *
+ * In 2020, I first began learning how to code in secondary school via Computer Science
+ * classes and extracurricular activities.
+ *
+ * @returns Whole number of years of experience.
+ */
+export function getYearsOfExperience(): number {
+  const start = new Date(2020, 8, 1); // Month is 0-indexed: 8 = September
+  const now = new Date();
+  const ms = now.getTime() - start.getTime();
+  return Math.floor(ms / (1000 * 60 * 60 * 24 * 365.25));
+}
