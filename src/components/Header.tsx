@@ -8,7 +8,9 @@
 import { useLenis } from "lenis/react";
 import { ArrowRight, ChevronDown, Loader2, Menu, X } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+
+const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 export interface NavItem {
   label: string;
@@ -30,9 +32,32 @@ export default function Header({
   const [isMobile, setIsMobile] = useState<boolean | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openMobileDropdown, setOpenMobileDropdown] = useState<string | null>(null);
-  const [scrolled, setScrolled] = useState(false);
+  const [scrolled, setScrolled] = useState(false); // Transparent by default, matching server HTML
   const [headerHeight, setHeaderHeight] = useState(0);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useIsomorphicLayoutEffect(() => {
+    // Determine the scroll position before paint to prevent transition glitches
+    const isScrolled = window.scrollY > 10;
+    setScrolled(isScrolled);
+    if (isScrolled) {
+      document.documentElement.classList.add("is-scrolled");
+    } else {
+      document.documentElement.classList.remove("is-scrolled");
+    }
+    if (headerRef.current) {
+      setHeaderHeight(headerRef.current.offsetHeight);
+    }
+  }, []);
+
+  useEffect(() => {
+    // Delay enabling transitions until after the initial mount and scroll checks have been processed
+    const timer = setTimeout(() => {
+      setMounted(true);
+    }, 100);
+    return () => clearTimeout(timer);
+  }, []);
 
   const headerRef = useRef<HTMLDivElement>(null);
   const logoRef = useRef<HTMLDivElement>(null);
@@ -51,7 +76,13 @@ export default function Header({
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 10);
+      const isScrolled = window.scrollY > 10;
+      setScrolled(isScrolled);
+      if (isScrolled) {
+        document.documentElement.classList.add("is-scrolled");
+      } else {
+        document.documentElement.classList.remove("is-scrolled");
+      }
       if (headerRef.current) {
         setHeaderHeight(headerRef.current.offsetHeight);
       }
@@ -154,14 +185,18 @@ export default function Header({
       <header
         ref={headerRef}
         role="banner"
-        className={`font-outfit sticky top-0 z-50 w-full transition-all duration-300 ${
+        className={`font-outfit fixed top-0 z-50 w-full ${
+          mounted ? "transition-all duration-300" : ""
+        } ${
           scrolled || mobileMenuOpen
             ? "border-b border-zinc-200/80 bg-white/95 text-black shadow-xs backdrop-blur-md"
             : "border-b border-transparent bg-transparent text-black"
         }`}
       >
         <div
-          className={`mx-auto flex w-full items-center justify-between gap-16 px-4 transition-all duration-500 ease-in-out sm:max-w-screen-sm md:max-w-3xl lg:max-w-5xl xl:max-w-6xl 2xl:max-w-7xl ${
+          className={`mx-auto flex w-full items-center justify-between gap-16 px-4 ${
+            mounted ? "transition-all duration-500 ease-in-out" : ""
+          } sm:max-w-screen-sm md:max-w-3xl lg:max-w-5xl xl:max-w-6xl 2xl:max-w-7xl ${
             scrolled ? "py-4" : "pt-6 pb-4 sm:pt-14"
           }`}
         >
