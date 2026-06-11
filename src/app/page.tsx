@@ -8,20 +8,20 @@ import Education from "../components/Education";
 import Experience from "../components/Experience";
 import Header from "../components/Header";
 import Hero from "../components/Hero";
+import Projects from "../components/Projects";
 import StatsPanel from "../components/StatsPanel";
 import TechStack from "../components/TechStack";
-import Projects from "../components/Projects";
-import { getYearsOfExperience } from "../lib/utils";
 import {
-  navItems,
-  languages,
-  tools,
   certificates,
   educationList,
-  workExperience,
-  volunteering,
+  languages,
+  navItems,
   projects,
+  tools,
+  volunteering,
+  workExperience,
 } from "../data/portfolio";
+import { getYearsOfExperience } from "../lib/utils";
 
 /**
  * Fetches the total all-time contribution count for a GitHub user. Falls back to 0 on any error.
@@ -48,7 +48,7 @@ export default async function Home() {
 
   const stats = [
     { value: yearsOfExperience, label: "Years of Experience", approximate: true },
-    { value: projects.length, label: "Projects Completed", approximate: false },
+    { value: projects.length, label: "Projects Completed", approximate: true },
     { value: githubContributions, label: "GitHub Contributions", approximate: true },
     { value: techStackCount, label: "Tech Stack", approximate: false },
   ];
