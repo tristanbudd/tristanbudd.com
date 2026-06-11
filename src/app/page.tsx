@@ -4,6 +4,7 @@
  */
 
 import Certifications from "../components/Certifications";
+import Contact from "../components/Contact";
 import Header from "../components/Header";
 import Hero from "../components/Hero";
 import Projects from "../components/Projects";
@@ -130,6 +131,12 @@ export default async function Home() {
           certificates={certificates}
           title="Certifications & Learning"
           subtitle="Qualifications"
+        />
+
+        {/* Contact */}
+        <Contact
+          linkedInUrl="https://www.linkedin.com/in/tristanbudd"
+          linkedInHandle="tristanbudd"
         />
       </main>
 

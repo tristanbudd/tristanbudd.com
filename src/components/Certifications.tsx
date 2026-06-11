@@ -93,7 +93,7 @@ function CertificateCard({
         <span>Achieved: {cert.date}</span>
       </div>
 
-      {/* Skills / Key Areas — sits directly below Achieved, no forced bottom alignment */}
+      {/* Skills / Key Areas: Sits directly below Achieved, no forced bottom alignment */}
       <div className="3xl:mt-2 4xl:mt-3 5xl:mt-4 mt-2 flex flex-col gap-3">
         <span className="3xl:text-xs 4xl:text-sm 5xl:text-base text-[0.68rem] font-bold tracking-widest text-zinc-400 uppercase">
           Key Skills
