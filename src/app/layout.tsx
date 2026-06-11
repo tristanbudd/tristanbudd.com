@@ -97,6 +97,7 @@ export default function RootLayout({
   return (
     <html
       lang="en-GB"
+      data-scroll-behavior="smooth"
       className={`${geistSans.variable} ${geistMono.variable} ${syne.variable} ${cinzel.variable} ${outfit.variable} h-full scroll-smooth antialiased`}
       suppressHydrationWarning
     >

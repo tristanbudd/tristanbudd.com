@@ -55,6 +55,7 @@ function CertificateCard({
             alt={cert.issuer}
             width={24}
             height={24}
+            loading="lazy"
             className="3xl:h-8 3xl:w-8 4xl:h-10 4xl:w-10 5xl:h-12 5xl:w-12 h-6 w-6 transition-all duration-300 group-hover:scale-110"
             style={{
               filter: "grayscale(1) brightness(0) opacity(0.75)",

@@ -43,6 +43,7 @@ function IconTile({ item, visible, delay }: { item: TechItem; visible: boolean; 
           alt={item.name}
           width={40}
           height={40}
+          loading="lazy"
           className="3xl:h-12 3xl:w-12 4xl:h-14 4xl:w-14 5xl:h-16 5xl:w-16 h-10 w-10 transition-all duration-300 group-hover/tile:scale-110"
           style={{ filter: "grayscale(1) brightness(0) opacity(0.75)" }}
           onError={(e) => {
