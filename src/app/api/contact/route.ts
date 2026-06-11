@@ -6,8 +6,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 const RECIPIENT = "contact@tristanbudd.com";
 const SENDER = "Portfolio Contact <contact@tristanbudd.com>";
 
@@ -85,6 +83,14 @@ export async function POST(req: NextRequest) {
     const ip = getIp(req);
     const limitResponse = checkRateLimit(ip);
     if (limitResponse) return limitResponse;
+
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey) {
+      console.error("Contact API - Missing RESEND_API_KEY environment variable.");
+      return NextResponse.json({ error: "Contact service is not configured." }, { status: 500 });
+    }
+
+    const resend = new Resend(apiKey);
 
     const body = (await req.json()) as {
       name?: string;
