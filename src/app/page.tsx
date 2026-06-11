@@ -3,6 +3,7 @@
  * @description Main entry page for the portfolio site. Implements hero, header, stats, and tech stack layout.
  */
 
+import Certifications from "../components/Certifications";
 import Header from "../components/Header";
 import Hero from "../components/Hero";
 import StatsPanel from "../components/StatsPanel";
@@ -76,6 +77,56 @@ export default async function Home() {
     { name: "Figma", slug: "figma" },
   ];
 
+  const certificates = [
+    {
+      title: "DataCamp AI Engineer",
+      issuer: "DataCamp",
+      date: "September 2025",
+      skills: [
+        "AI Models",
+        "ML Pipelines",
+        "Python",
+        "Model Deployment",
+        "Feature Engineering",
+        "Deep Learning",
+      ],
+      logoSlug: "datacamp",
+      credentialUrl: "https://www.datacamp.com/certificate/AIEDA0011387218901",
+    },
+    {
+      title: "GitHub Foundations",
+      issuer: "GitHub",
+      date: "July 2025",
+      skills: [
+        "Git & GitHub",
+        "Version Control",
+        "Collaborative Coding",
+        "GitHub Actions",
+        "Pull Requests",
+        "CI/CD Foundations",
+      ],
+      logoSlug: "github",
+      credentialUrl:
+        "https://learn.microsoft.com/en-us/users/tristanbudd/credentials/314f5807b4d2c1d8",
+    },
+    {
+      title: "Google UX Design Professional Certificate",
+      issuer: "Google",
+      date: "September 2024",
+      skills: [
+        "Figma",
+        "Wireframing",
+        "Prototyping",
+        "User Research",
+        "Usability Testing",
+        "User-Centered Design",
+        "Information Architecture",
+      ],
+      logoSlug: "google",
+      credentialUrl: "https://www.credly.com/badges/4af22da5-a24c-4b69-b619-6bc880e33b84/",
+    },
+  ];
+
   // Derived stats
   const yearsOfExperience = getYearsOfExperience();
   const techStackCount = languages.length + tools.length;
@@ -110,6 +161,13 @@ export default async function Home() {
 
         {/* Tech Stack */}
         <TechStack title="Tech Stack" subtitle="Built with" languages={languages} tools={tools} />
+
+        {/* Certifications */}
+        <Certifications
+          certificates={certificates}
+          title="Certifications & Learning"
+          subtitle="Qualifications"
+        />
       </main>
 
       {/* Footer Area */}
