@@ -5,6 +5,7 @@
 
 import Certifications from "../components/Certifications";
 import Education from "../components/Education";
+import Experience from "../components/Experience";
 import Header from "../components/Header";
 import Hero from "../components/Hero";
 import StatsPanel from "../components/StatsPanel";
@@ -149,6 +150,44 @@ export default async function Home() {
     },
   ];
 
+  const workExperience = [
+    {
+      role: "T-Level Industrial Placement",
+      organization: "Hampshire & Isle Of Wight Constabulary",
+      location: "Hamble Lane, Hamble",
+      startDate: new Date("2022-11-20"),
+      endDate: new Date("2024-06-19"),
+      dateString: "20th November 2022 - 19th June 2024",
+      logoPath: "/hiowc.svg",
+      url: "https://www.hampshire.police.uk",
+      descriptionPoints: [
+        "Delivered digital solutions to modernise processes and improve usability for officers.",
+        "Developed a mobile vehicle defect reporting system, replacing a complex, outdated workflow.",
+        "Managed full project lifecycle: requirements, design, development, testing, and user evaluation.",
+        "Conducted security, reliability, and accessibility testing to meet legal and regulatory standards.",
+        "Presented solutions and trained new placement students, explaining technical concepts clearly.",
+      ],
+    },
+  ];
+
+  const volunteering = [
+    {
+      role: "Volunteer Technician & Developer",
+      organization: "Repair Café Gosport",
+      location: "Various Locations, Gosport",
+      startDate: new Date("2025-09-01"),
+      endDate: new Date("2025-11-30"),
+      dateString: "September 2025 - November 2025",
+      logoPath: "/repaircafe.svg",
+      url: "https://www.repaircafegosport.co.uk",
+      descriptionPoints: [
+        "Volunteered to repair electronics, supporting sustainability and reducing e-waste.",
+        "Developed automation tools to streamline event logistics and cut administrative work.",
+        "Collaborated with organisers and stakeholders to enhance overall operations.",
+      ],
+    },
+  ];
+
   // Derived stats
   const yearsOfExperience = getYearsOfExperience();
   const techStackCount = languages.length + tools.length;
@@ -184,8 +223,18 @@ export default async function Home() {
         {/* Tech Stack */}
         <TechStack title="Tech Stack" subtitle="Built with" languages={languages} tools={tools} />
 
+        {/* Work Experience */}
+        <Experience
+          items={workExperience}
+          title="Work Experience"
+          subtitle="Professional Journey"
+        />
+
         {/* Education */}
         <Education educationList={educationList} title="Education" subtitle="Academic Journey" />
+
+        {/* Volunteering */}
+        <Experience items={volunteering} title="Volunteering" subtitle="Giving Back" />
 
         {/* Certifications */}
         <Certifications

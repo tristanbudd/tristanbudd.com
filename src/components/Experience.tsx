@@ -1,47 +1,58 @@
 "use client";
 
 /**
- * @file Education.tsx
- * @description Responsive, timeline-based education section component. Displays academic credentials as a vertical timeline.
+ * @file Experience.tsx
+ * @description Reusable timeline component for work experience and volunteering history.
  */
 
 import { Calendar, ExternalLink } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { formatDuration } from "../lib/utils";
 
-export interface EducationItem {
-  institution: string;
-  degree: string;
-  date: string;
-  details?: string;
+export interface ExperienceItem {
+  role: string;
+  organization: string;
+  location?: string;
+  startDate: Date;
+  endDate: Date;
+  dateString: string;
+  descriptionPoints: string[];
   logoPath: string;
-  courseUrl?: string;
-  status?: "in_progress" | "completed";
+  url?: string;
 }
 
-interface EducationProps {
-  educationList: EducationItem[];
-  title?: string;
+interface ExperienceProps {
+  items: ExperienceItem[];
+  title: string;
   subtitle?: string;
 }
 
-function EducationItemRow({
+function ExperienceItemRow({
   item,
   visible,
   delay,
   isLast,
 }: {
-  item: EducationItem;
+  item: ExperienceItem;
   visible: boolean;
   delay: number;
   isLast: boolean;
 }) {
+  const duration = formatDuration(item.startDate, item.endDate);
+
   return (
     <div
       className="group relative pl-16 transition-all duration-500 ease-out sm:pl-20"
       style={{
         opacity: visible ? 1 : 0,
-        transform: visible ? "translateY(0)" : "translateY(24px)",
-        transition: `opacity 0.6s ease ${delay}ms, transform 0.6s ease ${delay}ms`,
+        transform: visible ? "translateY(24px)" : "translateY(24px)",
+      }}
+      ref={(el) => {
+        if (el && visible) {
+          el.style.opacity = "1";
+          el.style.transform = "translateY(0)";
+          el.style.transition = `opacity 0.6s ease ${delay}ms, transform 0.6s ease ${delay}ms`;
+        }
       }}
     >
       {/* Vertical Line Segment */}
@@ -56,7 +67,7 @@ function EducationItemRow({
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={item.logoPath}
-          alt={item.institution}
+          alt={item.organization}
           width={28}
           height={28}
           className="h-6 w-6 object-contain transition-all duration-300 group-hover:scale-110 sm:h-7 sm:w-7"
@@ -75,61 +86,62 @@ function EducationItemRow({
         <div className="flex flex-wrap items-center gap-2 text-xs font-bold tracking-wider text-zinc-500 uppercase sm:text-sm">
           <div className="flex items-center gap-1.5">
             <Calendar className="h-3.5 w-3.5 text-zinc-400 sm:h-4 sm:w-4" />
-            <span>{item.date}</span>
+            <span>{item.dateString}</span>
           </div>
 
-          {item.status === "in_progress" ? (
-            <>
-              <span className="hidden font-normal text-zinc-300 sm:inline">•</span>
-              <span className="text-zinc-650 inline-flex items-center rounded-full border border-zinc-200 bg-zinc-50/50 px-2.5 py-0.5 text-[0.7rem] font-bold tracking-wider uppercase sm:text-xs">
-                Ongoing
-              </span>
-            </>
-          ) : (
-            item.details && (
-              <>
-                <span className="hidden font-normal text-zinc-300 sm:inline">•</span>
-                <span className="text-zinc-650 inline-flex items-center rounded-full border border-zinc-200 bg-zinc-50/50 px-2.5 py-0.5 text-[0.7rem] font-bold tracking-wider uppercase sm:text-xs">
-                  {item.details}
-                </span>
-              </>
-            )
-          )}
+          <span className="hidden font-normal text-zinc-300 sm:inline">•</span>
+          <span className="text-zinc-650 inline-flex items-center rounded-full border border-zinc-200 bg-zinc-50/50 px-2.5 py-0.5 text-[0.7rem] font-bold tracking-wider uppercase sm:text-xs">
+            {duration}
+          </span>
         </div>
 
-        {/* Degree Title */}
+        {/* Role Title */}
         <h3 className="text-lg leading-tight font-extrabold tracking-tight text-black sm:text-2xl lg:text-3xl">
-          {item.degree}
+          {item.role}
         </h3>
 
-        {/* Institution details link */}
+        {/* Company & Location Link */}
         <div>
-          {item.courseUrl ? (
+          {item.url ? (
             <a
-              href={item.courseUrl}
+              href={item.url}
               target="_blank"
               rel="noopener noreferrer"
               className="group/link text-zinc-550 inline-flex items-center gap-1.5 text-sm font-semibold transition-colors duration-300 hover:text-black sm:text-base lg:text-lg"
             >
-              <span>{item.institution}</span>
+              <span>{item.organization}</span>
+              {item.location && (
+                <span className="font-normal text-zinc-400">| {item.location}</span>
+              )}
               <ExternalLink className="h-3.5 w-3.5 text-zinc-400 transition-colors duration-300 group-hover/link:text-black sm:h-4 sm:w-4 lg:h-4.5 lg:w-4.5" />
             </a>
           ) : (
-            <span className="text-zinc-550 text-sm font-semibold sm:text-base lg:text-lg">
-              {item.institution}
-            </span>
+            <div className="text-zinc-550 text-sm font-semibold sm:text-base lg:text-lg">
+              <span>{item.organization}</span>
+              {item.location && (
+                <span className="font-normal text-zinc-400"> | {item.location}</span>
+              )}
+            </div>
           )}
         </div>
+
+        {/* Bullet Points */}
+        <ul className="text-zinc-650 mt-3 space-y-2 text-sm leading-relaxed sm:text-base">
+          {item.descriptionPoints.map((point, idx) => (
+            <li
+              key={idx}
+              className="relative pl-5 before:absolute before:top-[0.6em] before:left-0 before:h-1.5 before:w-1.5 before:rounded-full before:bg-zinc-400"
+            >
+              {point}
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );
 }
 
-export default function Education({
-  educationList = [],
-  title = "Education",
-  subtitle = "Academic Journey",
-}: EducationProps) {
+export default function Experience({ items = [], title, subtitle }: ExperienceProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
 
@@ -149,11 +161,11 @@ export default function Education({
     return () => observer.disconnect();
   }, []);
 
-  if (!educationList.length) return null;
+  if (!items.length) return null;
 
   return (
     <section
-      aria-label="Education"
+      aria-label={title}
       className="font-outfit 3xl:scroll-mt-36 3xl:py-24 w-full scroll-mt-24 py-12 transition-all duration-500 ease-in-out sm:scroll-mt-28 sm:py-16"
     >
       <div className="flex flex-col gap-10">
@@ -173,13 +185,13 @@ export default function Education({
         <div ref={ref} className="relative ml-2 md:ml-6">
           {/* Timeline Items */}
           <div className="space-y-0">
-            {educationList.map((item, idx) => (
-              <EducationItemRow
-                key={item.institution + item.degree}
+            {items.map((item, idx) => (
+              <ExperienceItemRow
+                key={item.organization + item.role}
                 item={item}
                 visible={visible}
                 delay={idx * 200}
-                isLast={idx === educationList.length - 1}
+                isLast={idx === items.length - 1}
               />
             ))}
           </div>

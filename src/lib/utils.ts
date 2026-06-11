@@ -58,3 +58,38 @@ export function getYearsOfExperience(): number {
   const ms = now.getTime() - start.getTime();
   return Math.floor(ms / (1000 * 60 * 60 * 24 * 365.25));
 }
+
+/**
+ * Calculates the duration between two dates and formats it as a string
+ * (e.g. "1 year, 7 months" or "3 months"), rounding to the closest month.
+ *
+ * @param start - The start date.
+ * @param end - The end date.
+ * @returns Formatted duration string.
+ */
+export function formatDuration(start: Date, end: Date): string {
+  const totalYearsDiff = end.getFullYear() - start.getFullYear();
+  const totalMonthsDiff = end.getMonth() - start.getMonth();
+  const dayDiff = end.getDate() - start.getDate();
+
+  // Calculate fractional months using average length of a month (30.4375 days)
+  const fractionalMonths = totalYearsDiff * 12 + totalMonthsDiff + dayDiff / 30.4375;
+  const roundedMonths = Math.round(fractionalMonths);
+
+  const years = Math.floor(roundedMonths / 12);
+  const months = roundedMonths % 12;
+
+  const parts: string[] = [];
+  if (years > 0) {
+    parts.push(`${years} year${years > 1 ? "s" : ""}`);
+  }
+  if (months > 0) {
+    parts.push(`${months} month${months > 1 ? "s" : ""}`);
+  }
+
+  if (parts.length === 0) {
+    return "1 month";
+  }
+
+  return parts.join(", ");
+}
