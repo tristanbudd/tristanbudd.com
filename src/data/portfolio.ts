@@ -175,6 +175,17 @@ export const educationList: EducationItem[] = [
 
 export const workExperience: ExperienceItem[] = [
   {
+    role: "Junior Software Engineer",
+    organization: "RadWeb LTD",
+    location: "Lakeside North Harbour, Portsmouth",
+    startDate: new Date("2026-06-15"),
+    endDate: new Date(),
+    dateString: "15th June 2026 - Present",
+    logoPath: "/radweb.svg",
+    url: "https://radweb.com/",
+    descriptionPoints: [],
+  },
+  {
     role: "T-Level Industrial Placement",
     organization: "Hampshire & Isle Of Wight Constabulary",
     location: "Hamble Lane, Hamble",

@@ -68,13 +68,24 @@ export function getYearsOfExperience(): number {
  * @returns Formatted duration string.
  */
 export function formatDuration(start: Date, end: Date): string {
-  const totalYearsDiff = end.getFullYear() - start.getFullYear();
-  const totalMonthsDiff = end.getMonth() - start.getMonth();
-  const dayDiff = end.getDate() - start.getDate();
+  const now = new Date();
+
+  // Start date is still in the future
+  if (start > now) return "Not Started";
+
+  // Use the lesser of end and now so "present" roles use today's date
+  const effectiveEnd = end > now ? now : end;
+
+  const totalYearsDiff = effectiveEnd.getFullYear() - start.getFullYear();
+  const totalMonthsDiff = effectiveEnd.getMonth() - start.getMonth();
+  const dayDiff = effectiveEnd.getDate() - start.getDate();
 
   // Calculate fractional months using average length of a month (30.4375 days)
   const fractionalMonths = totalYearsDiff * 12 + totalMonthsDiff + dayDiff / 30.4375;
   const roundedMonths = Math.round(fractionalMonths);
+
+  // Less than 1 month elapsed
+  if (roundedMonths < 1) return "Just Started";
 
   const years = Math.floor(roundedMonths / 12);
   const months = roundedMonths % 12;
@@ -88,7 +99,7 @@ export function formatDuration(start: Date, end: Date): string {
   }
 
   if (parts.length === 0) {
-    return "1 month";
+    return "Just Started";
   }
 
   return parts.join(", ");
