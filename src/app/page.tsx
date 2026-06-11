@@ -4,6 +4,7 @@
  */
 
 import Certifications from "../components/Certifications";
+import Education from "../components/Education";
 import Header from "../components/Header";
 import Hero from "../components/Hero";
 import StatsPanel from "../components/StatsPanel";
@@ -127,6 +128,27 @@ export default async function Home() {
     },
   ];
 
+  const educationList = [
+    {
+      institution: "University of Portsmouth - School of Computing",
+      degree: "Honours Degree in Software Engineering",
+      date: "September 2024 - July 2028",
+      logoPath: "/uop.svg",
+      courseUrl: "https://www.port.ac.uk/study/courses/undergraduate/bsc-hons-software-engineering",
+      status: "in_progress" as const,
+    },
+    {
+      institution: "Fareham College - Bishopsfield Campus",
+      degree: "T-Level In Digital Production, Design & Development",
+      date: "September 2022 - July 2024",
+      details: "Overall Grade - Distinction",
+      logoPath: "/fareham.svg",
+      courseUrl:
+        "https://qualifications.pearson.com/en/qualifications/t-levels/digital-production-design-and-development.html",
+      status: "completed" as const,
+    },
+  ];
+
   // Derived stats
   const yearsOfExperience = getYearsOfExperience();
   const techStackCount = languages.length + tools.length;
@@ -161,6 +183,9 @@ export default async function Home() {
 
         {/* Tech Stack */}
         <TechStack title="Tech Stack" subtitle="Built with" languages={languages} tools={tools} />
+
+        {/* Education */}
+        <Education educationList={educationList} title="Education" subtitle="Academic Journey" />
 
         {/* Certifications */}
         <Certifications
