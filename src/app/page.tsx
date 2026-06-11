@@ -4,13 +4,12 @@
  */
 
 import Certifications from "../components/Certifications";
-import Education from "../components/Education";
-import Experience from "../components/Experience";
 import Header from "../components/Header";
 import Hero from "../components/Hero";
 import Projects from "../components/Projects";
 import StatsPanel from "../components/StatsPanel";
 import TechStack from "../components/TechStack";
+import Timeline from "../components/Timeline";
 import {
   certificates,
   educationList,
@@ -21,7 +20,7 @@ import {
   volunteering,
   workExperience,
 } from "../data/portfolio";
-import { getYearsOfExperience } from "../lib/utils";
+import { getYearsOfExperience, formatDuration } from "../lib/utils";
 
 /**
  * Fetches the total all-time contribution count for a GitHub user. Falls back to 0 on any error.
@@ -80,17 +79,51 @@ export default async function Home() {
         <Projects projects={projects} title="Featured Projects" subtitle="My Work" isPreview />
 
         {/* Work Experience */}
-        <Experience
-          items={workExperience}
+        <Timeline
           title="Work Experience"
           subtitle="Professional Journey"
+          items={workExperience.map((item) => ({
+            title: item.role,
+            subtitle: item.organization,
+            location: item.location,
+            dateString: item.dateString,
+            badgeText: formatDuration(item.startDate, item.endDate),
+            logoPath: item.logoPath,
+            url: item.url,
+            points: item.descriptionPoints,
+          }))}
         />
 
         {/* Education */}
-        <Education educationList={educationList} title="Education" subtitle="Academic Journey" />
+        <Timeline
+          title="Education"
+          subtitle="Academic Journey"
+          items={educationList.map((item) => ({
+            title: item.degree,
+            subtitle: item.institution,
+            location: item.location,
+            dateString: item.date,
+            badgeText: item.status === "in_progress" ? "Ongoing" : item.details,
+            logoPath: item.logoPath,
+            url: item.courseUrl,
+          }))}
+        />
 
         {/* Volunteering */}
-        <Experience items={volunteering} title="Volunteering" subtitle="Giving Back" />
+        <Timeline
+          title="Volunteering"
+          subtitle="Giving Back"
+          items={volunteering.map((item) => ({
+            title: item.role,
+            subtitle: item.organization,
+            location: item.location,
+            dateString: item.dateString,
+            badgeText: formatDuration(item.startDate, item.endDate),
+            logoPath: item.logoPath,
+            url: item.url,
+            points: item.descriptionPoints,
+          }))}
+        />
 
         {/* Certifications */}
         <Certifications

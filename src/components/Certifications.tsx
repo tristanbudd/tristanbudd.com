@@ -36,7 +36,7 @@ function CertificateCard({
 
   return (
     <div
-      className="group 3xl:p-10 4xl:p-12 5xl:p-16 relative flex flex-col justify-between overflow-hidden rounded-2xl border border-zinc-200/60 bg-white/40 p-8 shadow-xs backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-zinc-300 hover:bg-white/80 hover:shadow-md"
+      className="group 3xl:p-10 4xl:p-12 5xl:p-16 relative flex flex-col gap-4 overflow-hidden rounded-2xl border border-zinc-200/60 bg-white/40 p-8 shadow-xs backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-zinc-300 hover:bg-white/80 hover:shadow-md"
       style={{
         opacity: visible ? 1 : 0,
         transform: visible ? "translateY(0)" : "translateY(24px)",
@@ -46,56 +46,54 @@ function CertificateCard({
       {/* Sliding Accent Border */}
       <div className="absolute top-0 left-0 h-[3px] w-full origin-left scale-x-0 bg-linear-to-r from-zinc-700 via-black to-zinc-800 transition-transform duration-300 group-hover:scale-x-100" />
 
-      <div className="3xl:gap-6 flex flex-col gap-4">
-        {/* Header: Icon & Organization */}
-        <div className="flex items-center justify-between">
-          <div className="3xl:h-16 3xl:w-16 3xl:rounded-2xl 4xl:h-20 4xl:w-20 5xl:h-24 5xl:w-24 flex h-12 w-12 items-center justify-center rounded-xl border border-zinc-200 bg-white/70 text-zinc-700 transition-all duration-300 group-hover:border-zinc-300 group-hover:bg-white">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={logoUrl}
-              alt={cert.issuer}
-              width={24}
-              height={24}
-              className="3xl:h-8 3xl:w-8 4xl:h-10 4xl:w-10 5xl:h-12 5xl:w-12 h-6 w-6 transition-all duration-300 group-hover:scale-110"
-              style={{
-                filter: "grayscale(1) brightness(0) opacity(0.75)",
-              }}
-              onError={(e) => {
-                e.currentTarget.style.display = "none";
-              }}
-            />
-          </div>
-          {cert.credentialUrl ? (
-            <a
-              href={cert.credentialUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group/link 3xl:text-sm 4xl:text-base 5xl:text-lg inline-flex items-center gap-1.5 text-xs font-bold tracking-widest text-zinc-500 uppercase transition-colors duration-300 hover:text-black"
-            >
-              <span>{cert.issuer}</span>
-              <ExternalLink className="3xl:h-4.5 3xl:w-4.5 4xl:h-5 4xl:w-5 5xl:h-6 5xl:w-6 h-3.5 w-3.5 text-zinc-400 transition-colors duration-300 group-hover/link:text-black" />
-            </a>
-          ) : (
-            <span className="3xl:text-sm 4xl:text-base 5xl:text-lg text-xs font-bold tracking-widest text-zinc-500 uppercase">
-              {cert.issuer}
-            </span>
-          )}
+      {/* Header: Icon & Organization */}
+      <div className="flex items-center justify-between">
+        <div className="3xl:h-16 3xl:w-16 3xl:rounded-2xl 4xl:h-20 4xl:w-20 5xl:h-24 5xl:w-24 flex h-12 w-12 items-center justify-center rounded-xl border border-zinc-200 bg-white/70 text-zinc-700 transition-all duration-300 group-hover:border-zinc-300 group-hover:bg-white">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={logoUrl}
+            alt={cert.issuer}
+            width={24}
+            height={24}
+            className="3xl:h-8 3xl:w-8 4xl:h-10 4xl:w-10 5xl:h-12 5xl:w-12 h-6 w-6 transition-all duration-300 group-hover:scale-110"
+            style={{
+              filter: "grayscale(1) brightness(0) opacity(0.75)",
+            }}
+            onError={(e) => {
+              e.currentTarget.style.display = "none";
+            }}
+          />
         </div>
-
-        {/* Certificate Title */}
-        <h3 className="3xl:text-2xl 4xl:text-3xl 5xl:text-4xl text-lg leading-tight font-extrabold tracking-tight text-black sm:text-xl">
-          {cert.title}
-        </h3>
-
-        {/* Achieved Date */}
-        <div className="3xl:text-sm 4xl:text-base 5xl:text-lg flex items-center gap-1.5 text-xs font-semibold tracking-wider text-zinc-500 uppercase">
-          <Calendar className="3xl:h-4.5 3xl:w-4.5 4xl:h-5 4xl:w-5 5xl:h-6 5xl:w-6 h-3.5 w-3.5 text-zinc-400" />
-          <span>Achieved: {cert.date}</span>
-        </div>
+        {cert.credentialUrl ? (
+          <a
+            href={cert.credentialUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group/link 3xl:text-sm 4xl:text-base 5xl:text-lg inline-flex items-center gap-1.5 text-xs font-bold tracking-widest text-zinc-500 uppercase transition-colors duration-300 hover:text-black"
+          >
+            <span>{cert.issuer}</span>
+            <ExternalLink className="3xl:h-4.5 3xl:w-4.5 4xl:h-5 4xl:w-5 5xl:h-6 5xl:w-6 h-3.5 w-3.5 text-zinc-400 transition-colors duration-300 group-hover/link:text-black" />
+          </a>
+        ) : (
+          <span className="3xl:text-sm 4xl:text-base 5xl:text-lg text-xs font-bold tracking-widest text-zinc-500 uppercase">
+            {cert.issuer}
+          </span>
+        )}
       </div>
 
-      {/* Skills / Key Areas */}
-      <div className="3xl:mt-10 4xl:mt-12 5xl:mt-14 mt-8 flex flex-col gap-3">
+      {/* Certificate Title */}
+      <h3 className="3xl:text-2xl 4xl:text-3xl 5xl:text-4xl text-lg leading-tight font-extrabold tracking-tight text-black sm:text-xl">
+        {cert.title}
+      </h3>
+
+      {/* Achieved Date */}
+      <div className="3xl:text-sm 4xl:text-base 5xl:text-lg flex items-center gap-1.5 text-xs font-semibold tracking-wider text-zinc-500 uppercase">
+        <Calendar className="3xl:h-4.5 3xl:w-4.5 4xl:h-5 4xl:w-5 5xl:h-6 5xl:w-6 h-3.5 w-3.5 text-zinc-400" />
+        <span>Achieved: {cert.date}</span>
+      </div>
+
+      {/* Skills / Key Areas — sits directly below Achieved, no forced bottom alignment */}
+      <div className="3xl:mt-2 4xl:mt-3 5xl:mt-4 mt-2 flex flex-col gap-3">
         <span className="3xl:text-xs 4xl:text-sm 5xl:text-base text-[0.68rem] font-bold tracking-widest text-zinc-400 uppercase">
           Key Skills
         </span>
@@ -149,11 +147,11 @@ export default function Certifications({
         {/* Section Title */}
         <div className="flex flex-col gap-2 text-center md:text-left">
           {subtitle && (
-            <span className="3xl:text-sm text-xs font-bold tracking-widest text-zinc-500 uppercase">
+            <span className="3xl:text-sm 4xl:text-base 5xl:text-lg text-xs font-bold tracking-widest text-zinc-500 uppercase">
               {subtitle}
             </span>
           )}
-          <h2 className="3xl:text-5xl text-3xl font-extrabold tracking-tight text-black sm:text-4xl">
+          <h2 className="3xl:text-5xl 4xl:text-6xl 5xl:text-7xl text-3xl font-extrabold tracking-tight text-black sm:text-4xl">
             {title}
           </h2>
         </div>

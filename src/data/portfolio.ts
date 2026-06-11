@@ -3,8 +3,6 @@
  * @description Shared portfolio data repository including experience, education, certifications, and project lists.
  */
 
-import { EducationItem } from "@/components/Education";
-import { ExperienceItem } from "@/components/Experience";
 import { NavItem } from "@/components/Header";
 
 export interface Project {
@@ -30,6 +28,29 @@ export interface CertificationItem {
 export interface TechItem {
   name: string;
   slug: string;
+}
+
+export interface ExperienceItem {
+  role: string;
+  organization: string;
+  location?: string;
+  startDate: Date;
+  endDate: Date;
+  dateString: string;
+  descriptionPoints: string[];
+  logoPath: string;
+  url?: string;
+}
+
+export interface EducationItem {
+  institution: string;
+  location?: string;
+  degree: string;
+  date: string;
+  details?: string;
+  logoPath: string;
+  courseUrl?: string;
+  status?: "in_progress" | "completed";
 }
 
 export const navItems: NavItem[] = [
@@ -131,7 +152,8 @@ export const certificates: CertificationItem[] = [
 
 export const educationList: EducationItem[] = [
   {
-    institution: "University of Portsmouth - School of Computing",
+    institution: "University of Portsmouth",
+    location: "School of Computing",
     degree: "Honours Degree in Software Engineering",
     date: "September 2024 - July 2028",
     logoPath: "/uop.svg",
@@ -139,7 +161,8 @@ export const educationList: EducationItem[] = [
     status: "in_progress",
   },
   {
-    institution: "Fareham College - Bishopsfield Campus",
+    institution: "Fareham College",
+    location: "Bishopsfield Campus",
     degree: "T-Level In Digital Production, Design & Development",
     date: "September 2022 - July 2024",
     details: "Overall Grade - Distinction",

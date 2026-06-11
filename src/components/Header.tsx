@@ -8,6 +8,7 @@
 import { useLenis } from "lenis/react";
 import { ArrowRight, ChevronDown, Loader2, Menu, X } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import CTAButton from "./CTAButton";
 
@@ -30,6 +31,8 @@ export default function Header({
   ctaText = "Placeholder CTA",
   ctaHref = "#",
 }: HeaderProps) {
+  const pathname = usePathname();
+  const isIndex = pathname === "/";
   const [isMobile, setIsMobile] = useState<boolean | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openMobileDropdown, setOpenMobileDropdown] = useState<string | null>(null);
@@ -260,8 +263,17 @@ export default function Header({
                     <span>Budd</span>
                   </div>
                   <div className="text-zinc-650 flex h-[1.7em] flex-col justify-center pr-4 text-left">
-                    <span>Refreshing</span>
-                    <span>Page...</span>
+                    {isIndex ? (
+                      <>
+                        <span>Refreshing</span>
+                        <span>Page...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>Returning</span>
+                        <span>Home...</span>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>

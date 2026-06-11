@@ -4,11 +4,12 @@
  */
 
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono, Syne, Cinzel, Outfit } from "next/font/google";
+import { Cinzel, Geist, Geist_Mono, Outfit, Syne } from "next/font/google";
 
+import PageLoader from "@/components/PageLoader";
+import ScreenSizeNotice from "@/components/ScreenSizeNotice";
 import "./globals.css";
 import { Providers } from "./providers";
-import ScreenSizeNotice from "@/components/ScreenSizeNotice";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -114,6 +115,7 @@ export default function RootLayout({
           }}
         />
         <Providers>
+          <PageLoader />
           <ScreenSizeNotice />
           {children}
         </Providers>

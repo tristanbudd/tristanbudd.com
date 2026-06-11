@@ -174,10 +174,10 @@ export default function Projects({
         {/* Section Header */}
         {showHeader && (
           <div className="flex flex-col gap-2 text-center md:text-left">
-            <span className="3xl:text-sm text-xs font-bold tracking-widest text-zinc-500 uppercase">
+            <span className="3xl:text-sm 4xl:text-base 5xl:text-lg text-xs font-bold tracking-widest text-zinc-500 uppercase">
               {subtitle}
             </span>
-            <h2 className="3xl:text-5xl text-3xl font-extrabold tracking-tight text-black sm:text-4xl">
+            <h2 className="3xl:text-5xl 4xl:text-6xl 5xl:text-7xl text-3xl font-extrabold tracking-tight text-black sm:text-4xl">
               {title}
             </h2>
           </div>

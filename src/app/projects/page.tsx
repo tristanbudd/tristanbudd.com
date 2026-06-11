@@ -3,12 +3,13 @@
  * @description All projects showcase page (route: /projects).
  */
 
+import type { Metadata } from "next";
 import BackButton from "../../components/BackButton";
 import Header from "../../components/Header";
 import Projects from "../../components/Projects";
 import { navItems, projects } from "../../data/portfolio";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Projects",
   description: "Explore all portfolio projects built by Tristan Budd.",
 };
