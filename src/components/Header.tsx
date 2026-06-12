@@ -298,6 +298,7 @@ export default function Header({
             <Link
               href="/"
               onClick={handleLogoClick}
+              aria-label="Tristan Budd Home"
               className="group flex cursor-pointer items-center gap-2 text-current select-none sm:gap-3"
             >
               {transitionTarget !== null ? (

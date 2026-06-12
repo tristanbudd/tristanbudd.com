@@ -9,7 +9,7 @@ export default function ScreenSizeNotice() {
   return (
     <div
       id="screen-size-notice"
-      className="font-outfit border-secondary/10 bg-background/98 text-foreground fixed inset-0 z-9999 flex h-screen w-screen flex-col items-center justify-center overflow-hidden border px-6 py-12 text-center backdrop-blur-xl select-none"
+      className="font-outfit border-secondary/10 bg-background/98 text-foreground fixed inset-0 z-9999 h-screen w-screen flex-col items-center justify-center overflow-hidden border px-6 py-12 text-center backdrop-blur-xl select-none"
       role="alert"
       aria-live="assertive"
     >
@@ -25,9 +25,9 @@ export default function ScreenSizeNotice() {
 
         {/* Text descriptions */}
         <div className="space-y-2">
-          <h1 className="font-outfit text-foreground text-lg font-bold tracking-tight">
+          <h2 className="font-outfit text-foreground text-lg font-bold tracking-tight">
             Screen Too Small
-          </h1>
+          </h2>
           <p className="font-outfit text-secondary text-[14px] leading-relaxed font-medium">
             This portfolio is optimized for viewports of 320px and wider. Please enlarge your
             browser window or rotate your device to landscape.

@@ -101,6 +101,7 @@ html.lenis body {
 
 /* Screen Size Notice visibility and scrollbar lock */
 #screen-size-notice {
+  display: none !important;
   opacity: 0;
   pointer-events: none;
   visibility: hidden;
@@ -111,6 +112,7 @@ html.lenis body {
 
 @media (max-width: 319px), (max-height: 399px) {
   #screen-size-notice {
+    display: flex !important;
     opacity: 1;
     pointer-events: auto;
     visibility: visible !important;

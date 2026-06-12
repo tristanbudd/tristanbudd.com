@@ -155,7 +155,7 @@ export default function Footer({
         {/* Links Groups */}
         {navGroups.map((group) => (
           <div key={group.title} className="3xl:gap-6 4xl:gap-8 5xl:gap-10 flex flex-col gap-4">
-            <span className="3xl:text-base 4xl:text-lg 5xl:text-xl text-xs font-bold tracking-widest text-zinc-400 uppercase xl:text-sm">
+            <span className="3xl:text-base 4xl:text-lg 5xl:text-xl text-xs font-bold tracking-widest text-black uppercase xl:text-sm">
               {group.title}
             </span>
             <nav
@@ -185,7 +185,7 @@ export default function Footer({
           <p className="3xl:text-base 4xl:text-lg 5xl:text-xl text-xs font-medium text-zinc-500 xl:text-sm">
             &copy; {currentYear} Tristan Budd. All rights reserved.
           </p>
-          <p className="3xl:text-sm 4xl:text-base 5xl:text-lg text-[10px] font-semibold tracking-wider text-zinc-400 uppercase xl:text-xs">
+          <p className="3xl:text-sm 4xl:text-base 5xl:text-lg text-[10px] font-semibold tracking-wider text-zinc-500 uppercase xl:text-xs">
             Built with Next.js, React &amp; Tailwind CSS
           </p>
         </div>

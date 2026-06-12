@@ -13,8 +13,19 @@ import CTAButton from "./CTAButton";
 
 import { parseDate } from "@/lib/utils";
 
-function BlogRow({ post, visible, delay }: { post: BlogPost; visible: boolean; delay: number }) {
+function BlogRow({
+  post,
+  visible,
+  delay,
+  headingLevel = "h3",
+}: {
+  post: BlogPost;
+  visible: boolean;
+  delay: number;
+  headingLevel?: "h2" | "h3";
+}) {
   const { month, day, year } = parseDate(post.publishedAt);
+  const HeadingTag = headingLevel;
 
   return (
     <div
@@ -34,7 +45,7 @@ function BlogRow({ post, visible, delay }: { post: BlogPost; visible: boolean; d
           <span className="font-outfit text-5xl leading-none font-extrabold tracking-tight text-black sm:text-6xl">
             {day}
           </span>
-          <span className="font-outfit mt-1 text-[0.7rem] font-extrabold tracking-widest text-zinc-400 uppercase sm:text-xs">
+          <span className="font-outfit mt-1 text-[0.7rem] font-extrabold tracking-widest text-zinc-500 uppercase sm:text-xs">
             {month} {year}
           </span>
         </div>
@@ -51,12 +62,12 @@ function BlogRow({ post, visible, delay }: { post: BlogPost; visible: boolean; d
       <div className="flex flex-1 flex-col gap-3">
         {/* Category tag and title */}
         <div className="flex flex-col gap-1">
-          <span className="text-[0.65rem] font-extrabold tracking-widest text-zinc-400 uppercase sm:text-xs">
+          <span className="text-[0.65rem] font-extrabold tracking-widest text-zinc-500 uppercase sm:text-xs">
             {post.category}
           </span>
-          <h3 className="font-outfit text-xl leading-tight font-bold tracking-tight text-black transition-colors group-hover/blog:text-zinc-800 sm:text-2xl">
+          <HeadingTag className="font-outfit text-xl leading-tight font-bold tracking-tight text-black transition-colors group-hover/blog:text-zinc-800 sm:text-2xl">
             {post.title}
-          </h3>
+          </HeadingTag>
         </div>
 
         {/* Excerpt */}
@@ -80,9 +91,11 @@ function BlogRow({ post, visible, delay }: { post: BlogPost; visible: boolean; d
           <div className="flex items-center">
             <Link
               href={`/blog/${post.slug}`}
+              aria-label={`Read article: ${post.title}`}
               className="group/link inline-flex items-center gap-1.5 text-sm font-bold text-black transition-colors after:absolute after:inset-0 after:z-10 hover:text-zinc-700"
             >
               <span>Read Article</span>
+              <span className="sr-only">: {post.title}</span>
               <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover/link:translate-x-1" />
             </Link>
           </div>
@@ -141,7 +154,13 @@ export default function BlogSection({
         {/* Blog Posts Rows */}
         <div ref={ref} className="flex flex-col gap-6">
           {displayedPosts.map((post, idx) => (
-            <BlogRow key={post.slug} post={post} visible={visible} delay={idx * 150} />
+            <BlogRow
+              key={post.slug}
+              post={post}
+              visible={visible}
+              delay={idx * 150}
+              headingLevel={showHeader ? "h3" : "h2"}
+            />
           ))}
         </div>
 

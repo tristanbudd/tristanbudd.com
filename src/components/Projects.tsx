@@ -43,11 +43,15 @@ function ProjectCard({
   project,
   visible,
   delay,
+  headingLevel = "h3",
 }: {
   project: Project;
   visible: boolean;
   delay: number;
+  headingLevel?: "h2" | "h3";
 }) {
+  const HeadingTag = headingLevel;
+
   return (
     <div
       className="group/card 3xl:rounded-3xl relative flex flex-col overflow-hidden rounded-2xl border border-zinc-200/60 bg-white/40 shadow-xs backdrop-blur-md transition-all duration-500 hover:border-zinc-300 hover:bg-white/60 hover:shadow-md"
@@ -62,9 +66,9 @@ function ProjectCard({
 
       {/* Content Bottom Portion */}
       <div className="3xl:px-6 3xl:pb-8 3xl:pt-4 4xl:px-8 4xl:pb-10 4xl:pt-5 5xl:px-10 5xl:pb-12 5xl:pt-6 flex flex-1 flex-col px-4 pt-2 pb-6 sm:pt-3">
-        <h3 className="3xl:text-2xl 4xl:text-3xl 5xl:text-4xl text-lg font-bold text-black transition-colors duration-300 group-hover/card:text-zinc-800 sm:text-xl">
+        <HeadingTag className="3xl:text-2xl 4xl:text-3xl 5xl:text-4xl text-lg font-bold text-black transition-colors duration-300 group-hover/card:text-zinc-800 sm:text-xl">
           {project.title}
-        </h3>
+        </HeadingTag>
         <p className="text-zinc-650 3xl:mt-3 3xl:text-base 4xl:mt-4 4xl:text-lg 5xl:text-xl mt-2 flex-1 text-sm leading-relaxed">
           {project.description}
         </p>
@@ -85,9 +89,11 @@ function ProjectCard({
         <div className="3xl:mt-8 3xl:pt-6 4xl:mt-10 4xl:pt-8 mt-6 flex items-center justify-between border-t border-zinc-100 pt-4">
           <Link
             href={`/projects/${project.slug}`}
+            aria-label={`Learn more about project ${project.title}`}
             className="group/link 3xl:text-base 4xl:text-lg 5xl:text-xl inline-flex items-center gap-1 text-sm font-bold text-black transition-colors after:absolute after:inset-0 after:z-10 hover:text-zinc-700"
           >
             <span>Learn More</span>
+            <span className="sr-only"> about {project.title}</span>
             <ArrowRight className="3xl:h-4.5 3xl:w-4.5 4xl:h-5 4xl:w-5 5xl:h-6 5xl:w-6 h-3.5 w-3.5 transition-transform duration-300 group-hover/link:translate-x-1" />
           </Link>
 
@@ -170,7 +176,13 @@ export default function Projects({
         {/* Project Cards Grid */}
         <div ref={ref} className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {displayedProjects.map((project, idx) => (
-            <ProjectCard key={project.slug} project={project} visible={visible} delay={idx * 100} />
+            <ProjectCard
+              key={project.slug}
+              project={project}
+              visible={visible}
+              delay={idx * 100}
+              headingLevel={showHeader ? "h3" : "h2"}
+            />
           ))}
         </div>
 

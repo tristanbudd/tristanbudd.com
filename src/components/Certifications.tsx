@@ -70,6 +70,7 @@ function CertificateCard({
             href={cert.credentialUrl}
             target="_blank"
             rel="noopener noreferrer"
+            aria-label={`Verify ${cert.title} credential by ${cert.issuer}`}
             className="group/link 3xl:text-sm 4xl:text-base 5xl:text-lg inline-flex items-center gap-1.5 text-xs font-bold tracking-widest text-zinc-500 uppercase transition-colors duration-300 hover:text-black"
           >
             <span>{cert.issuer}</span>
