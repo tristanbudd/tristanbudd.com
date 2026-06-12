@@ -7,6 +7,7 @@
 
 import { ArrowRight, RotateCw } from "lucide-react";
 import React from "react";
+import { useTransition } from "../context/TransitionContext";
 
 export interface CTAButtonProps {
   text: string;
@@ -26,15 +27,28 @@ export default function CTAButton({
   const baseClass =
     "group/btn relative flex items-center justify-between gap-4 overflow-hidden rounded-full border-2 border-black 3xl:border-[3px] 4xl:border-[4px] 5xl:border-[5px] bg-black py-1.5 pr-1.5 pl-6 text-sm font-semibold text-white shadow-xs transition-colors duration-300 hover:text-black focus-visible:text-black focus:outline-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black 3xl:py-2 3xl:pr-2 3xl:pl-8 3xl:text-base 4xl:py-2.5 4xl:pr-2.5 4xl:pl-10 4xl:text-lg 5xl:py-3 5xl:pr-3 5xl:pl-12 5xl:text-xl";
 
+  const { triggerTransition } = useTransition();
+
   const handleContextMenu = (e: React.MouseEvent) => {
     e.preventDefault();
+  };
+
+  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (onClick) {
+      onClick(e);
+      if (e.isDefaultPrevented()) return;
+    }
+    const triggered = triggerTransition(href);
+    if (triggered) {
+      e.preventDefault();
+    }
   };
 
   return (
     <a
       href={href}
       className={`${baseClass} ${className}`}
-      onClick={onClick}
+      onClick={handleLinkClick}
       onContextMenu={handleContextMenu}
       aria-label={`Navigate to ${text}`}
     >

@@ -5,7 +5,7 @@
  * @description Two side-by-side panels of square icon tiles (icon + name). Icons loaded from Simple Icons CDN, rendered monochrome.
  */
 
-import { useEffect, useRef, useState } from "react";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 export interface TechItem {
   name: string;
@@ -61,24 +61,7 @@ function IconTile({ item, visible, delay }: { item: TechItem; visible: boolean; 
 }
 
 function Panel({ label, heading, items }: { label: string; heading: string; items: TechItem[] }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.1 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
+  const { ref, visible } = useScrollReveal<HTMLDivElement>({ threshold: 0.1 });
 
   return (
     <div className="group 3xl:rounded-3xl 3xl:p-10 3xl:gap-8 4xl:p-12 4xl:gap-10 5xl:p-16 5xl:gap-12 relative flex flex-col gap-6 overflow-hidden rounded-2xl border border-zinc-200/60 bg-white/40 p-8 shadow-xs backdrop-blur-md transition-all duration-300 hover:border-zinc-300 hover:bg-white/60 hover:shadow-md">
@@ -116,6 +99,7 @@ export default function TechStack({
 
   return (
     <section
+      id="tech-stack"
       aria-label="Tech Stack"
       className="font-outfit 3xl:scroll-mt-36 3xl:py-24 w-full scroll-mt-24 py-12 transition-all duration-500 ease-in-out sm:scroll-mt-28 sm:py-16"
     >

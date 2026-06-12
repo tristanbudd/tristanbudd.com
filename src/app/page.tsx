@@ -57,7 +57,7 @@ export default async function Home() {
   ];
   return (
     <div className="bg-background flex min-h-screen flex-col">
-      <Header navItems={navItems} ctaText="Placeholder CTA" ctaHref="#" />
+      <Header navItems={navItems} ctaText="Get in touch?" ctaHref="/#contact" />
 
       {/* Main Content Area */}
       <main
@@ -68,8 +68,8 @@ export default async function Home() {
         <Hero
           title="Tristan Budd"
           subtitle="An aspiring software developer & engineer with a strong foundation in building robust digital solutions. Experienced in delivering high-quality projects both independently and collaboratively, always seeking innovative challenges."
-          ctaText="Placeholder CTA"
-          ctaHref="#"
+          ctaText="Get in touch?"
+          ctaHref="#contact"
         />
 
         {/* Stats Panel */}
@@ -83,6 +83,7 @@ export default async function Home() {
 
         {/* Work Experience */}
         <Timeline
+          id="experience"
           title="Work Experience"
           subtitle="Professional Journey"
           items={workExperience.map((item) => ({
@@ -99,6 +100,7 @@ export default async function Home() {
 
         {/* Education */}
         <Timeline
+          id="education"
           title="Education"
           subtitle="Academic Journey"
           items={educationList.map((item) => ({
@@ -114,6 +116,7 @@ export default async function Home() {
 
         {/* Volunteering */}
         <Timeline
+          id="volunteering"
           title="Volunteering"
           subtitle="Giving Back"
           items={volunteering.map((item) => ({

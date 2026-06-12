@@ -5,8 +5,9 @@
  * @description Two-column contact section: description panel and contact form.
  */
 
-import { ArrowRight, CheckCircle, Loader2, Send, XCircle } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { ArrowRight, CheckCircle, Loader2, Send, XCircle, Mail } from "lucide-react";
+import { useState } from "react";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 type FormStatus = "idle" | "loading" | "success" | "error";
 
@@ -46,31 +47,15 @@ const inputError = "border-red-300 focus:border-red-500 focus:ring-red-500/10";
 export interface ContactProps {
   linkedInUrl?: string;
   linkedInHandle?: string;
+  emailAddress?: string;
 }
 
 export default function Contact({
   linkedInUrl = "https://www.linkedin.com/in/tristanbudd",
   linkedInHandle = "tristanbudd",
+  emailAddress = "contact@tristanbudd.com",
 }: ContactProps) {
-  // Reveal animation
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const [revealed, setRevealed] = useState(false);
-
-  useEffect(() => {
-    const el = sectionRef.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setRevealed(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.08 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
+  const { ref: sectionRef, visible: revealed } = useScrollReveal<HTMLElement>({ threshold: 0.08 });
 
   // Form state
   const [name, setName] = useState("");
@@ -144,6 +129,7 @@ export default function Contact({
   return (
     <section
       ref={sectionRef}
+      id="contact"
       aria-label="Contact"
       className="font-outfit 3xl:scroll-mt-36 3xl:py-24 w-full scroll-mt-24 py-12 transition-all duration-500 ease-in-out sm:scroll-mt-28 sm:py-16"
     >
@@ -325,7 +311,7 @@ export default function Contact({
             )}
           </div>
         </div>
-        {/* LinkedIn: shown below form on mobile, bottom-left on desktop */}
+        {/* LinkedIn & Email: shown below form on mobile, bottom-left on desktop */}
         <div
           className={`3xl:max-w-xl 4xl:max-w-2xl 5xl:max-w-3xl order-3 w-full lg:col-span-2 lg:col-start-1 lg:row-start-2 lg:self-start ${revealClass()}`}
           style={{ transitionDelay: "120ms" }}
@@ -333,31 +319,50 @@ export default function Contact({
           <p className="3xl:text-sm 3xl:mb-4 4xl:text-base 4xl:mb-5 5xl:text-lg 5xl:mb-6 mb-3 text-xs font-bold tracking-widest text-zinc-400 uppercase">
             Or find me on
           </p>
-          <a
-            href={linkedInUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={`View LinkedIn profile of ${linkedInHandle}`}
-            className="group 3xl:px-6 3xl:py-5 flex w-full items-center gap-3 rounded-xl border border-zinc-200/70 bg-white/40 px-5 py-4 backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-zinc-400 hover:bg-white hover:shadow-md"
-          >
-            <svg
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              className="3xl:h-6 3xl:w-6 4xl:h-7 4xl:w-7 5xl:h-8 5xl:w-8 h-5 w-5 shrink-0 text-zinc-800 transition-colors duration-300 group-hover:text-black"
-              aria-hidden="true"
+          <div className="flex flex-col gap-3">
+            <a
+              href={linkedInUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`View LinkedIn profile of ${linkedInHandle}`}
+              className="group 3xl:px-6 3xl:py-5 flex w-full items-center gap-3 rounded-xl border border-zinc-200/70 bg-white/40 px-5 py-4 backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-zinc-400 hover:bg-white hover:shadow-md"
             >
-              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-            </svg>
-            <div className="flex flex-col">
-              <span className="3xl:text-[0.7rem] 4xl:text-[0.8rem] 5xl:text-[0.9rem] text-xs font-bold tracking-widest text-zinc-500 uppercase">
-                LinkedIn
-              </span>
-              <span className="3xl:text-base 4xl:text-lg 5xl:text-xl text-sm font-semibold text-zinc-900 transition-colors duration-300 group-hover:text-black">
-                in/{linkedInHandle}
-              </span>
-            </div>
-            <ArrowRight className="3xl:h-5 3xl:w-5 4xl:h-6 4xl:w-6 5xl:h-7 5xl:w-7 ml-auto h-4 w-4 -translate-x-1 text-zinc-400 opacity-0 transition-all duration-200 group-hover:translate-x-0 group-hover:text-black group-hover:opacity-100" />
-          </a>
+              <svg
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="3xl:h-6 3xl:w-6 4xl:h-7 4xl:w-7 5xl:h-8 5xl:w-8 h-5 w-5 shrink-0 text-zinc-800 transition-colors duration-300 group-hover:text-black"
+                aria-hidden="true"
+              >
+                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+              </svg>
+              <div className="flex flex-col">
+                <span className="3xl:text-[0.7rem] 4xl:text-[0.8rem] 5xl:text-[0.9rem] text-xs font-bold tracking-widest text-zinc-500 uppercase">
+                  LinkedIn
+                </span>
+                <span className="3xl:text-base 4xl:text-lg 5xl:text-xl text-sm font-semibold text-zinc-900 transition-colors duration-300 group-hover:text-black">
+                  in/{linkedInHandle}
+                </span>
+              </div>
+              <ArrowRight className="3xl:h-5 3xl:w-5 4xl:h-6 4xl:w-6 5xl:h-7 5xl:w-7 ml-auto h-4 w-4 -translate-x-1 text-zinc-400 opacity-0 transition-all duration-200 group-hover:translate-x-0 group-hover:text-black group-hover:opacity-100" />
+            </a>
+
+            <a
+              href={`mailto:${emailAddress}`}
+              aria-label={`Send email to ${emailAddress}`}
+              className="group 3xl:px-6 3xl:py-5 flex w-full items-center gap-3 rounded-xl border border-zinc-200/70 bg-white/40 px-5 py-4 backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-zinc-400 hover:bg-white hover:shadow-md"
+            >
+              <Mail className="3xl:h-6 3xl:w-6 4xl:h-7 4xl:w-7 5xl:h-8 5xl:w-8 h-5 w-5 shrink-0 text-zinc-800 transition-colors duration-300 group-hover:text-black" />
+              <div className="flex flex-col">
+                <span className="3xl:text-[0.7rem] 4xl:text-[0.8rem] 5xl:text-[0.9rem] text-xs font-bold tracking-widest text-zinc-500 uppercase">
+                  Email
+                </span>
+                <span className="3xl:text-base 4xl:text-lg 5xl:text-xl text-sm font-semibold text-zinc-900 transition-colors duration-300 group-hover:text-black">
+                  {emailAddress}
+                </span>
+              </div>
+              <ArrowRight className="3xl:h-5 3xl:w-5 4xl:h-6 4xl:w-6 5xl:h-7 5xl:w-7 ml-auto h-4 w-4 -translate-x-1 text-zinc-400 opacity-0 transition-all duration-200 group-hover:translate-x-0 group-hover:text-black group-hover:opacity-100" />
+            </a>
+          </div>
         </div>
       </div>
     </section>

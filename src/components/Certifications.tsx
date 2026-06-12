@@ -6,7 +6,7 @@
  */
 
 import { Calendar, ExternalLink } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 export interface Certificate {
   title: string;
@@ -118,29 +118,13 @@ export default function Certifications({
   title = "Certifications & Learning",
   subtitle = "Qualifications",
 }: CertificationsProps) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.1 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
+  const { ref, visible } = useScrollReveal<HTMLDivElement>({ threshold: 0.1 });
 
   if (!certificates.length) return null;
 
   return (
     <section
+      id="certifications"
       aria-label="Certifications & Learning"
       className="font-outfit 3xl:scroll-mt-36 3xl:py-24 w-full scroll-mt-24 py-12 transition-all duration-500 ease-in-out sm:scroll-mt-28 sm:py-16"
     >

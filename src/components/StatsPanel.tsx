@@ -166,6 +166,7 @@ export default function StatsPanel({
 
   return (
     <section
+      id="stats"
       aria-label="Statistics Panel"
       className="font-outfit 3xl:py-24 4xl:py-32 5xl:py-40 3xl:scroll-mt-36 4xl:scroll-mt-44 5xl:scroll-mt-52 w-full scroll-mt-24 py-12 transition-all duration-500 ease-in-out sm:scroll-mt-28 sm:py-16"
     >

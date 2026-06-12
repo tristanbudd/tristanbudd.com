@@ -8,6 +8,7 @@ import { Cinzel, Geist, Geist_Mono, Outfit, Syne } from "next/font/google";
 
 import PageLoader from "@/components/PageLoader";
 import ScreenSizeNotice from "@/components/ScreenSizeNotice";
+import ScrollInit from "@/components/ScrollInit";
 import "./globals.css";
 import { Providers } from "./providers";
 
@@ -102,20 +103,8 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="flex min-h-full flex-col" suppressHydrationWarning>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                try {
-                  if (window.scrollY > 10) {
-                    document.documentElement.classList.add('is-scrolled');
-                  }
-                } catch (e) {}
-              })();
-            `,
-          }}
-        />
         <Providers>
+          <ScrollInit />
           <PageLoader />
           <ScreenSizeNotice />
           {children}

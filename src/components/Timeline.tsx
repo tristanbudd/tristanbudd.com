@@ -6,7 +6,7 @@
  */
 
 import { Calendar, ExternalLink } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 export interface TimelineItem {
   title: string; // e.g. "Software Engineer" or "Honours Degree in Software Engineering"
@@ -23,6 +23,7 @@ interface TimelineProps {
   items: TimelineItem[];
   title: string;
   subtitle?: string;
+  id?: string;
 }
 
 function TimelineItemRow({
@@ -145,30 +146,14 @@ function TimelineItemRow({
   );
 }
 
-export default function Timeline({ items = [], title, subtitle }: TimelineProps) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.1 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
+export default function Timeline({ items = [], title, subtitle, id }: TimelineProps) {
+  const { ref, visible } = useScrollReveal<HTMLDivElement>({ threshold: 0.1 });
 
   if (!items.length) return null;
 
   return (
     <section
+      id={id}
       aria-label={title}
       className="font-outfit 3xl:scroll-mt-36 3xl:py-24 w-full scroll-mt-24 py-12 transition-all duration-500 ease-in-out sm:scroll-mt-28 sm:py-16"
     >

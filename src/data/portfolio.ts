@@ -55,43 +55,36 @@ export interface EducationItem {
 }
 
 export const navItems: NavItem[] = [
+  { label: "Home", href: "/" },
+  { label: "Blog", href: "/blog" },
+  { label: "Projects", href: "/projects" },
   {
-    label: "Placeholder 1",
+    label: "Socials",
     href: "#",
     dropdownItems: [
-      { label: "Sub Item A", href: "#" },
-      { label: "Sub Item B", href: "#" },
+      { label: "LinkedIn", href: "https://www.linkedin.com/in/tristanbudd" },
+      { label: "GitHub", href: "https://github.com/tristanbudd" },
     ],
   },
-  { label: "Placeholder 2", href: "#" },
-  {
-    label: "Placeholder 3",
-    href: "#",
-    dropdownItems: [
-      { label: "Sub Item C", href: "#" },
-      { label: "Sub Item D", href: "#" },
-    ],
-  },
-  { label: "Placeholder 4", href: "#" },
 ];
 
 export const footerNavGroups: FooterLinkGroup[] = [
   {
-    title: "Placeholder Group 1",
+    title: "Navigation",
     links: [
-      { label: "Placeholder Link A", href: "#" },
-      { label: "Placeholder Link B", href: "#" },
-      { label: "Placeholder Link C", href: "#" },
-      { label: "Placeholder Link D", href: "#" },
+      { label: "Home", href: "/" },
+      { label: "Blog", href: "/blog" },
+      { label: "Projects", href: "/projects" },
+      { label: "Contact", href: "/#contact" },
     ],
   },
   {
-    title: "Placeholder Group 2",
+    title: "About",
     links: [
-      { label: "Placeholder Link E", href: "#" },
-      { label: "Placeholder Link F", href: "#" },
-      { label: "Placeholder Link G", href: "#" },
-      { label: "Placeholder Link H", href: "#" },
+      { label: "Experience", href: "/#experience" },
+      { label: "Education", href: "/#education" },
+      { label: "Tech Stack", href: "/#tech-stack" },
+      { label: "Certifications", href: "/#certifications" },
     ],
   },
 ];

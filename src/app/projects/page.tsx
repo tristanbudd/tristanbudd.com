@@ -19,7 +19,7 @@ export default function ProjectsPage() {
   return (
     <div className="bg-background flex min-h-screen flex-col">
       {/* Header */}
-      <Header navItems={navItems} ctaText="Placeholder CTA" ctaHref="#" />
+      <Header navItems={navItems} ctaText="Get in touch?" ctaHref="/#contact" />
 
       {/* Main Content Area */}
       <main

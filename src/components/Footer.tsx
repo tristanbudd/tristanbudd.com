@@ -9,6 +9,7 @@ import { useLenis } from "lenis/react";
 import { ArrowUp, Github, Globe, Linkedin, Mail, Twitter } from "lucide-react";
 import Link from "next/link";
 import React from "react";
+import { useTransition } from "../context/TransitionContext";
 
 export interface FooterLink {
   label: string;
@@ -47,6 +48,7 @@ export default function Footer({
   socials = [],
 }: FooterProps) {
   const lenis = useLenis();
+  const { triggerTransition } = useTransition();
 
   const handleScrollToTop = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -54,6 +56,13 @@ export default function Footer({
       lenis.scrollTo(0, { duration: 1.2 });
     } else {
       window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
+  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    const triggered = triggerTransition(href);
+    if (triggered) {
+      e.preventDefault();
     }
   };
 
@@ -157,6 +166,7 @@ export default function Footer({
                 <div key={link.label} className="w-fit">
                   <Link
                     href={link.href}
+                    onClick={(e) => handleLinkClick(e, link.href)}
                     id={`footer-link-${group.title.toLowerCase().replace(/\s+/g, "-")}-${link.label.toLowerCase().replace(/\s+/g, "-")}`}
                     className="3xl:text-lg 4xl:text-xl 5xl:text-2xl relative block py-1 text-sm font-semibold text-zinc-500 transition-colors duration-200 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-center after:scale-x-0 after:bg-black after:transition-transform after:duration-300 hover:text-black hover:after:scale-x-100 xl:text-base"
                   >

@@ -5,10 +5,10 @@
  * @description Showcases Tristan's projects in a grid with premium, interactive CSS mockups.
  */
 
+import { Project } from "@/data/portfolio";
 import { ArrowRight, ExternalLink, Github } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
-import { Project } from "@/data/portfolio";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
 import CTAButton from "./CTAButton";
 
 function ProjectImagePlaceholder() {
@@ -136,25 +136,8 @@ export default function Projects({
   isPreview = false,
   showHeader = true,
 }: ProjectsProps) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(!isPreview);
-
-  useEffect(() => {
-    if (!isPreview) return;
-    const el = ref.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.05 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [isPreview]);
+  const { ref, visible: revealVisible } = useScrollReveal<HTMLDivElement>({ threshold: 0.05 });
+  const visible = !isPreview || revealVisible;
 
   if (!projects.length) return null;
 
@@ -163,6 +146,7 @@ export default function Projects({
 
   return (
     <section
+      id="projects"
       aria-label="Projects Showcase"
       className={`font-outfit w-full transition-all duration-500 ease-in-out ${
         showHeader
