@@ -141,3 +141,13 @@ html.is-scrolled header > div {
   padding-top: 1rem !important; /* py-4 */
   padding-bottom: 1rem !important;
 }
+
+/* Footer social icon monochromatic hover */
+.footer-social-icon {
+  filter: grayscale(1) brightness(0) opacity(0.7);
+  transition: filter 0.3s ease;
+}
+
+.group\/social:hover .footer-social-icon {
+  filter: grayscale(1) brightness(0) invert(1) opacity(1) !important;
+}

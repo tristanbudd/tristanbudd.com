@@ -3,6 +3,7 @@
  * @description Shared portfolio data repository including experience, education, certifications, and project lists.
  */
 
+import { FooterLinkGroup, FooterSocial } from "@/components/Footer";
 import { NavItem } from "@/components/Header";
 
 export interface Project {
@@ -72,6 +73,54 @@ export const navItems: NavItem[] = [
     ],
   },
   { label: "Placeholder 4", href: "#" },
+];
+
+export const footerNavGroups: FooterLinkGroup[] = [
+  {
+    title: "Placeholder Group 1",
+    links: [
+      { label: "Placeholder Link A", href: "#" },
+      { label: "Placeholder Link B", href: "#" },
+      { label: "Placeholder Link C", href: "#" },
+      { label: "Placeholder Link D", href: "#" },
+    ],
+  },
+  {
+    title: "Placeholder Group 2",
+    links: [
+      { label: "Placeholder Link E", href: "#" },
+      { label: "Placeholder Link F", href: "#" },
+      { label: "Placeholder Link G", href: "#" },
+      { label: "Placeholder Link H", href: "#" },
+    ],
+  },
+];
+
+export const footerSocials: FooterSocial[] = [
+  {
+    platform: "linkedin",
+    iconSlug: "linkedin",
+    href: "https://www.linkedin.com/in/tristanbudd",
+    ariaLabel: "Tristan Budd LinkedIn Profile",
+  },
+  {
+    platform: "github",
+    iconSlug: "github",
+    href: "https://github.com/tristanbudd",
+    ariaLabel: "Tristan Budd GitHub Profile",
+  },
+  {
+    platform: "npm",
+    iconSlug: "npm",
+    href: "https://www.npmjs.com/~tristanbudd",
+    ariaLabel: "Tristan Budd npm Profile",
+  },
+  {
+    platform: "email",
+    iconSlug: "gmail",
+    href: "mailto:contact@tristanbudd.com",
+    ariaLabel: "Email Tristan Budd",
+  },
 ];
 
 export const languages: TechItem[] = [

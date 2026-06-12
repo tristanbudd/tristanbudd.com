@@ -5,6 +5,7 @@
 
 import Certifications from "../components/Certifications";
 import Contact from "../components/Contact";
+import Footer from "../components/Footer";
 import Header from "../components/Header";
 import Hero from "../components/Hero";
 import Projects from "../components/Projects";
@@ -14,6 +15,8 @@ import Timeline from "../components/Timeline";
 import {
   certificates,
   educationList,
+  footerNavGroups,
+  footerSocials,
   languages,
   navItems,
   projects,
@@ -52,7 +55,6 @@ export default async function Home() {
     { value: githubContributions, label: "GitHub Contributions", approximate: true },
     { value: techStackCount, label: "Tech Stack", approximate: false },
   ];
-
   return (
     <div className="bg-background flex min-h-screen flex-col">
       <Header navItems={navItems} ctaText="Placeholder CTA" ctaHref="#" />
@@ -141,15 +143,7 @@ export default async function Home() {
       </main>
 
       {/* Footer Area */}
-      <footer
-        role="contentinfo"
-        aria-label="Footer"
-        className="mx-auto w-full px-4 pb-8 transition-all duration-500 ease-in-out sm:max-w-screen-sm md:max-w-3xl lg:max-w-5xl xl:max-w-6xl 2xl:max-w-7xl"
-      >
-        <div className="text-secondary border-2 border-dashed border-zinc-400 bg-zinc-100/50 p-6 text-center text-sm font-medium">
-          Footer
-        </div>
-      </footer>
+      <Footer navGroups={footerNavGroups} socials={footerSocials} />
     </div>
   );
 }
