@@ -9,6 +9,7 @@ import Footer from "../components/Footer";
 import Header from "../components/Header";
 import Hero from "../components/Hero";
 import Projects from "../components/Projects";
+import BlogSection from "../components/BlogSection";
 import StatsPanel from "../components/StatsPanel";
 import TechStack from "../components/TechStack";
 import Timeline from "../components/Timeline";
@@ -19,11 +20,12 @@ import {
   footerSocials,
   languages,
   navItems,
-  projects,
   tools,
   volunteering,
   workExperience,
 } from "../data/portfolio";
+import { projects } from "../data/projects";
+import { blogPosts } from "../data/blog";
 import { getYearsOfExperience, formatDuration } from "../lib/utils";
 
 /**
@@ -80,6 +82,9 @@ export default async function Home() {
 
         {/* Featured Projects Preview Showcase */}
         <Projects projects={projects} title="Featured Projects" subtitle="My Work" isPreview />
+
+        {/* Latest Articles Blog Preview Showcase */}
+        <BlogSection posts={blogPosts} isPreview />
 
         {/* Work Experience */}
         <Timeline

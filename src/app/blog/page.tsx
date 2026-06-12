@@ -1,22 +1,23 @@
 /**
  * @file page.tsx
- * @description All projects showcase page (route: /projects).
+ * @description All blog posts directory listing page (route: /blog).
  */
 
 import type { Metadata } from "next";
 import BackButton from "../../components/BackButton";
 import Footer from "../../components/Footer";
 import Header from "../../components/Header";
-import Projects from "../../components/Projects";
+import BlogSection from "../../components/BlogSection";
 import { footerNavGroups, footerSocials, navItems } from "../../data/portfolio";
-import { projects } from "../../data/projects";
+import { blogPosts } from "../../data/blog";
 
 export const metadata: Metadata = {
-  title: "Projects",
-  description: "Explore all portfolio projects built by Tristan Budd.",
+  title: "Blog",
+  description:
+    "Read articles and technical insights on software engineering and UX design by Tristan Budd.",
 };
 
-export default function ProjectsPage() {
+export default function BlogPage() {
   return (
     <div className="bg-background flex min-h-screen flex-col">
       {/* Header */}
@@ -31,10 +32,10 @@ export default function ProjectsPage() {
         <div className="mt-4 flex flex-wrap items-end justify-between gap-x-4 gap-y-3 border-b border-zinc-200/50 pb-6">
           <div className="flex flex-col gap-2 text-left">
             <span className="3xl:text-sm 4xl:text-base 5xl:text-lg text-xs font-bold tracking-widest text-zinc-500 uppercase">
-              Showcase
+              Insights & Ideas
             </span>
             <h1 className="3xl:text-5xl 4xl:text-6xl 5xl:text-7xl text-3xl font-extrabold tracking-tight text-black sm:text-4xl">
-              All Projects
+              Blog & Articles
             </h1>
           </div>
 
@@ -43,8 +44,8 @@ export default function ProjectsPage() {
           </div>
         </div>
 
-        {/* Full Projects Showcase without internal header */}
-        <Projects projects={projects} isPreview={false} showHeader={false} />
+        {/* Full Blog Listing Showcase without internal header */}
+        <BlogSection posts={blogPosts} isPreview={false} showHeader={false} />
       </main>
 
       {/* Footer Area */}

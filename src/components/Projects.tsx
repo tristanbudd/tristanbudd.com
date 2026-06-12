@@ -5,7 +5,7 @@
  * @description Showcases Tristan's projects in a grid with premium, interactive CSS mockups.
  */
 
-import { Project } from "@/data/portfolio";
+import { Project } from "@/data/projects";
 import { ArrowRight, ExternalLink, Github } from "lucide-react";
 import Link from "next/link";
 import { useScrollReveal } from "@/hooks/useScrollReveal";

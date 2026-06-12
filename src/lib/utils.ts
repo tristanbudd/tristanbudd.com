@@ -104,3 +104,37 @@ export function formatDuration(start: Date, end: Date): string {
 
   return parts.join(", ");
 }
+
+/**
+ * Calculates the estimated reading time of a given text content.
+ * Assuming average reading speed of 200 words per minute.
+ *
+ * @param content - The raw text content of the article.
+ * @returns Estimated reading time string (e.g. "5 min read").
+ */
+export function calculateReadingTime(content: string): string {
+  if (!content) return "1 min read";
+  const words = content.trim().split(/\s+/).length;
+  const minutes = Math.ceil(words / 200);
+  return `${minutes} min read`;
+}
+
+/**
+ * Parses a date string in the format "Month DD, YYYY" into month, day, and year.
+ *
+ * @param dateStr - The raw date string.
+ * @returns An object containing the capitalized short month name, day, and year.
+ */
+export function parseDate(dateStr: string): { month: string; day: string; year: string } {
+  if (!dateStr) {
+    return { month: "N/A", day: "—", year: "—" };
+  }
+  const parts = dateStr.replace(",", "").split(" ");
+  if (parts.length === 3) {
+    const month = parts[0].substring(0, 3).toUpperCase();
+    const day = parts[1];
+    const year = parts[2];
+    return { month, day, year };
+  }
+  return { month: "N/A", day: "—", year: "—" };
+}
