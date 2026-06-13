@@ -43,6 +43,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 }
 
+export const dynamic = "force-dynamic";
+
 export default async function ProjectDetailPage({ params }: PageProps) {
   const { slug } = await params;
   let dbProject = null;

@@ -1,6 +1,41 @@
 import { PrismaClient } from "@prisma/client";
+import { PrismaMariaDb } from "@prisma/adapter-mariadb";
 
-const prisma = new PrismaClient();
+const parseDatabaseUrl = (urlStr) => {
+  let host = "localhost";
+  let port = 3306;
+  let user = "dummy";
+  let password = "dummy_password";
+  let database = "dummy_db";
+
+  if (urlStr) {
+    try {
+      const parsed = new URL(urlStr);
+      host = parsed.hostname || "localhost";
+      port = parsed.port ? parseInt(parsed.port, 10) : 3306;
+      user = parsed.username ? decodeURIComponent(parsed.username) : "dummy";
+      password = parsed.password ? decodeURIComponent(parsed.password) : "dummy_password";
+      database = parsed.pathname ? parsed.pathname.replace(/^\//, "") : "dummy_db";
+    } catch {
+      // If parsing fails, fall back to dummy credentials
+    }
+  }
+
+  return { host, port, user, password, database };
+};
+
+const { host, port, user, password, database } = parseDatabaseUrl(process.env.DATABASE_URL);
+
+const adapter = new PrismaMariaDb({
+  host,
+  port,
+  user,
+  password,
+  database,
+  connectionLimit: 10,
+});
+
+const prisma = new PrismaClient({ adapter });
 
 const defaultBlogs = [
   {

@@ -17,6 +17,8 @@ export const metadata: Metadata = {
   description: "Explore all portfolio projects built by Tristan Budd.",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function ProjectsPage() {
   let dbProjects: Project[] = [];
   let dbError = false;

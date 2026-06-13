@@ -5,8 +5,10 @@ export async function GET(request: NextRequest) {
   const code = searchParams.get("code");
   const error = searchParams.get("error");
 
-  // Construct standard base URL for redirecting
-  const baseUrl = request.nextUrl.origin;
+  // Construct standard base URL for redirecting using forwarding headers to handle reverse proxy setups correctly
+  const proto = request.headers.get("x-forwarded-proto") || "http";
+  const host = request.headers.get("x-forwarded-host") || request.nextUrl.host;
+  const baseUrl = `${proto}://${host}`;
 
   if (error) {
     return NextResponse.redirect(

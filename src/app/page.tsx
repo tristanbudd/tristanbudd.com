@@ -29,6 +29,8 @@ import { type BlogPost } from "../data/blog";
 import { type Project } from "../data/projects";
 import { getYearsOfExperience, formatDuration, getGitHubContributions } from "../lib/utils";
 
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
   let dbBlogs: BlogPost[] = [];
   let dbProjects: Project[] = [];

@@ -30,9 +30,9 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && next build",
+    "build": "pnpm prisma generate && next build",
     "start": "next start",
-    "typecheck": "prisma generate && tsc --noEmit",
+    "typecheck": "pnpm prisma generate && tsc --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,css,json,md}\"",

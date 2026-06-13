@@ -18,6 +18,8 @@ export const metadata: Metadata = {
     "Read articles and technical insights on software engineering and UX design by Tristan Budd.",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function BlogPage() {
   let posts: BlogPost[] = [];
   let dbError = false;

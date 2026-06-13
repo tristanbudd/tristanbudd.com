@@ -5,4 +5,7 @@ export default defineConfig({
   datasource: {
     url: process.env.DATABASE_URL || "mysql://placeholder:3306/db",
   },
+  migrations: {
+    seed: "node prisma/seed.js",
+  },
 });
