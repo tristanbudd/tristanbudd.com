@@ -138,3 +138,20 @@ export function parseDate(dateStr: string): { month: string; day: string; year: 
   }
   return { month: "N/A", day: "—", year: "—" };
 }
+
+/**
+ * Fetches the total all-time contribution count for a GitHub user. Falls back to 0 on any error.
+ */
+export async function getGitHubContributions(username: string): Promise<number> {
+  try {
+    const res = await fetch(`https://github-contributions-api.jogruber.de/v4/${username}`, {
+      next: { revalidate: 3600 },
+    });
+    if (!res.ok) return 0;
+    const data = (await res.json()) as { total?: Record<string, number> };
+    if (!data.total) return 0;
+    return Object.values(data.total).reduce((sum, n) => sum + n, 0);
+  } catch {
+    return 0;
+  }
+}

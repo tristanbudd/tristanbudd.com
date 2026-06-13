@@ -26,24 +26,7 @@ import {
 } from "../data/portfolio";
 import { projects } from "../data/projects";
 import { blogPosts } from "../data/blog";
-import { getYearsOfExperience, formatDuration } from "../lib/utils";
-
-/**
- * Fetches the total all-time contribution count for a GitHub user. Falls back to 0 on any error.
- */
-async function getGitHubContributions(username: string): Promise<number> {
-  try {
-    const res = await fetch(`https://github-contributions-api.jogruber.de/v4/${username}`, {
-      next: { revalidate: 3600 },
-    });
-    if (!res.ok) return 0;
-    const data = (await res.json()) as { total?: Record<string, number> };
-    if (!data.total) return 0;
-    return Object.values(data.total).reduce((sum, n) => sum + n, 0);
-  } catch {
-    return 0;
-  }
-}
+import { getYearsOfExperience, formatDuration, getGitHubContributions } from "../lib/utils";
 
 export default async function Home() {
   // Derived stats
