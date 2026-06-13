@@ -5,7 +5,19 @@
  * @description Accessible Admin Dashboard. Provides UI editors for Blog posts and Projects.
  */
 
-import { Edit, FileText, Folder, LogOut, Plus, Trash2, X } from "lucide-react";
+import {
+  Edit,
+  FileText,
+  Folder,
+  LogOut,
+  Plus,
+  Trash2,
+  X,
+  Calendar,
+  Settings,
+  Copy,
+  Check,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
@@ -14,12 +26,19 @@ import { type CustomField, type Project } from "../../data/projects";
 
 export default function AdminDashboard() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<"blogs" | "projects">("blogs");
+  const [activeTab, setActiveTab] = useState<"blogs" | "projects" | "maintenance">("blogs");
 
   // Content States
   const [blogs, setBlogs] = useState<BlogPost[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
   const [isDbOffline, setIsDbOffline] = useState(false);
+
+  // Maintenance Settings States
+  const [maintenanceMode, setMaintenanceMode] = useState(false);
+  const [bypassKey, setBypassKey] = useState("");
+  const [isSavingSettings, setIsSavingSettings] = useState(false);
+  const [saveSettingsSuccess, setSaveSettingsSuccess] = useState(false);
+  const [copiedBypass, setCopiedBypass] = useState(false);
 
   // Modal & Form States
   const [isBlogModalOpen, setIsBlogModalOpen] = useState(false);
@@ -39,15 +58,19 @@ export default function AdminDashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [blogsRes, projectsRes] = await Promise.all([
+        const [blogsRes, projectsRes, maintRes] = await Promise.all([
           fetch("/api/admin/blogs"),
           fetch("/api/admin/projects"),
+          fetch("/api/maintenance"),
         ]);
-        if (blogsRes.ok && projectsRes.ok) {
+        if (blogsRes.ok && projectsRes.ok && maintRes.ok) {
           const blogsData = await blogsRes.json();
           const projectsData = await projectsRes.json();
+          const maintData = await maintRes.json();
           setBlogs(blogsData);
           setProjects(projectsData);
+          setMaintenanceMode(maintData.maintenanceMode);
+          setBypassKey(maintData.bypassKey);
           setIsDbOffline(false);
         } else {
           setIsDbOffline(true);
@@ -289,6 +312,36 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleSaveSettings = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSavingSettings(true);
+    setSaveSettingsSuccess(false);
+    try {
+      const res = await fetch("/api/maintenance", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          maintenanceMode,
+          bypassKey,
+        }),
+      });
+      if (res.ok) {
+        setSaveSettingsSuccess(true);
+        setTimeout(() => setSaveSettingsSuccess(false), 3000);
+      } else {
+        const err = await res.json();
+        alert(`Failed to save settings: ${err.error || "Unknown error"}`);
+      }
+    } catch (error) {
+      console.error("Save settings error:", error);
+      alert("Failed to save maintenance settings. Connection error.");
+    } finally {
+      setIsSavingSettings(false);
+    }
+  };
+
   // Stats derivation
   const totalBlogs = blogs.length;
   const totalProjects = projects.length;
@@ -348,6 +401,18 @@ export default function AdminDashboard() {
                 {totalProjects}
               </span>
             </button>
+            <button
+              onClick={() => setActiveTab("maintenance")}
+              className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold transition-all ${
+                activeTab === "maintenance"
+                  ? "bg-black text-white"
+                  : "text-zinc-650 hover:bg-zinc-100 hover:text-black"
+              }`}
+              aria-current={activeTab === "maintenance" ? "page" : undefined}
+            >
+              <Settings className="h-4.5 w-4.5" />
+              <span>Maintenance</span>
+            </button>
           </nav>
         </div>
 
@@ -370,7 +435,11 @@ export default function AdminDashboard() {
         <header className="flex h-20 items-center justify-between border-b border-zinc-200 bg-white px-8">
           <div>
             <h1 className="text-2xl font-extrabold tracking-tight text-black">
-              {activeTab === "blogs" ? "Manage Blog Posts" : "Manage Case Studies"}
+              {activeTab === "blogs"
+                ? "Manage Blog Posts"
+                : activeTab === "projects"
+                  ? "Manage Case Studies"
+                  : "Maintenance Configuration"}
             </h1>
           </div>
 
@@ -385,7 +454,7 @@ export default function AdminDashboard() {
               <Plus className="h-4.5 w-4.5" />
               <span>New Post</span>
             </button>
-          ) : (
+          ) : activeTab === "projects" ? (
             <button
               onClick={openProjCreate}
               disabled={isDbOffline}
@@ -395,7 +464,7 @@ export default function AdminDashboard() {
               <Plus className="h-4.5 w-4.5" />
               <span>New Project</span>
             </button>
-          )}
+          ) : null}
         </header>
 
         {/* Content Body Container */}
@@ -417,74 +486,217 @@ export default function AdminDashboard() {
           )}
 
           {/* Quick Statistics Panels - Tab Specific */}
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            {activeTab === "blogs" ? (
-              <>
-                <div className="relative overflow-hidden rounded-2xl border border-zinc-200/80 bg-white p-6 shadow-xs">
-                  <div className="absolute top-0 left-0 h-[2px] w-full bg-zinc-200" />
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-semibold tracking-wider text-zinc-500 uppercase">
-                      Total Blogs
-                    </span>
-                    <FileText className="h-5 w-5 text-zinc-400" />
+          {(activeTab === "blogs" || activeTab === "projects") && (
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              {activeTab === "blogs" ? (
+                <>
+                  <div className="relative overflow-hidden rounded-2xl border border-zinc-200/80 bg-white p-6 shadow-xs">
+                    <div className="absolute top-0 left-0 h-[2px] w-full bg-zinc-200" />
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-semibold tracking-wider text-zinc-500 uppercase">
+                        Total Blogs
+                      </span>
+                      <FileText className="h-5 w-5 text-zinc-400" />
+                    </div>
+                    <h2 className="mt-2 text-3xl font-extrabold tracking-tight">{totalBlogs}</h2>
                   </div>
-                  <h2 className="mt-2 text-3xl font-extrabold tracking-tight">{totalBlogs}</h2>
-                </div>
-                <div className="relative overflow-hidden rounded-2xl border border-zinc-200/80 bg-white p-6 shadow-xs">
-                  <div className="absolute top-0 left-0 h-[2px] w-full bg-zinc-200" />
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-semibold tracking-wider text-zinc-500 uppercase">
-                      Latest Post Date
-                    </span>
+                  <div className="relative overflow-hidden rounded-2xl border border-zinc-200/80 bg-white p-6 shadow-xs">
+                    <div className="absolute top-0 left-0 h-[2px] w-full bg-zinc-200" />
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-semibold tracking-wider text-zinc-500 uppercase">
+                        Latest Post Date
+                      </span>
+                      <Calendar className="h-5 w-5 text-zinc-400" />
+                    </div>
+                    <h2 className="mt-2 text-3xl font-extrabold tracking-tight">
+                      {blogs.length > 0
+                        ? blogs.reduce(
+                            (latest, current) =>
+                              new Date(current.publishedAt) > new Date(latest)
+                                ? current.publishedAt
+                                : latest,
+                            blogs[0].publishedAt
+                          )
+                        : "No posts"}
+                    </h2>
                   </div>
-                  <h2 className="mt-3.5 truncate text-lg font-bold">
-                    {blogs.length > 0
-                      ? blogs.reduce(
-                          (latest, current) =>
-                            new Date(current.publishedAt) > new Date(latest)
-                              ? current.publishedAt
-                              : latest,
-                          blogs[0].publishedAt
-                        )
-                      : "No posts"}
-                  </h2>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="relative overflow-hidden rounded-2xl border border-zinc-200/80 bg-white p-6 shadow-xs">
-                  <div className="absolute top-0 left-0 h-[2px] w-full bg-zinc-200" />
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-semibold tracking-wider text-zinc-500 uppercase">
-                      Total Projects
-                    </span>
-                    <Folder className="h-5 w-5 text-zinc-400" />
+                </>
+              ) : (
+                <>
+                  <div className="relative overflow-hidden rounded-2xl border border-zinc-200/80 bg-white p-6 shadow-xs">
+                    <div className="absolute top-0 left-0 h-[2px] w-full bg-zinc-200" />
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-semibold tracking-wider text-zinc-500 uppercase">
+                        Total Projects
+                      </span>
+                      <Folder className="h-5 w-5 text-zinc-400" />
+                    </div>
+                    <h2 className="mt-2 text-3xl font-extrabold tracking-tight">{totalProjects}</h2>
                   </div>
-                  <h2 className="mt-2 text-3xl font-extrabold tracking-tight">{totalProjects}</h2>
-                </div>
-                <div className="relative overflow-hidden rounded-2xl border border-zinc-200/80 bg-white p-6 shadow-xs">
-                  <div className="absolute top-0 left-0 h-[2px] w-full bg-zinc-200" />
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-semibold tracking-wider text-zinc-500 uppercase">
-                      Latest Project Date
-                    </span>
+                  <div className="relative overflow-hidden rounded-2xl border border-zinc-200/80 bg-white p-6 shadow-xs">
+                    <div className="absolute top-0 left-0 h-[2px] w-full bg-zinc-200" />
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-semibold tracking-wider text-zinc-500 uppercase">
+                        Latest Project Date
+                      </span>
+                      <Calendar className="h-5 w-5 text-zinc-400" />
+                    </div>
+                    <h2 className="mt-2 text-3xl font-extrabold tracking-tight">
+                      {projects.length > 0
+                        ? projects.reduce((latest, current) => {
+                            const date = current.publishedAt || "";
+                            return date && new Date(date) > new Date(latest) ? date : latest;
+                          }, projects[0].publishedAt || "")
+                        : "No projects"}
+                    </h2>
                   </div>
-                  <h2 className="mt-3.5 truncate text-lg font-bold">
-                    {projects.length > 0
-                      ? projects.reduce((latest, current) => {
-                          const date = current.publishedAt || "";
-                          return date && new Date(date) > new Date(latest) ? date : latest;
-                        }, projects[0].publishedAt || "")
-                      : "No projects"}
-                  </h2>
-                </div>
-              </>
-            )}
-          </div>
+                </>
+              )}
+            </div>
+          )}
 
           {/* List Area */}
           <div className="overflow-hidden rounded-2xl border border-zinc-200/80 bg-white shadow-xs">
-            {activeTab === "blogs" ? (
+            {activeTab === "maintenance" ? (
+              <form onSubmit={handleSaveSettings} className="space-y-6 p-8">
+                <div className="space-y-2">
+                  <h3 className="text-lg font-bold text-black">Maintenance Settings</h3>
+                  <p className="text-sm leading-relaxed text-zinc-500">
+                    Toggle maintenance mode across the application. When enabled, non-admin visitors
+                    will see the maintenance screen. Authenticated administrators can bypass this
+                    screen and browse normally.
+                  </p>
+                </div>
+
+                <hr className="border-zinc-150/40" />
+
+                {/* Toggle switch */}
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1 pr-4">
+                    <label
+                      htmlFor="maintenance-mode-toggle"
+                      className="text-sm font-bold text-zinc-700"
+                    >
+                      Enable Maintenance Mode
+                    </label>
+                    <p className="text-xs text-zinc-500">
+                      Redirect all standard website traffic to the system upgrades screen.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    id="maintenance-mode-toggle"
+                    onClick={() => setMaintenanceMode(!maintenanceMode)}
+                    className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:ring-2 focus:ring-black focus:ring-offset-2 focus:outline-hidden ${
+                      maintenanceMode ? "bg-black" : "bg-zinc-200"
+                    }`}
+                    role="switch"
+                    aria-checked={maintenanceMode}
+                  >
+                    <span
+                      className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-xs ring-0 transition duration-200 ease-in-out ${
+                        maintenanceMode ? "translate-x-5" : "translate-x-0"
+                      }`}
+                    />
+                  </button>
+                </div>
+
+                <hr className="border-zinc-150/40" />
+
+                {/* Password/Bypass token */}
+                <div className="space-y-2">
+                  <label htmlFor="bypass-key" className="text-sm font-bold text-zinc-700 uppercase">
+                    Bypass Password / Token
+                  </label>
+                  <p className="text-xs text-zinc-500">
+                    A secure password allowing visitors to bypass the maintenance page by appending
+                    `?bypass=YOUR_PASSWORD` to the URL.
+                  </p>
+                  <input
+                    type="text"
+                    id="bypass-key"
+                    value={bypassKey}
+                    onChange={(e) => setBypassKey(e.target.value)}
+                    placeholder="Enter bypass password"
+                    className="w-full rounded-xl border border-zinc-200 px-4 py-2.5 text-sm focus:border-black focus:ring-1 focus:ring-black focus:outline-hidden"
+                  />
+                </div>
+
+                {/* Bypass Link Documentation */}
+                <div className="space-y-2.5 rounded-xl border border-zinc-200 bg-zinc-50 p-4">
+                  <h4 className="text-sm font-bold text-zinc-800">Bypassing Maintenance Mode</h4>
+                  <p className="text-xs leading-relaxed text-zinc-500">
+                    Admins bypass maintenance mode automatically when authenticated. To allow
+                    guests, clients, or testers to bypass the offline screen, share the bypass link
+                    below.
+                  </p>
+                  {bypassKey && (
+                    <div className="pt-1">
+                      <p className="text-zinc-650 mb-1.5 text-xs font-semibold">
+                        Bypass Link for Guests:
+                      </p>
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="text"
+                          readOnly
+                          value={
+                            typeof window !== "undefined"
+                              ? `${window.location.origin}/?bypass=${bypassKey}`
+                              : `/?bypass=${bypassKey}`
+                          }
+                          className="flex-1 rounded-lg border border-zinc-200 bg-zinc-100 px-3 py-1.5 text-xs text-zinc-600 select-all focus:outline-hidden"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const bypassUrl =
+                              typeof window !== "undefined"
+                                ? `${window.location.origin}/?bypass=${bypassKey}`
+                                : `/?bypass=${bypassKey}`;
+                            navigator.clipboard.writeText(bypassUrl);
+                            setCopiedBypass(true);
+                            setTimeout(() => setCopiedBypass(false), 2000);
+                          }}
+                          className="flex h-8 items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-3 text-xs font-semibold transition-colors hover:bg-zinc-50"
+                          aria-label="Copy bypass link"
+                        >
+                          {copiedBypass ? (
+                            <>
+                              <Check className="text-green-650 h-3.5 w-3.5" />
+                              <span className="font-bold text-green-700">Copied!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="h-3.5 w-3.5" />
+                              <span>Copy</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {saveSettingsSuccess && (
+                  <div
+                    role="alert"
+                    className="rounded-xl border border-green-200 bg-green-50 p-4 text-sm text-green-800"
+                  >
+                    Maintenance settings saved successfully.
+                  </div>
+                )}
+
+                <div className="flex justify-end pt-4">
+                  <button
+                    type="submit"
+                    disabled={isSavingSettings}
+                    className="rounded-xl bg-black px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-zinc-800 focus:ring-2 focus:ring-black focus:outline-hidden disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {isSavingSettings ? "Saving..." : "Save Configuration"}
+                  </button>
+                </div>
+              </form>
+            ) : activeTab === "blogs" ? (
               // Blogs List Table
               blogs.length === 0 ? (
                 <div className="p-12 text-center text-zinc-500">

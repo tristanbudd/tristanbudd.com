@@ -5,6 +5,8 @@
  * @description Screen displayed when the application is under maintenance.
  */
 
+import { Github, Linkedin } from "lucide-react";
+
 export default function MaintenancePage() {
   return (
     <div className="bg-background flex min-h-screen flex-col items-center justify-center p-6 font-sans antialiased selection:bg-black selection:text-white">
@@ -59,6 +61,30 @@ export default function MaintenancePage() {
             The tristanbudd.com website is temporarily offline while we carry out scheduled system
             improvements. We expect to be back online shortly. Thank you for your patience.
           </p>
+
+          {/* Social Links */}
+          <div className="border-zinc-150/50 mt-8 flex w-full items-center justify-center gap-6 border-t pt-6">
+            <a
+              href="https://github.com/tristanbudd"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 text-sm font-semibold text-zinc-500 transition-colors hover:text-black"
+              aria-label="GitHub Profile"
+            >
+              <Github className="h-4 w-4" />
+              <span>GitHub</span>
+            </a>
+            <a
+              href="https://www.linkedin.com/in/tristanbudd"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 text-sm font-semibold text-zinc-500 transition-colors hover:text-black"
+              aria-label="LinkedIn Profile"
+            >
+              <Linkedin className="h-4 w-4" />
+              <span>LinkedIn</span>
+            </a>
+          </div>
         </div>
       </div>
     </div>

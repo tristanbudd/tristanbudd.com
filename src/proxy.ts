@@ -1,9 +1,7 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
-export default function proxy(request: NextRequest) {
-  const maintenanceMode = process.env.MAINTENANCE_MODE === "true";
-  const bypassKey = process.env.MAINTENANCE_BYPASS_KEY;
+export default async function proxy(request: NextRequest) {
   const path = request.nextUrl.pathname;
 
   // Exclude Next.js internal files, static/public assets, and general API routes
@@ -16,7 +14,27 @@ export default function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // Fetch database-backed maintenance settings
+  let maintenanceMode = false;
+  let bypassKey = "";
+  try {
+    const res = await fetch(new URL("/api/maintenance", request.url));
+    if (res.ok) {
+      const data = await res.json();
+      maintenanceMode = data.maintenanceMode;
+      bypassKey = data.bypassKey;
+    }
+  } catch (error) {
+    console.error("Proxy failed to fetch maintenance status:", error);
+    maintenanceMode = process.env.MAINTENANCE_MODE === "true";
+    bypassKey = process.env.MAINTENANCE_BYPASS_KEY || "";
+  }
+
   // Admin route protection check (Both HTML views and API endpoints)
+  const adminSession = request.cookies.get("admin_session")?.value;
+  const ownerAccount = process.env.ADMIN_OWNER_ACCOUNT || "tristanbudd";
+  const isAdminAuthenticated = adminSession === ownerAccount;
+
   if (path.startsWith("/admin") || path.startsWith("/api/admin")) {
     if (
       path !== "/admin/login" &&
@@ -25,9 +43,7 @@ export default function proxy(request: NextRequest) {
       path !== "/api/admin/auth/login" &&
       path !== "/api/admin/auth/callback"
     ) {
-      const adminSession = request.cookies.get("admin_session")?.value;
-      const ownerAccount = process.env.ADMIN_OWNER_ACCOUNT || "tristanbudd";
-      if (adminSession !== ownerAccount) {
+      if (!isAdminAuthenticated) {
         // Return 401 Unauthorized for admin API requests
         if (path.startsWith("/api/admin")) {
           return NextResponse.json(
@@ -41,7 +57,15 @@ export default function proxy(request: NextRequest) {
         return NextResponse.redirect(loginUrl);
       }
     }
-    // Bypass maintenance mode for authenticated admin routes
+    // Bypass maintenance mode for admin routes
+    return NextResponse.next();
+  }
+
+  // Authenticated admins bypass maintenance mode automatically for all pages
+  if (isAdminAuthenticated) {
+    if (path === "/maintenance") {
+      return NextResponse.redirect(new URL("/", request.url));
+    }
     return NextResponse.next();
   }
 
