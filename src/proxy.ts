@@ -18,7 +18,9 @@ export default async function proxy(request: NextRequest) {
   let maintenanceMode = false;
   let bypassKey = "";
   try {
-    const res = await fetch(new URL("/api/maintenance", request.url));
+    const res = await fetch(new URL("/api/maintenance", request.url), {
+      cache: "no-store",
+    });
     if (res.ok) {
       const data = await res.json();
       maintenanceMode = data.maintenanceMode;
