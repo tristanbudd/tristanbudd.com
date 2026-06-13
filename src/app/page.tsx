@@ -24,11 +24,45 @@ import {
   volunteering,
   workExperience,
 } from "../data/portfolio";
-import { projects } from "../data/projects";
-import { blogPosts } from "../data/blog";
+import { prisma } from "../lib/db";
+import { type BlogPost } from "../data/blog";
+import { type Project } from "../data/projects";
 import { getYearsOfExperience, formatDuration, getGitHubContributions } from "../lib/utils";
 
 export default async function Home() {
+  let dbBlogs: BlogPost[] = [];
+  let dbProjects: Project[] = [];
+  let dbError = false;
+
+  try {
+    const [blogsResult, projectsResult] = await Promise.all([
+      prisma.blogPost.findMany({
+        orderBy: { createdAt: "desc" },
+      }),
+      prisma.project.findMany({
+        orderBy: { createdAt: "desc" },
+      }),
+    ]);
+    dbBlogs = blogsResult as unknown as BlogPost[];
+    dbProjects = projectsResult as unknown as Project[];
+  } catch (error) {
+    console.warn(
+      "Warning: Database connection failed during page render, using empty lists.",
+      error
+    );
+    dbError = true;
+  }
+
+  const formattedBlogs = dbBlogs.map((b) => ({
+    ...b,
+    tags: Array.isArray(b.tags) ? (b.tags as string[]) : [],
+  }));
+
+  const formattedProjects = dbProjects.map((p) => ({
+    ...p,
+    tags: Array.isArray(p.tags) ? (p.tags as string[]) : [],
+  }));
+
   // Derived stats
   const yearsOfExperience = getYearsOfExperience();
   const techStackCount = languages.length + tools.length;
@@ -36,7 +70,7 @@ export default async function Home() {
 
   const stats = [
     { value: yearsOfExperience, label: "Years of Experience", approximate: true },
-    { value: projects.length, label: "Projects Completed", approximate: true },
+    { value: formattedProjects.length, label: "Projects Completed", approximate: true },
     { value: githubContributions, label: "GitHub Contributions", approximate: true },
     { value: techStackCount, label: "Tech Stack", approximate: false },
   ];
@@ -64,10 +98,16 @@ export default async function Home() {
         <TechStack title="Tech Stack" subtitle="Built with" languages={languages} tools={tools} />
 
         {/* Featured Projects Preview Showcase */}
-        <Projects projects={projects} title="Featured Projects" subtitle="My Work" isPreview />
+        <Projects
+          projects={formattedProjects}
+          title="Featured Projects"
+          subtitle="My Work"
+          isPreview
+          isDbOffline={dbError}
+        />
 
         {/* Latest Articles Blog Preview Showcase */}
-        <BlogSection posts={blogPosts} isPreview />
+        <BlogSection posts={formattedBlogs} isPreview isDbOffline={dbError} />
 
         {/* Work Experience */}
         <Timeline

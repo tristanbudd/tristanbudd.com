@@ -1,19 +1,55 @@
-import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 
-export default function middleware(request: NextRequest) {
+export default function proxy(request: NextRequest) {
   const maintenanceMode = process.env.MAINTENANCE_MODE === "true";
   const bypassKey = process.env.MAINTENANCE_BYPASS_KEY;
   const path = request.nextUrl.pathname;
 
-  // Exclude Next.js internal files, static/public assets, and API routes
+  // Exclude Next.js internal files, static/public assets, and general API routes
   if (
     path.startsWith("/_next") ||
-    path.startsWith("/api") ||
+    (path.startsWith("/api") && !path.startsWith("/api/admin")) ||
     path.startsWith("/favicon.ico") ||
-    path.includes(".") ||
-    path === "/maintenance"
+    path.includes(".")
   ) {
+    return NextResponse.next();
+  }
+
+  // Admin route protection check (Both HTML views and API endpoints)
+  if (path.startsWith("/admin") || path.startsWith("/api/admin")) {
+    if (
+      path !== "/admin/login" &&
+      path !== "/admin/login/mock-github" &&
+      path !== "/api/admin/auth" &&
+      path !== "/api/admin/auth/login" &&
+      path !== "/api/admin/auth/callback"
+    ) {
+      const adminSession = request.cookies.get("admin_session")?.value;
+      const ownerAccount = process.env.ADMIN_OWNER_ACCOUNT || "tristanbudd";
+      if (adminSession !== ownerAccount) {
+        // Return 401 Unauthorized for admin API requests
+        if (path.startsWith("/api/admin")) {
+          return NextResponse.json(
+            { error: "Unauthorized access: Please sign in." },
+            { status: 401 }
+          );
+        }
+        // Redirect HTML requests to login page
+        const loginUrl = new URL("/admin/login", request.url);
+        loginUrl.searchParams.set("error", "unauthorized");
+        return NextResponse.redirect(loginUrl);
+      }
+    }
+    // Bypass maintenance mode for authenticated admin routes
+    return NextResponse.next();
+  }
+
+  // Maintenance Mode rewrite
+  if (path === "/maintenance") {
+    if (!maintenanceMode) {
+      return NextResponse.redirect(new URL("/", request.url));
+    }
     return NextResponse.next();
   }
 
@@ -49,11 +85,6 @@ export default function middleware(request: NextRequest) {
     return response;
   }
 
-  // If maintenance mode is off but the user goes directly to /maintenance, redirect them home
-  if (!maintenanceMode && path === "/maintenance") {
-    return NextResponse.redirect(new URL("/", request.url));
-  }
-
   return NextResponse.next();
 }
 
@@ -61,11 +92,12 @@ export const config = {
   matcher: [
     /*
      * Match all request paths except for the ones starting with:
-     * - api (API routes)
+     * - api (API routes except /api/admin)
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
      */
     "/((?!api|_next/static|_next/image|favicon.ico).*)",
+    "/api/admin/:path*",
   ],
 };

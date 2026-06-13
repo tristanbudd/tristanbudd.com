@@ -9,18 +9,19 @@ import { Project } from "@/data/projects";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import {
   ArrowRight,
+  Check,
+  ChevronDown,
   ChevronLeft,
   ChevronRight,
   ExternalLink,
   Github,
   Search,
   X,
-  ChevronDown,
-  Check,
 } from "lucide-react";
 import Link from "next/link";
 import * as React from "react";
 import CTAButton from "./CTAButton";
+import DbOfflineMessage from "./DbOfflineMessage";
 
 function ProjectImagePlaceholder() {
   return (
@@ -152,6 +153,7 @@ export interface ProjectsProps {
   subtitle?: string;
   isPreview?: boolean;
   showHeader?: boolean;
+  isDbOffline?: boolean;
 }
 
 const getRelevanceScore = (title: string, desc: string, content?: string, query?: string) => {
@@ -186,6 +188,7 @@ export default function Projects({
   subtitle = "My Work",
   isPreview = false,
   showHeader = true,
+  isDbOffline = false,
 }: ProjectsProps) {
   const [currentPage, setCurrentPage] = React.useState(1);
   const [searchQuery, setSearchQuery] = React.useState("");
@@ -250,7 +253,7 @@ export default function Projects({
     return list;
   }, [filteredProjects, sortBy, searchQuery]);
 
-  if (!projects.length) return null;
+  if (!projects.length && !isDbOffline) return null;
 
   const itemsPerPage = 6;
   const totalPages = Math.ceil(sortedProjects.length / itemsPerPage);
@@ -417,7 +420,12 @@ export default function Projects({
         )}
 
         {/* Project Cards Grid / Empty State */}
-        {sortedProjects.length === 0 ? (
+        {isDbOffline ? (
+          <DbOfflineMessage
+            title="Projects Unavailable"
+            description="We could not load the portfolio projects because the database is unavailable."
+          />
+        ) : sortedProjects.length === 0 ? (
           <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-zinc-200 bg-white/20 p-12 text-center backdrop-blur-md">
             <span className="mb-4 text-black">
               <Search className="h-12 w-12 stroke-[1.5]" />

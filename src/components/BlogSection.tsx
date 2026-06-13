@@ -7,11 +7,12 @@
 
 import { BlogPost } from "@/data/blog";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
-import { ArrowRight, Clock, Search, X, ChevronDown, Check } from "lucide-react";
-import Link from "next/link";
-import CTAButton from "./CTAButton";
-import { useState, useEffect, useMemo } from "react";
 import { parseDate } from "@/lib/utils";
+import { ArrowRight, Check, ChevronDown, Clock, Search, X } from "lucide-react";
+import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
+import CTAButton from "./CTAButton";
+import DbOfflineMessage from "./DbOfflineMessage";
 
 function BlogRow({
   post,
@@ -123,6 +124,7 @@ export interface BlogSectionProps {
   subtitle?: string;
   isPreview?: boolean;
   showHeader?: boolean;
+  isDbOffline?: boolean;
 }
 
 const getRelevanceScore = (title: string, desc: string, content?: string, query?: string) => {
@@ -157,6 +159,7 @@ export default function BlogSection({
   subtitle = "Thoughts & Ideas",
   isPreview = false,
   showHeader = true,
+  isDbOffline = false,
 }: BlogSectionProps) {
   const [visibleCount, setVisibleCount] = useState(5);
   const [searchQuery, setSearchQuery] = useState("");
@@ -225,7 +228,7 @@ export default function BlogSection({
     return list;
   }, [filteredPosts, sortBy, searchQuery]);
 
-  if (!posts.length) return null;
+  if (!posts.length && !isDbOffline) return null;
 
   // Show top 3 in preview, otherwise render up to visibleCount
   const displayedPosts = isPreview ? sortedPosts.slice(0, 3) : sortedPosts.slice(0, visibleCount);
@@ -450,7 +453,12 @@ export default function BlogSection({
         )}
 
         {/* Blog Posts Rows / Empty State */}
-        {sortedPosts.length === 0 ? (
+        {isDbOffline ? (
+          <DbOfflineMessage
+            title="Articles Unavailable"
+            description="We could not load the blog articles because the database is unavailable."
+          />
+        ) : sortedPosts.length === 0 ? (
           <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-zinc-200 bg-white/20 p-12 text-center backdrop-blur-md">
             <span className="mb-4 text-black">
               <Search className="h-12 w-12 stroke-[1.5]" />

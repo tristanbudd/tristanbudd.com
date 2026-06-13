@@ -6,13 +6,16 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { projects } from "../../../data/projects";
+import { prisma } from "../../../lib/db";
 import Header from "../../../components/Header";
 import Footer from "../../../components/Footer";
 import BackButton from "../../../components/BackButton";
 import Markdown from "../../../components/Markdown";
+import DbOfflineMessage from "../../../components/DbOfflineMessage";
 import { navItems, footerNavGroups, footerSocials } from "../../../data/portfolio";
-import { ChevronRight, ExternalLink, Github, Layers, Calendar, User } from "lucide-react";
+import * as Icons from "lucide-react";
+const { ChevronRight, ExternalLink, Github } = Icons;
+import { type Project, type CustomField } from "../../../data/projects";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -20,25 +23,77 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const project = projects.find((p) => p.slug === slug);
-  if (!project) {
+  try {
+    const project = await prisma.project.findUnique({
+      where: { slug },
+    });
+    if (!project) {
+      return {
+        title: "Project Not Found",
+      };
+    }
     return {
-      title: "Project Not Found",
+      title: project.title,
+      description: project.description,
+    };
+  } catch {
+    return {
+      title: "Project Showcase",
     };
   }
-  return {
-    title: project.title,
-    description: project.description,
-  };
 }
 
 export default async function ProjectDetailPage({ params }: PageProps) {
   const { slug } = await params;
-  const project = projects.find((p) => p.slug === slug);
+  let dbProject = null;
+  let dbError = false;
 
-  if (!project) {
+  try {
+    dbProject = await prisma.project.findUnique({
+      where: { slug },
+    });
+  } catch (error) {
+    console.warn("Warning: Database connection failed on project detail query.", error);
+    dbError = true;
+  }
+
+  if (dbError) {
+    return (
+      <div className="bg-background flex min-h-screen flex-col">
+        {/* Header */}
+        <Header navItems={navItems} ctaText="Get in touch?" ctaHref="/#contact" />
+
+        {/* Main Content Area */}
+        <main
+          role="main"
+          className="3xl:max-w-440 4xl:max-w-560 5xl:max-w-720 3xl:pt-40 4xl:pt-44 5xl:pt-48 3xl:pb-10 4xl:pb-12 5xl:pb-16 mx-auto flex w-full flex-col px-4 pt-24 pb-6 font-sans transition-all duration-500 ease-in-out sm:max-w-screen-sm sm:pt-28 md:max-w-3xl md:pt-32 md:pb-8 lg:max-w-5xl lg:pt-36 xl:max-w-6xl 2xl:max-w-7xl"
+        >
+          <div className="mt-8 flex flex-col items-center justify-center">
+            <DbOfflineMessage
+              title="Project Unavailable"
+              description="This case study could not be loaded because the database is currently offline. Please try again later."
+            />
+            <div className="mt-8">
+              <BackButton href="/projects" label="Back to Projects" />
+            </div>
+          </div>
+        </main>
+
+        {/* Footer Area */}
+        <Footer navGroups={footerNavGroups} socials={footerSocials} />
+      </div>
+    );
+  }
+
+  if (!dbProject) {
     notFound();
   }
+
+  const project: Project = {
+    ...dbProject,
+    tags: Array.isArray(dbProject.tags) ? (dbProject.tags as string[]) : [],
+    customFields: (dbProject as unknown as { customFields?: CustomField[] }).customFields,
+  };
 
   // Generate fallback markdown if no extendedDescription is present
   const content =
@@ -92,7 +147,7 @@ You can explore the source code in the [GitHub Repository](${
             <div className="3xl:p-10 4xl:p-12 5xl:p-16 rounded-2xl border border-zinc-200/60 bg-white/40 p-4 shadow-xs backdrop-blur-md sm:p-6 md:p-8">
               <div className="flex flex-col gap-2">
                 <span className="3xl:text-sm 4xl:text-base 5xl:text-lg text-xs font-bold tracking-widest text-zinc-500 uppercase">
-                  {project.caseStudyLabel || "Project Case Study"}
+                  Project Case Study
                 </span>
                 <h1 className="font-outfit 3xl:text-4xl 4xl:text-5xl 5xl:text-6xl text-2xl font-extrabold tracking-tight text-black sm:text-3xl">
                   {project.title}
@@ -101,50 +156,72 @@ You can explore the source code in the [GitHub Repository](${
 
               {/* Specs Grid */}
               <div className="text-zinc-650 3xl:mt-10 3xl:pt-10 3xl:gap-6 3xl:text-base 4xl:text-lg 5xl:text-xl mt-6 flex flex-col gap-4 border-t border-zinc-200/50 pt-6 text-sm">
-                {/* Role */}
-                <div className="flex items-center gap-3">
-                  <User className="text-zinc-455 3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 h-4.5 w-4.5 shrink-0" />
-                  <div className="flex flex-col">
-                    <span className="3xl:text-[0.75rem] 4xl:text-[0.85rem] 5xl:text-[0.95rem] mb-1 text-[0.65rem] leading-none font-bold tracking-wider text-zinc-400 uppercase">
-                      {project.roleLabel || "Role"}
-                    </span>
-                    <span className="3xl:text-lg 4xl:text-xl 5xl:text-2xl font-semibold text-black">
-                      {project.roleValue || "Lead Software Engineer"}
-                    </span>
-                  </div>
-                </div>
+                {(Array.isArray(project.customFields) && project.customFields.length > 0
+                  ? (project.customFields as unknown as {
+                      label: string;
+                      value: string;
+                      icon?: string;
+                    }[])
+                  : [
+                      { label: "Role", value: "Lead Software Engineer", icon: "user" },
+                      { label: "Timeline", value: "Q3 - Q4 2024", icon: "calendar" },
+                      { label: "Platform", value: "Web", icon: "layers" },
+                    ]
+                ).map((field, idx) => {
+                  let IconComponent: React.ComponentType<{ className?: string }> = Icons.Layers;
 
-                {/* Timeline */}
-                <div className="flex items-center gap-3">
-                  <Calendar className="text-zinc-455 3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 h-4.5 w-4.5 shrink-0" />
-                  <div className="flex flex-col">
-                    <span className="3xl:text-[0.75rem] 4xl:text-[0.85rem] 5xl:text-[0.95rem] mb-1 text-[0.65rem] leading-none font-bold tracking-wider text-zinc-400 uppercase">
-                      {project.timelineLabel || "Timeline"}
-                    </span>
-                    <span className="3xl:text-lg 4xl:text-xl 5xl:text-2xl font-semibold text-black">
-                      {project.timelineValue || "Q3 - Q4 2024"}
-                    </span>
-                  </div>
-                </div>
+                  if (field.icon) {
+                    const pascalName = field.icon
+                      .split(/[-_ ]+/)
+                      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+                      .join("");
+                    const component = (
+                      Icons as unknown as Record<
+                        string,
+                        React.ComponentType<{ className?: string }>
+                      >
+                    )[pascalName];
+                    if (component) {
+                      IconComponent = component;
+                    }
+                  } else {
+                    const labelLower = field.label.toLowerCase();
+                    if (
+                      labelLower.includes("role") ||
+                      labelLower.includes("client") ||
+                      labelLower.includes("team")
+                    ) {
+                      IconComponent = Icons.User;
+                    } else if (
+                      labelLower.includes("time") ||
+                      labelLower.includes("date") ||
+                      labelLower.includes("duration") ||
+                      labelLower.includes("year")
+                    ) {
+                      IconComponent = Icons.Calendar;
+                    }
+                  }
 
-                {/* Category/Type */}
-                <div className="flex items-center gap-3">
-                  <Layers className="text-zinc-455 3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 h-4.5 w-4.5 shrink-0" />
-                  <div className="flex flex-col">
-                    <span className="3xl:text-[0.75rem] 4xl:text-[0.85rem] 5xl:text-[0.95rem] mb-1 text-[0.65rem] leading-none font-bold tracking-wider text-zinc-400 uppercase">
-                      {project.platformLabel || "Platform"}
-                    </span>
-                    <span className="3xl:text-lg 4xl:text-xl 5xl:text-2xl font-semibold text-black capitalize">
-                      {project.platformValue || project.mockupType.replace("-", " ")}
-                    </span>
-                  </div>
-                </div>
+                  return (
+                    <div key={idx} className="flex items-center gap-3">
+                      <IconComponent className="text-zinc-455 3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 h-4.5 w-4.5 shrink-0" />
+                      <div className="flex flex-col">
+                        <span className="3xl:text-[0.75rem] 4xl:text-[0.85rem] 5xl:text-[0.95rem] mb-1 text-[0.65rem] leading-none font-bold tracking-wider text-zinc-400 uppercase">
+                          {field.label}
+                        </span>
+                        <span className="3xl:text-lg 4xl:text-xl 5xl:text-2xl font-semibold text-black">
+                          {field.value}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
 
               {/* Technologies pill grid */}
               <div className="3xl:mt-10 3xl:pt-10 mt-6 border-t border-zinc-200/50 pt-6">
                 <span className="3xl:text-[0.75rem] 4xl:text-[0.85rem] 5xl:text-[0.95rem] mb-3 block text-[0.65rem] font-bold tracking-wider text-zinc-400 uppercase">
-                  {project.technologiesLabel || "Technologies"}
+                  Technologies
                 </span>
                 <div className="3xl:gap-2.5 flex flex-wrap gap-1.5">
                   {project.tags.map((tag) => (
@@ -207,7 +284,7 @@ You can explore the source code in the [GitHub Repository](${
           <section className="lg:col-span-8">
             <div className="3xl:p-10 4xl:p-12 5xl:p-16 rounded-2xl border border-zinc-200/60 bg-white/40 p-4 shadow-xs backdrop-blur-md sm:p-6 md:p-8">
               {/* Spacer to align right column markdown heading with left column heading on desktop */}
-              <div className="3xl:h-[2rem] 4xl:h-[2.5rem] 5xl:h-[3rem] hidden lg:block lg:h-[1.5rem]" />
+              <div className="3xl:h-8 4xl:h-10 5xl:h-12 hidden lg:block lg:h-6" />
               <Markdown content={content} className="3xl:text-lg 4xl:text-xl 5xl:text-2xl" />
             </div>
 

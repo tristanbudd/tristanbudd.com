@@ -129,6 +129,31 @@ export function parseDate(dateStr: string): { month: string; day: string; year: 
   if (!dateStr) {
     return { month: "N/A", day: "—", year: "—" };
   }
+
+  // Check if format is YYYY-MM-DD
+  if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+    const [y, m, d] = dateStr.split("-");
+    const months = [
+      "JAN",
+      "FEB",
+      "MAR",
+      "APR",
+      "MAY",
+      "JUN",
+      "JUL",
+      "AUG",
+      "SEP",
+      "OCT",
+      "NOV",
+      "DEC",
+    ];
+    const monthIdx = parseInt(m, 10) - 1;
+    const month = months[monthIdx] || "N/A";
+    const day = parseInt(d, 10).toString();
+    return { month, day, year: y };
+  }
+
+  // Fallback to old "Month DD, YYYY" format
   const parts = dateStr.replace(",", "").split(" ");
   if (parts.length === 3) {
     const month = parts[0].substring(0, 3).toUpperCase();

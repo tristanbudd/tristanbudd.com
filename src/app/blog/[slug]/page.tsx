@@ -6,11 +6,12 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { blogPosts } from "../../../data/blog";
+import { prisma } from "../../../lib/db";
 import Header from "../../../components/Header";
 import Footer from "../../../components/Footer";
 import BackButton from "../../../components/BackButton";
 import Markdown from "../../../components/Markdown";
+import DbOfflineMessage from "../../../components/DbOfflineMessage";
 import { navItems, footerNavGroups, footerSocials } from "../../../data/portfolio";
 import { parseDate } from "../../../lib/utils";
 import { Calendar, ChevronRight, Clock, Tag } from "lucide-react";
@@ -21,25 +22,76 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const post = blogPosts.find((p) => p.slug === slug);
-  if (!post) {
+  try {
+    const post = await prisma.blogPost.findUnique({
+      where: { slug },
+    });
+    if (!post) {
+      return {
+        title: "Article Not Found",
+      };
+    }
     return {
-      title: "Article Not Found",
+      title: post.title,
+      description: post.excerpt,
+    };
+  } catch {
+    return {
+      title: "Blog",
     };
   }
-  return {
-    title: post.title,
-    description: post.excerpt,
-  };
 }
 
 export default async function BlogPostPage({ params }: PageProps) {
   const { slug } = await params;
-  const post = blogPosts.find((p) => p.slug === slug);
+  let dbPost = null;
+  let dbError = false;
 
-  if (!post) {
+  try {
+    dbPost = await prisma.blogPost.findUnique({
+      where: { slug },
+    });
+  } catch (error) {
+    console.warn("Warning: Database connection failed on blog detail query.", error);
+    dbError = true;
+  }
+
+  if (dbError) {
+    return (
+      <div className="bg-background flex min-h-screen flex-col">
+        {/* Header */}
+        <Header navItems={navItems} ctaText="Get in touch?" ctaHref="/#contact" />
+
+        {/* Main Content Area */}
+        <main
+          role="main"
+          className="3xl:max-w-6xl 4xl:max-w-7xl 5xl:max-w-8xl 3xl:pt-40 4xl:pt-44 5xl:pt-48 3xl:pb-10 4xl:pb-12 5xl:pb-16 mx-auto flex w-full max-w-4xl flex-col px-4 pt-24 pb-6 font-sans transition-all duration-500 ease-in-out sm:pt-28 md:pt-32 md:pb-8 lg:max-w-5xl lg:pt-36"
+        >
+          <div className="mt-8 flex flex-col items-center justify-center">
+            <DbOfflineMessage
+              title="Article Unavailable"
+              description="This article could not be loaded because the database is currently offline. Please try again later."
+            />
+            <div className="mt-8">
+              <BackButton href="/blog" label="Back to Blog" />
+            </div>
+          </div>
+        </main>
+
+        {/* Footer Area */}
+        <Footer navGroups={footerNavGroups} socials={footerSocials} />
+      </div>
+    );
+  }
+
+  if (!dbPost) {
     notFound();
   }
+
+  const post = {
+    ...dbPost,
+    tags: Array.isArray(dbPost.tags) ? (dbPost.tags as string[]) : [],
+  };
 
   const { month, day, year } = parseDate(post.publishedAt);
 

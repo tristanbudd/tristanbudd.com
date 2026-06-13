@@ -1,0 +1,36 @@
+datasource db {
+  provider = "mysql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model BlogPost {
+  id          String   @id @default(uuid())
+  slug        String   @unique
+  title       String
+  excerpt     String   @db.Text
+  content     String   @db.LongText
+  publishedAt String
+  category    String
+  readingTime String
+  tags        Json
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Project {
+  id                  String   @id @default(uuid())
+  slug                String   @unique
+  title               String
+  description         String   @db.Text
+  extendedDescription String   @db.LongText
+  tags                Json
+  githubUrl           String?
+  projectUrl          String?
+  customFields        Json
+  publishedAt         String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}

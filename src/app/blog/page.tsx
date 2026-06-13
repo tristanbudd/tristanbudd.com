@@ -9,7 +9,8 @@ import Footer from "../../components/Footer";
 import Header from "../../components/Header";
 import BlogSection from "../../components/BlogSection";
 import { footerNavGroups, footerSocials, navItems } from "../../data/portfolio";
-import { blogPosts } from "../../data/blog";
+import { prisma } from "../../lib/db";
+import { type BlogPost } from "../../data/blog";
 
 export const metadata: Metadata = {
   title: "Blog",
@@ -17,7 +18,25 @@ export const metadata: Metadata = {
     "Read articles and technical insights on software engineering and UX design by Tristan Budd.",
 };
 
-export default function BlogPage() {
+export default async function BlogPage() {
+  let posts: BlogPost[] = [];
+  let dbError = false;
+  try {
+    posts = (await prisma.blogPost.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+    })) as unknown as BlogPost[];
+  } catch (error) {
+    console.warn("Warning: Database connection failed on blog list query.", error);
+    dbError = true;
+  }
+
+  const formattedPosts = posts.map((post) => ({
+    ...post,
+    tags: Array.isArray(post.tags) ? (post.tags as string[]) : [],
+  }));
+
   return (
     <div className="bg-background flex min-h-screen flex-col">
       {/* Header */}
@@ -45,7 +64,12 @@ export default function BlogPage() {
         </div>
 
         {/* Full Blog Listing Showcase without internal header */}
-        <BlogSection posts={blogPosts} isPreview={false} showHeader={false} />
+        <BlogSection
+          posts={formattedPosts}
+          isPreview={false}
+          showHeader={false}
+          isDbOffline={dbError}
+        />
       </main>
 
       {/* Footer Area */}

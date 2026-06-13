@@ -9,14 +9,33 @@ import Footer from "../../components/Footer";
 import Header from "../../components/Header";
 import Projects from "../../components/Projects";
 import { footerNavGroups, footerSocials, navItems } from "../../data/portfolio";
-import { projects } from "../../data/projects";
+import { prisma } from "../../lib/db";
+import { type Project } from "../../data/projects";
 
 export const metadata: Metadata = {
   title: "Projects",
   description: "Explore all portfolio projects built by Tristan Budd.",
 };
 
-export default function ProjectsPage() {
+export default async function ProjectsPage() {
+  let dbProjects: Project[] = [];
+  let dbError = false;
+  try {
+    dbProjects = (await prisma.project.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+    })) as unknown as Project[];
+  } catch (error) {
+    console.warn("Warning: Database connection failed on projects list query.", error);
+    dbError = true;
+  }
+
+  const formattedProjects = dbProjects.map((p) => ({
+    ...p,
+    tags: Array.isArray(p.tags) ? (p.tags as string[]) : [],
+  }));
+
   return (
     <div className="bg-background flex min-h-screen flex-col">
       {/* Header */}
@@ -44,7 +63,12 @@ export default function ProjectsPage() {
         </div>
 
         {/* Full Projects Showcase without internal header */}
-        <Projects projects={projects} isPreview={false} showHeader={false} />
+        <Projects
+          projects={formattedProjects}
+          isPreview={false}
+          showHeader={false}
+          isDbOffline={dbError}
+        />
       </main>
 
       {/* Footer Area */}
