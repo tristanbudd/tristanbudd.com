@@ -1,20 +1,13 @@
-"use client";
-
-/**
- * @file CTAButton.tsx
- * @description Reusable Call-to-Action (CTA) Button component with sliding-white-background hover state and responsive sizing styles.
- */
-
-import { ArrowRight, RotateCw } from "lucide-react";
+import { ArrowRight, RotateCw, Plus } from "lucide-react";
 import React from "react";
 import { useTransition } from "../context/TransitionContext";
 
 export interface CTAButtonProps {
   text: string;
-  href: string;
+  href?: string;
   className?: string;
-  onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void;
-  type?: "default" | "refresh";
+  onClick?: (e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => void;
+  type?: "default" | "refresh" | "load-more";
 }
 
 export default function CTAButton({
@@ -38,11 +31,47 @@ export default function CTAButton({
       onClick(e);
       if (e.isDefaultPrevented()) return;
     }
-    const triggered = triggerTransition(href);
-    if (triggered) {
-      e.preventDefault();
+    if (href) {
+      const triggered = triggerTransition(href);
+      if (triggered) {
+        e.preventDefault();
+      }
     }
   };
+
+  const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (onClick) {
+      onClick(e);
+    }
+  };
+
+  if (!href) {
+    return (
+      <button
+        type="button"
+        className={`${baseClass} ${className}`}
+        onClick={handleButtonClick}
+        onContextMenu={handleContextMenu}
+        aria-label={text}
+      >
+        {/* Sliding background */}
+        <span className="absolute inset-0 origin-left scale-x-0 rounded-full bg-white transition-transform duration-300 ease-out group-hover/btn:scale-x-100 group-focus-visible/btn:scale-x-100" />
+
+        <span className="relative z-10 whitespace-nowrap transition-colors duration-300">
+          {text}
+        </span>
+        <div className="3xl:h-10 3xl:w-10 4xl:h-12 4xl:w-12 5xl:h-14 5xl:w-14 relative z-10 flex h-8 w-8 items-center justify-center rounded-full bg-zinc-800 text-white transition-colors duration-300 group-hover/btn:bg-black group-focus-visible/btn:bg-black">
+          {type === "load-more" ? (
+            <Plus className="3xl:h-5 3xl:w-5 4xl:h-6 4xl:w-6 5xl:h-7 5xl:w-7 h-4 w-4 transition-all duration-300 group-hover/btn:rotate-90 group-focus-visible/btn:rotate-90" />
+          ) : type === "refresh" ? (
+            <RotateCw className="3xl:h-5 3xl:w-5 4xl:h-6 4xl:w-6 5xl:h-7 5xl:w-7 h-4 w-4 transition-all duration-500 group-hover/btn:rotate-360 group-focus-visible/btn:rotate-360" />
+          ) : (
+            <ArrowRight className="3xl:h-5 3xl:w-5 4xl:h-6 4xl:w-6 5xl:h-7 5xl:w-7 h-4 w-4 transition-all duration-300 group-hover/btn:-rotate-45 group-focus-visible/btn:-rotate-45" />
+          )}
+        </div>
+      </button>
+    );
+  }
 
   return (
     <a
@@ -57,7 +86,9 @@ export default function CTAButton({
 
       <span className="relative z-10 whitespace-nowrap transition-colors duration-300">{text}</span>
       <div className="3xl:h-10 3xl:w-10 4xl:h-12 4xl:w-12 5xl:h-14 5xl:w-14 relative z-10 flex h-8 w-8 items-center justify-center rounded-full bg-zinc-800 text-white transition-colors duration-300 group-hover/btn:bg-black group-focus-visible/btn:bg-black">
-        {type === "refresh" ? (
+        {type === "load-more" ? (
+          <Plus className="3xl:h-5 3xl:w-5 4xl:h-6 4xl:w-6 5xl:h-7 5xl:w-7 h-4 w-4 transition-all duration-300 group-hover/btn:rotate-90 group-focus-visible/btn:rotate-90" />
+        ) : type === "refresh" ? (
           <RotateCw className="3xl:h-5 3xl:w-5 4xl:h-6 4xl:w-6 5xl:h-7 5xl:w-7 h-4 w-4 transition-all duration-500 group-hover/btn:rotate-360 group-focus-visible/btn:rotate-360" />
         ) : (
           <ArrowRight className="3xl:h-5 3xl:w-5 4xl:h-6 4xl:w-6 5xl:h-7 5xl:w-7 h-4 w-4 transition-all duration-300 group-hover/btn:-rotate-45 group-focus-visible/btn:-rotate-45" />

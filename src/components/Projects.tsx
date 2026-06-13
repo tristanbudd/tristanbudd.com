@@ -2,13 +2,14 @@
 
 /**
  * @file Projects.tsx
- * @description Showcases Tristan's projects in a grid with premium, interactive CSS mockups.
+ * @description Showcases projects that I have worked on. Paginated with scroll reveal.
  */
 
 import { Project } from "@/data/projects";
-import { ArrowRight, ExternalLink, Github } from "lucide-react";
-import Link from "next/link";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
+import { ArrowRight, ChevronLeft, ChevronRight, ExternalLink, Github } from "lucide-react";
+import Link from "next/link";
+import * as React from "react";
 import CTAButton from "./CTAButton";
 
 function ProjectImagePlaceholder() {
@@ -51,13 +52,21 @@ function ProjectCard({
   headingLevel?: "h2" | "h3";
 }) {
   const HeadingTag = headingLevel;
+  const [animate, setAnimate] = React.useState(false);
+
+  React.useEffect(() => {
+    const timer = setTimeout(() => setAnimate(true), 30);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const isCardVisible = visible && animate;
 
   return (
     <div
       className="group/card 3xl:rounded-3xl relative flex flex-col overflow-hidden rounded-2xl border border-zinc-200/60 bg-white/40 shadow-xs backdrop-blur-md transition-all duration-500 hover:border-zinc-300 hover:bg-white/60 hover:shadow-md"
       style={{
-        opacity: visible ? 1 : 0,
-        transform: visible ? "translateY(0)" : "translateY(24px)",
+        opacity: isCardVisible ? 1 : 0,
+        transform: isCardVisible ? "translateY(0)" : "translateY(24px)",
         transition: `opacity 0.6s ease ${delay}ms, transform 0.6s ease ${delay}ms, box-shadow 0.3s ease, border-color 0.3s ease, background-color 0.3s ease`,
       }}
     >
@@ -142,13 +151,19 @@ export default function Projects({
   isPreview = false,
   showHeader = true,
 }: ProjectsProps) {
+  const [currentPage, setCurrentPage] = React.useState(1);
   const { ref, visible: revealVisible } = useScrollReveal<HTMLDivElement>({ threshold: 0.05 });
-  const visible = !isPreview || revealVisible;
+  const visible = revealVisible;
 
   if (!projects.length) return null;
 
-  // Render top 3 in preview, otherwise render all
-  const displayedProjects = isPreview ? projects.slice(0, 3) : projects;
+  const itemsPerPage = 6;
+  const totalPages = Math.ceil(projects.length / itemsPerPage);
+
+  // Render top 3 in preview, otherwise paginate
+  const displayedProjects = isPreview
+    ? projects.slice(0, 3)
+    : projects.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   return (
     <section
@@ -185,6 +200,45 @@ export default function Projects({
             />
           ))}
         </div>
+
+        {/* Pagination Controls (Full page showcase only) */}
+        {!isPreview && totalPages > 1 && (
+          <div className="mt-8 flex items-center justify-center gap-2">
+            <button
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              className="group flex h-10 w-10 items-center justify-center rounded-full border border-zinc-200 bg-white/40 shadow-xs backdrop-blur-md transition-all duration-300 hover:border-zinc-300 hover:bg-white/80 disabled:opacity-40 disabled:hover:border-zinc-200 disabled:hover:bg-white/40"
+              aria-label="Previous Page"
+            >
+              <ChevronLeft className="h-4 w-4 text-black" />
+            </button>
+
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+              <button
+                key={page}
+                onClick={() => setCurrentPage(page)}
+                className={`flex h-10 w-10 items-center justify-center rounded-full border text-sm font-semibold transition-all duration-300 ${
+                  currentPage === page
+                    ? "border-black bg-black text-white"
+                    : "text-zinc-550 border-zinc-200 bg-white/40 hover:border-zinc-300 hover:bg-white/80"
+                }`}
+                aria-label={`Page ${page}`}
+                aria-current={currentPage === page ? "page" : undefined}
+              >
+                {page}
+              </button>
+            ))}
+
+            <button
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+              className="group flex h-10 w-10 items-center justify-center rounded-full border border-zinc-200 bg-white/40 shadow-xs backdrop-blur-md transition-all duration-300 hover:border-zinc-300 hover:bg-white/80 disabled:opacity-40 disabled:hover:border-zinc-200 disabled:hover:bg-white/40"
+              aria-label="Next Page"
+            >
+              <ChevronRight className="h-4 w-4 text-black" />
+            </button>
+          </div>
+        )}
 
         {/* View All Projects Button (Home page preview only) */}
         {isPreview && (

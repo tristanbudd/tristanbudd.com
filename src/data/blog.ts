@@ -169,4 +169,48 @@ export const blogPosts: BlogPost[] = [
     tags: ["Tag 1", "Tag 2", "Tag 3", "Tag 4"],
     content: post3Content,
   },
+  {
+    slug: "article-4",
+    title: "Dolore Magna Aliqua",
+    excerpt:
+      "Quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate.",
+    publishedAt: "April 20, 2026",
+    category: "Category 4",
+    readingTime: calculateReadingTime(post1Content),
+    tags: ["Tag A", "Tag B"],
+    content: post1Content,
+  },
+  {
+    slug: "article-5",
+    title: "Ut Enim Ad Minim Veniam",
+    excerpt:
+      "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+    publishedAt: "April 10, 2026",
+    category: "Category 5",
+    readingTime: calculateReadingTime(post2Content),
+    tags: ["Tag X", "Tag Y"],
+    content: post2Content,
+  },
+  {
+    slug: "article-6",
+    title: "Quis Nostrud Exercitation",
+    excerpt:
+      "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud.",
+    publishedAt: "March 15, 2026",
+    category: "Category 6",
+    readingTime: calculateReadingTime(post3Content),
+    tags: ["Tag Z", "Tag W"],
+    content: post3Content,
+  },
+  {
+    slug: "article-7",
+    title: "Ullamco Laboris Nisi",
+    excerpt:
+      "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
+    publishedAt: "March 01, 2026",
+    category: "Category 7",
+    readingTime: calculateReadingTime(post1Content),
+    tags: ["Tag 1", "Tag 2"],
+    content: post1Content,
+  },
 ];

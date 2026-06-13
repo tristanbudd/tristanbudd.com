@@ -86,7 +86,7 @@ You can explore the source code in the [GitHub Repository](${
         </nav>
 
         {/* Dual Column Layout */}
-        <div className="3xl:gap-16 4xl:gap-20 5xl:gap-24 grid grid-cols-1 gap-6 lg:grid-cols-12 lg:items-start lg:gap-12">
+        <div className="3xl:gap-16 4xl:gap-20 5xl:gap-24 grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-12">
           {/* Sidebar / Specs (4 cols on lg screens, sticky) */}
           <aside className="3xl:gap-10 flex flex-col gap-6 lg:sticky lg:top-28 lg:col-span-4">
             <div className="3xl:p-10 4xl:p-12 5xl:p-16 rounded-2xl border border-zinc-200/60 bg-white/40 p-4 shadow-xs backdrop-blur-md sm:p-6 md:p-8">

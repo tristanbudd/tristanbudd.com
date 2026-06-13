@@ -138,14 +138,14 @@ body.mobile-menu-active footer {
 }
 
 /* Synchronous scroll state styles before hydration */
-html.is-scrolled header {
+html.is-scrolled header[role="banner"] {
   background-color: rgba(255, 255, 255, 0.95) !important;
   border-bottom-color: rgba(228, 228, 231, 0.8) !important;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05) !important;
   backdrop-filter: blur(12px) !important;
 }
 
-html.is-scrolled header > div {
+html.is-scrolled header[role="banner"] > div {
   padding-top: 1rem !important; /* py-4 */
   padding-bottom: 1rem !important;
 }

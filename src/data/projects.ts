@@ -176,4 +176,31 @@ export const projects: Project[] = [
     tags: ["Tempor", "Incididunt", "Eiusmod"],
     mockupType: "study-planner",
   },
+  {
+    slug: "project-five",
+    title: "Dolore Magna Aliqua",
+    description:
+      "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    tags: ["Dolore", "Magna", "Aliqua"],
+    mockupType: "defect-reporter",
+    githubUrl: "https://github.com/tristanbudd",
+  },
+  {
+    slug: "project-six",
+    title: "Ut Enim Ad Minim",
+    description:
+      "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+    tags: ["Minim", "Veniam"],
+    mockupType: "logistics",
+    projectUrl: "https://tristanbudd.com",
+  },
+  {
+    slug: "project-seven",
+    title: "Quis Nostrud",
+    description:
+      "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.",
+    tags: ["Quis", "Nostrud"],
+    mockupType: "study-planner",
+    githubUrl: "https://github.com/tristanbudd",
+  },
 ];
