@@ -10,7 +10,8 @@ import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { parseDate } from "@/lib/utils";
 import { ArrowRight, Check, ChevronDown, Clock, Search, X } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import { useTransition } from "../context/TransitionContext";
 import CTAButton from "./CTAButton";
 import DbOfflineMessage from "./DbOfflineMessage";
 
@@ -28,6 +29,14 @@ function BlogRow({
   const { month, day, year } = parseDate(post.publishedAt);
   const HeadingTag = headingLevel;
   const [animate, setAnimate] = useState(false);
+  const { triggerTransition } = useTransition();
+
+  const handleNavigation = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    const triggered = triggerTransition(href);
+    if (triggered) {
+      e.preventDefault();
+    }
+  };
 
   useEffect(() => {
     const timer = setTimeout(() => setAnimate(true), 30);
@@ -103,6 +112,7 @@ function BlogRow({
             <div className="flex items-center">
               <Link
                 href={`/blog/${post.slug}`}
+                onClick={(e) => handleNavigation(e, `/blog/${post.slug}`)}
                 aria-label={`Read article: ${post.title}`}
                 className="group/link 3xl:text-base 4xl:text-lg 5xl:text-xl inline-flex items-center gap-1.5 text-sm font-bold text-black transition-colors after:absolute after:inset-0 after:z-10 hover:text-zinc-700"
               >

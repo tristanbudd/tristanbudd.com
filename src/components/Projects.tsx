@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import * as React from "react";
+import { useTransition } from "../context/TransitionContext";
 import CTAButton from "./CTAButton";
 import DbOfflineMessage from "./DbOfflineMessage";
 
@@ -64,6 +65,14 @@ function ProjectCard({
 }) {
   const HeadingTag = headingLevel;
   const [animate, setAnimate] = React.useState(false);
+  const { triggerTransition } = useTransition();
+
+  const handleNavigation = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    const triggered = triggerTransition(href);
+    if (triggered) {
+      e.preventDefault();
+    }
+  };
 
   React.useEffect(() => {
     const timer = setTimeout(() => setAnimate(true), 30);
@@ -109,6 +118,7 @@ function ProjectCard({
         <div className="3xl:mt-8 3xl:pt-6 4xl:mt-10 4xl:pt-8 mt-6 flex items-center justify-between border-t border-zinc-100 pt-4">
           <Link
             href={`/projects/${project.slug}`}
+            onClick={(e) => handleNavigation(e, `/projects/${project.slug}`)}
             aria-label={`Learn more about project ${project.title}`}
             className="group/link 3xl:text-base 4xl:text-lg 5xl:text-xl inline-flex items-center gap-1 text-sm font-bold text-black transition-colors after:absolute after:inset-0 after:z-10 hover:text-zinc-700"
           >

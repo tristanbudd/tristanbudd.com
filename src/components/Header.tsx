@@ -128,11 +128,27 @@ export default function Header({
         </>
       );
     }
+    if (transitionTarget && transitionTarget.startsWith("/projects/")) {
+      return (
+        <>
+          <span>Opening</span>
+          <span>Project...</span>
+        </>
+      );
+    }
     if (transitionTarget === "/blog") {
       return (
         <>
           <span>Loading</span>
           <span>Blog...</span>
+        </>
+      );
+    }
+    if (transitionTarget && transitionTarget.startsWith("/blog/")) {
+      return (
+        <>
+          <span>Opening</span>
+          <span>Article...</span>
         </>
       );
     }
