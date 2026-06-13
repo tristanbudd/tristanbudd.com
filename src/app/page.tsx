@@ -3,16 +3,17 @@
  * @description Main entry page for the portfolio site. Implements hero, header, stats, and tech stack layout.
  */
 
+import BlogSection from "../components/BlogSection";
 import Certifications from "../components/Certifications";
 import Contact from "../components/Contact";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import Hero from "../components/Hero";
 import Projects from "../components/Projects";
-import BlogSection from "../components/BlogSection";
 import StatsPanel from "../components/StatsPanel";
 import TechStack from "../components/TechStack";
 import Timeline from "../components/Timeline";
+import { type BlogPost } from "../data/blog";
 import {
   certificates,
   educationList,
@@ -24,10 +25,9 @@ import {
   volunteering,
   workExperience,
 } from "../data/portfolio";
-import { prisma } from "../lib/db";
-import { type BlogPost } from "../data/blog";
 import { type Project } from "../data/projects";
-import { getYearsOfExperience, formatDuration, getGitHubContributions } from "../lib/utils";
+import { prisma } from "../lib/db";
+import { formatDuration, getGitHubContributions, getYearsOfExperience } from "../lib/utils";
 
 export const dynamic = "force-dynamic";
 
