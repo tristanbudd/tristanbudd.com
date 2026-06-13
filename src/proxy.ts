@@ -18,7 +18,13 @@ export default async function proxy(request: NextRequest) {
   let maintenanceMode = false;
   let bypassKey = "";
   try {
-    const res = await fetch(new URL("/api/maintenance", request.url), {
+    const isProd = process.env.NODE_ENV === "production";
+    const internalPort = process.env.PORT || "3000";
+    const fetchUrl = isProd
+      ? `http://127.0.0.1:${internalPort}/api/maintenance`
+      : new URL("/api/maintenance", request.url).toString();
+
+    const res = await fetch(fetchUrl, {
       cache: "no-store",
     });
     if (res.ok) {
@@ -29,6 +35,15 @@ export default async function proxy(request: NextRequest) {
   } catch (error) {
     console.error("Proxy failed to fetch maintenance status:", error);
     maintenanceMode = process.env.MAINTENANCE_MODE === "true";
+    bypassKey = process.env.MAINTENANCE_BYPASS_KEY || "";
+  }
+
+  // Force maintenance mode if environment variable is explicitly set to true
+  if (process.env.MAINTENANCE_MODE === "true") {
+    maintenanceMode = true;
+  }
+  // Ensure bypass key defaults to environment variable if not retrieved or set
+  if (!bypassKey) {
     bypassKey = process.env.MAINTENANCE_BYPASS_KEY || "";
   }
 

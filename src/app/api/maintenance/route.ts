@@ -27,17 +27,20 @@ export async function GET() {
       db.setting.findUnique({ where: { key: "maintenance_bypass_key" } }),
     ]);
 
-    const maintenanceMode = modeSetting
-      ? modeSetting.value === "true"
-      : process.env.MAINTENANCE_MODE === "true";
-    const bypassKey = keySetting ? keySetting.value : process.env.MAINTENANCE_BYPASS_KEY || "";
+    const isEnvForced = process.env.MAINTENANCE_MODE === "true";
+    const maintenanceMode = isEnvForced ? true : modeSetting ? modeSetting.value === "true" : false;
 
-    return NextResponse.json({ maintenanceMode, bypassKey });
+    const bypassKey =
+      keySetting && keySetting.value ? keySetting.value : process.env.MAINTENANCE_BYPASS_KEY || "";
+
+    return NextResponse.json({ maintenanceMode, bypassKey, isEnvForced });
   } catch (error) {
     console.error("GET /api/maintenance error:", error);
+    const isEnvForced = process.env.MAINTENANCE_MODE === "true";
     return NextResponse.json({
-      maintenanceMode: process.env.MAINTENANCE_MODE === "true",
+      maintenanceMode: isEnvForced,
       bypassKey: process.env.MAINTENANCE_BYPASS_KEY || "",
+      isEnvForced,
     });
   }
 }
@@ -58,6 +61,20 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invalid parameters" }, { status: 400 });
     }
 
+    const trimmedKey = bypassKey.trim();
+    if (trimmedKey.length < 3) {
+      return NextResponse.json(
+        { error: "Bypass key must be at least 3 characters long." },
+        { status: 400 }
+      );
+    }
+    if (!/^[a-zA-Z0-9_-]+$/.test(trimmedKey)) {
+      return NextResponse.json(
+        { error: "Bypass key can only contain alphanumeric characters, hyphens, and underscores." },
+        { status: 400 }
+      );
+    }
+
     await db.$transaction([
       db.setting.upsert({
         where: { key: "maintenance_mode" },
@@ -66,8 +83,8 @@ export async function POST(request: NextRequest) {
       }),
       db.setting.upsert({
         where: { key: "maintenance_bypass_key" },
-        update: { value: bypassKey },
-        create: { key: "maintenance_bypass_key", value: bypassKey },
+        update: { value: trimmedKey },
+        create: { key: "maintenance_bypass_key", value: trimmedKey },
       }),
     ]);
 

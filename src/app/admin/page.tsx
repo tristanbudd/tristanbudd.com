@@ -36,6 +36,8 @@ export default function AdminDashboard() {
   // Maintenance Settings States
   const [maintenanceMode, setMaintenanceMode] = useState(false);
   const [bypassKey, setBypassKey] = useState("");
+  const [isEnvForced, setIsEnvForced] = useState(false);
+  const [maintenanceFormError, setMaintenanceFormError] = useState("");
   const [isSavingSettings, setIsSavingSettings] = useState(false);
   const [saveSettingsSuccess, setSaveSettingsSuccess] = useState(false);
   const [copiedBypass, setCopiedBypass] = useState(false);
@@ -71,6 +73,7 @@ export default function AdminDashboard() {
           setProjects(projectsData);
           setMaintenanceMode(maintData.maintenanceMode);
           setBypassKey(maintData.bypassKey);
+          setIsEnvForced(maintData.isEnvForced || false);
           setIsDbOffline(false);
         } else {
           setIsDbOffline(true);
@@ -314,6 +317,21 @@ export default function AdminDashboard() {
 
   const handleSaveSettings = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validation
+    const trimmedKey = bypassKey.trim();
+    if (trimmedKey.length < 3) {
+      setMaintenanceFormError("Bypass key must be at least 3 characters long.");
+      return;
+    }
+    if (!/^[a-zA-Z0-9_-]+$/.test(trimmedKey)) {
+      setMaintenanceFormError(
+        "Bypass key can only contain alphanumeric characters, hyphens, and underscores."
+      );
+      return;
+    }
+    setMaintenanceFormError("");
+
     setIsSavingSettings(true);
     setSaveSettingsSuccess(false);
     try {
@@ -568,6 +586,14 @@ export default function AdminDashboard() {
                   </p>
                 </div>
 
+                {isEnvForced && (
+                  <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
+                    <strong>Notice:</strong> Maintenance Mode is currently forced{" "}
+                    <strong>ON</strong> by the server environment configuration (
+                    <code>MAINTENANCE_MODE=true</code>) and cannot be disabled from this panel.
+                  </div>
+                )}
+
                 <hr className="border-zinc-150/40" />
 
                 {/* Toggle switch */}
@@ -586,10 +612,11 @@ export default function AdminDashboard() {
                   <button
                     type="button"
                     id="maintenance-mode-toggle"
+                    disabled={isEnvForced}
                     onClick={() => setMaintenanceMode(!maintenanceMode)}
                     className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:ring-2 focus:ring-black focus:ring-offset-2 focus:outline-hidden ${
                       maintenanceMode ? "bg-black" : "bg-zinc-200"
-                    }`}
+                    } ${isEnvForced ? "cursor-not-allowed opacity-50" : ""}`}
                     role="switch"
                     aria-checked={maintenanceMode}
                   >
@@ -616,10 +643,16 @@ export default function AdminDashboard() {
                     type="text"
                     id="bypass-key"
                     value={bypassKey}
-                    onChange={(e) => setBypassKey(e.target.value)}
+                    onChange={(e) => {
+                      setBypassKey(e.target.value);
+                      setMaintenanceFormError("");
+                    }}
                     placeholder="Enter bypass password"
-                    className="w-full rounded-xl border border-zinc-200 px-4 py-2.5 text-sm focus:border-black focus:ring-1 focus:ring-black focus:outline-hidden"
+                    className="border-zinc-250 w-full rounded-xl border px-4 py-2.5 text-sm focus:border-black focus:ring-1 focus:ring-black focus:outline-hidden"
                   />
+                  {maintenanceFormError && (
+                    <p className="text-red-650 text-xs font-semibold">{maintenanceFormError}</p>
+                  )}
                 </div>
 
                 {/* Bypass Link Documentation */}
