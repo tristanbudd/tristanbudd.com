@@ -16,6 +16,8 @@ import { navItems, footerNavGroups, footerSocials } from "../../../data/portfoli
 import { parseDate } from "../../../lib/utils";
 import { Calendar, ChevronRight, Clock, Tag } from "lucide-react";
 
+import { type BlogPost } from "../../../data/blog";
+
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
@@ -88,10 +90,10 @@ export default async function BlogPostPage({ params }: PageProps) {
     notFound();
   }
 
-  const post = {
+  const post: BlogPost = {
     ...dbPost,
     tags: Array.isArray(dbPost.tags) ? (dbPost.tags as string[]) : [],
-  };
+  } as unknown as BlogPost;
 
   const { month, day, year } = parseDate(post.publishedAt);
 
