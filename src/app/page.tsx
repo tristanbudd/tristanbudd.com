@@ -9,7 +9,7 @@ import Contact from "../components/Contact";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import Hero from "../components/Hero";
-import Projects from "../components/Projects";
+import ProjectSection from "../components/ProjectSection";
 import StatsPanel from "../components/StatsPanel";
 import TechStack from "../components/TechStack";
 import Timeline from "../components/Timeline";
@@ -100,7 +100,7 @@ export default async function Home() {
         <TechStack title="Tech Stack" subtitle="Built with" languages={languages} tools={tools} />
 
         {/* Featured Projects Preview Showcase */}
-        <Projects
+        <ProjectSection
           projects={formattedProjects}
           title="Featured Projects"
           subtitle="My Work"

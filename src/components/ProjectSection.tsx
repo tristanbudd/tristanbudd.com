@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * @file Projects.tsx
+ * @file ProjectSection.tsx
  * @description Showcases projects that I have worked on. Paginated with scroll reveal.
  */
 
@@ -157,7 +157,7 @@ function ProjectCard({
   );
 }
 
-export interface ProjectsProps {
+export interface ProjectSectionProps {
   projects: Project[];
   title?: string;
   subtitle?: string;
@@ -192,14 +192,14 @@ const getRelevanceScore = (title: string, desc: string, content?: string, query?
   return score;
 };
 
-export default function Projects({
+export default function ProjectSection({
   projects = [],
   title = "Featured Projects",
   subtitle = "My Work",
   isPreview = false,
   showHeader = true,
   isDbOffline = false,
-}: ProjectsProps) {
+}: ProjectSectionProps) {
   const [currentPage, setCurrentPage] = React.useState(1);
   const [searchQuery, setSearchQuery] = React.useState("");
   const [sortBy, setSortBy] = React.useState("newest");
