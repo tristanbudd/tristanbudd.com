@@ -7,10 +7,10 @@
 
 import { BlogPost } from "@/data/blog";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
-import { ArrowRight, Clock } from "lucide-react";
+import { ArrowRight, Clock, Search, X, ChevronDown, Check } from "lucide-react";
 import Link from "next/link";
 import CTAButton from "./CTAButton";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { parseDate } from "@/lib/utils";
 
 function BlogRow({
@@ -125,6 +125,32 @@ export interface BlogSectionProps {
   showHeader?: boolean;
 }
 
+const getRelevanceScore = (title: string, desc: string, content?: string, query?: string) => {
+  if (!query) return 0;
+  const q = query.toLowerCase();
+  const t = title.toLowerCase();
+  const d = desc.toLowerCase();
+  const c = content ? content.toLowerCase() : "";
+
+  let score = 0;
+  if (t === q) {
+    score += 1000;
+  } else if (t.startsWith(q)) {
+    score += 500;
+  } else if (t.includes(q)) {
+    score += 200;
+  }
+
+  if (d.includes(q)) {
+    score += 50;
+  }
+
+  if (c.includes(q)) {
+    score += 10;
+  }
+  return score;
+};
+
 export default function BlogSection({
   posts = [],
   title = "Latest Articles",
@@ -133,13 +159,76 @@ export default function BlogSection({
   showHeader = true,
 }: BlogSectionProps) {
   const [visibleCount, setVisibleCount] = useState(5);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [sortBy, setSortBy] = useState("newest");
+  const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
+
   const { ref, visible: revealVisible } = useScrollReveal<HTMLDivElement>({ threshold: 0.05 });
   const visible = revealVisible;
+
+  // Extract unique categories dynamically
+  const allCategories = useMemo(() => {
+    const categoriesSet = new Set<string>();
+    posts.forEach((p) => {
+      if (p.category) {
+        categoriesSet.add(p.category);
+      }
+    });
+    return Array.from(categoriesSet).sort();
+  }, [posts]);
+
+  // Filter posts based on search query and selected category
+  const filteredPosts = useMemo(() => {
+    return posts.filter((post) => {
+      const matchesCategory = !selectedCategory || post.category === selectedCategory;
+      const matchesSearch =
+        !searchQuery ||
+        post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        post.excerpt.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        post.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        post.content.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchesCategory && matchesSearch;
+    });
+  }, [posts, selectedCategory, searchQuery]);
+
+  // Sort posts based on chosen criteria
+  const sortedPosts = useMemo(() => {
+    const list = [...filteredPosts];
+    if (sortBy === "relevance" && searchQuery) {
+      list.sort((a, b) => {
+        const scoreA = getRelevanceScore(a.title, a.excerpt, a.content, searchQuery);
+        const scoreB = getRelevanceScore(b.title, b.excerpt, b.content, searchQuery);
+        return scoreB - scoreA;
+      });
+    } else if (sortBy === "newest") {
+      list.sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
+    } else if (sortBy === "oldest") {
+      list.sort((a, b) => new Date(a.publishedAt).getTime() - new Date(b.publishedAt).getTime());
+    } else if (sortBy === "alphabetical-asc") {
+      list.sort((a, b) => a.title.localeCompare(b.title));
+    } else if (sortBy === "alphabetical-desc") {
+      list.sort((a, b) => b.title.localeCompare(a.title));
+    } else if (sortBy === "reading-time-asc") {
+      list.sort((a, b) => {
+        const aMin = parseInt(a.readingTime) || 0;
+        const bMin = parseInt(b.readingTime) || 0;
+        return aMin - bMin;
+      });
+    } else if (sortBy === "reading-time-desc") {
+      list.sort((a, b) => {
+        const aMin = parseInt(a.readingTime) || 0;
+        const bMin = parseInt(b.readingTime) || 0;
+        return bMin - aMin;
+      });
+    }
+    return list;
+  }, [filteredPosts, sortBy, searchQuery]);
 
   if (!posts.length) return null;
 
   // Show top 3 in preview, otherwise render up to visibleCount
-  const displayedPosts = isPreview ? posts.slice(0, 3) : posts.slice(0, visibleCount);
+  const displayedPosts = isPreview ? sortedPosts.slice(0, 3) : sortedPosts.slice(0, visibleCount);
 
   return (
     <section
@@ -151,7 +240,7 @@ export default function BlogSection({
           : "3xl:pt-14 3xl:pb-24 pt-8 pb-12 sm:pt-10 sm:pb-16"
       }`}
     >
-      <div className="flex flex-col gap-10">
+      <div ref={ref} className="flex flex-col gap-10">
         {/* Section Header */}
         {showHeader && (
           <div className="flex flex-col gap-2 text-center md:text-left">
@@ -164,31 +253,253 @@ export default function BlogSection({
           </div>
         )}
 
-        {/* Blog Posts Rows */}
-        <div ref={ref} className="flex flex-col gap-6">
-          {displayedPosts.map((post, idx) => (
-            <BlogRow
-              key={post.slug}
-              post={post}
-              visible={visible}
-              delay={(idx % 5) * 150}
-              headingLevel={showHeader ? "h3" : "h2"}
-            />
-          ))}
-        </div>
+        {/* Search and Filters (Full page showcase only) */}
+        {!isPreview && (
+          <div className="flex flex-col gap-6 border-b border-zinc-200/50 pb-8">
+            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+              {/* Search Input */}
+              <div className="relative w-full md:max-w-xs">
+                <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
+                  <Search className="h-4 w-4 text-zinc-400" />
+                </span>
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => {
+                    const newVal = e.target.value;
+                    setSearchQuery(newVal);
+                    setVisibleCount(5);
+                    if (newVal && sortBy !== "relevance") {
+                      setSortBy("relevance");
+                    } else if (!newVal && sortBy === "relevance") {
+                      setSortBy("newest");
+                    }
+                  }}
+                  placeholder="Search articles..."
+                  className="w-full rounded-full border border-zinc-200/60 bg-white/40 py-2.5 pr-10 pl-10 text-sm font-medium shadow-2xs transition-all duration-300 placeholder:text-zinc-400 focus:border-zinc-400 focus:bg-white/80 focus:outline-hidden"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => {
+                      setSearchQuery("");
+                      setVisibleCount(5);
+                      if (sortBy === "relevance") {
+                        setSortBy("newest");
+                      }
+                    }}
+                    className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-zinc-400 transition-colors hover:text-black"
+                    aria-label="Clear Search"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                )}
+              </div>
 
-        {/* Load More Button (Full page blog showcase only) */}
-        {!isPreview && visibleCount < posts.length && (
-          <div className="mt-8 flex justify-center">
-            <CTAButton
-              text="Load More Articles"
-              type="load-more"
-              onClick={() => setVisibleCount((prev) => prev + 5)}
-            />
+              {/* Sort Dropdown */}
+              <div className="relative self-end md:self-auto">
+                <button
+                  onClick={() => setSortDropdownOpen(!sortDropdownOpen)}
+                  className="flex items-center gap-2 rounded-full border border-zinc-200/60 bg-white/40 px-5 py-2.5 text-sm font-semibold text-zinc-700 shadow-2xs transition-all duration-300 select-none hover:border-zinc-300 hover:bg-white/85"
+                >
+                  <span>
+                    Sort by:{" "}
+                    {sortBy === "relevance"
+                      ? "Relevance"
+                      : sortBy === "newest"
+                        ? "Newest First"
+                        : sortBy === "oldest"
+                          ? "Oldest First"
+                          : sortBy === "alphabetical-asc"
+                            ? "A-Z"
+                            : sortBy === "alphabetical-desc"
+                              ? "Z-A"
+                              : sortBy === "reading-time-asc"
+                                ? "Reading Time (Short)"
+                                : "Reading Time (Long)"}
+                  </span>
+                  <ChevronDown
+                    className={`text-zinc-550 h-4 w-4 transition-transform duration-300 ${sortDropdownOpen ? "rotate-180" : ""}`}
+                  />
+                </button>
+
+                {sortDropdownOpen && (
+                  <>
+                    <div
+                      className="fixed inset-0 z-20"
+                      onClick={() => setSortDropdownOpen(false)}
+                    />
+                    <div className="animate-in fade-in slide-in-from-top-2 absolute right-0 z-30 mt-2 w-56 rounded-2xl border border-zinc-200/80 bg-white/95 py-1.5 shadow-lg backdrop-blur-md duration-200">
+                      {searchQuery && (
+                        <button
+                          onClick={() => {
+                            setSortBy("relevance");
+                            setVisibleCount(5);
+                            setSortDropdownOpen(false);
+                          }}
+                          className="text-zinc-750 flex w-full items-center justify-between rounded-t-xl px-4 py-2.5 text-left text-sm font-medium transition-colors hover:bg-black/5"
+                        >
+                          <span>Relevance</span>
+                          {sortBy === "relevance" && <Check className="h-4 w-4 text-black" />}
+                        </button>
+                      )}
+                      <button
+                        onClick={() => {
+                          setSortBy("newest");
+                          setVisibleCount(5);
+                          setSortDropdownOpen(false);
+                        }}
+                        className={`text-zinc-750 flex w-full items-center justify-between px-4 py-2.5 text-left text-sm font-medium transition-colors hover:bg-black/5 ${!searchQuery ? "rounded-t-xl" : ""}`}
+                      >
+                        <span>Newest First</span>
+                        {sortBy === "newest" && <Check className="h-4 w-4 text-black" />}
+                      </button>
+                      <button
+                        onClick={() => {
+                          setSortBy("oldest");
+                          setVisibleCount(5);
+                          setSortDropdownOpen(false);
+                        }}
+                        className="text-zinc-750 flex w-full items-center justify-between px-4 py-2.5 text-left text-sm font-medium transition-colors hover:bg-black/5"
+                      >
+                        <span>Oldest First</span>
+                        {sortBy === "oldest" && <Check className="h-4 w-4 text-black" />}
+                      </button>
+                      <button
+                        onClick={() => {
+                          setSortBy("alphabetical-asc");
+                          setVisibleCount(5);
+                          setSortDropdownOpen(false);
+                        }}
+                        className="text-zinc-750 flex w-full items-center justify-between px-4 py-2.5 text-left text-sm font-medium transition-colors hover:bg-black/5"
+                      >
+                        <span>A-Z</span>
+                        {sortBy === "alphabetical-asc" && <Check className="h-4 w-4 text-black" />}
+                      </button>
+                      <button
+                        onClick={() => {
+                          setSortBy("alphabetical-desc");
+                          setVisibleCount(5);
+                          setSortDropdownOpen(false);
+                        }}
+                        className="text-zinc-750 flex w-full items-center justify-between px-4 py-2.5 text-left text-sm font-medium transition-colors hover:bg-black/5"
+                      >
+                        <span>Z-A</span>
+                        {sortBy === "alphabetical-desc" && <Check className="h-4 w-4 text-black" />}
+                      </button>
+                      <button
+                        onClick={() => {
+                          setSortBy("reading-time-asc");
+                          setVisibleCount(5);
+                          setSortDropdownOpen(false);
+                        }}
+                        className="text-zinc-750 flex w-full items-center justify-between px-4 py-2.5 text-left text-sm font-medium transition-colors hover:bg-black/5"
+                      >
+                        <span>Reading Time (Short)</span>
+                        {sortBy === "reading-time-asc" && <Check className="h-4 w-4 text-black" />}
+                      </button>
+                      <button
+                        onClick={() => {
+                          setSortBy("reading-time-desc");
+                          setVisibleCount(5);
+                          setSortDropdownOpen(false);
+                        }}
+                        className="text-zinc-750 flex w-full items-center justify-between rounded-b-xl px-4 py-2.5 text-left text-sm font-medium transition-colors hover:bg-black/5"
+                      >
+                        <span>Reading Time (Long)</span>
+                        {sortBy === "reading-time-desc" && <Check className="h-4 w-4 text-black" />}
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+
+            {/* Category Filter pills */}
+            <div className="no-scrollbar flex flex-wrap items-center gap-2 overflow-x-auto py-1">
+              <button
+                onClick={() => {
+                  setSelectedCategory(null);
+                  setVisibleCount(5);
+                }}
+                className={`rounded-full border px-4 py-2 text-xs font-bold tracking-wider uppercase transition-all duration-300 ${
+                  selectedCategory === null
+                    ? "border-black bg-black text-white"
+                    : "text-zinc-550 border-zinc-200 bg-white/40 hover:border-zinc-300 hover:bg-white/85 hover:text-black"
+                }`}
+              >
+                All
+              </button>
+              {allCategories.map((category) => (
+                <button
+                  key={category}
+                  onClick={() => {
+                    setSelectedCategory(category);
+                    setVisibleCount(5);
+                  }}
+                  className={`rounded-full border px-4 py-2 text-xs font-bold tracking-wider whitespace-nowrap uppercase transition-all duration-300 ${
+                    selectedCategory === category
+                      ? "border-black bg-black text-white"
+                      : "text-zinc-550 border-zinc-200 bg-white/40 hover:border-zinc-300 hover:bg-white/85 hover:text-black"
+                  }`}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
           </div>
         )}
 
-        {/* View All Articles Button */}
+        {/* Blog Posts Rows / Empty State */}
+        {sortedPosts.length === 0 ? (
+          <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-zinc-200 bg-white/20 p-12 text-center backdrop-blur-md">
+            <span className="mb-4 text-black">
+              <Search className="h-12 w-12 stroke-[1.5]" />
+            </span>
+            <h3 className="mb-1 text-lg font-bold text-black">No Articles Found</h3>
+            <p className="mb-6 max-w-xs text-sm text-zinc-500">
+              We couldn&apos;t find any articles matching your search criteria. Try modifying your
+              search or filters.
+            </p>
+            <button
+              onClick={() => {
+                setSearchQuery("");
+                setSelectedCategory(null);
+                setSortBy("newest");
+                setVisibleCount(5);
+              }}
+              className="rounded-full border border-black bg-black px-6 py-2.5 text-xs font-bold tracking-wider text-white uppercase transition-all duration-300 hover:bg-zinc-900"
+            >
+              Reset Filters
+            </button>
+          </div>
+        ) : (
+          <>
+            <div className="flex flex-col gap-6">
+              {displayedPosts.map((post, idx) => (
+                <BlogRow
+                  key={post.slug}
+                  post={post}
+                  visible={visible}
+                  delay={(idx % 5) * 150}
+                  headingLevel={showHeader ? "h3" : "h2"}
+                />
+              ))}
+            </div>
+
+            {/* Load More Button (Full page blog showcase only) */}
+            {!isPreview && visibleCount < sortedPosts.length && (
+              <div className="mt-8 flex justify-center">
+                <CTAButton
+                  text="Load More Articles"
+                  type="load-more"
+                  onClick={() => setVisibleCount((prev) => prev + 5)}
+                />
+              </div>
+            )}
+          </>
+        )}
+
+        {/* View All Articles Button (Home page preview only) */}
         {isPreview && (
           <div className="mt-4 flex justify-center md:justify-start">
             <CTAButton text="View All Articles" href="/blog" />

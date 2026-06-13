@@ -20,6 +20,7 @@ export interface Project {
   platformValue?: string;
   technologiesLabel?: string;
   caseStudyLabel?: string;
+  publishedAt?: string;
 }
 
 const projectMarkdownContent = `
@@ -139,6 +140,7 @@ export const projects: Project[] = [
     platformValue: "Dolor Sit Amet",
     technologiesLabel: "Dolore Magna",
     caseStudyLabel: "Lorem Ipsum",
+    publishedAt: "2023-11-20",
   },
   {
     slug: "project-one",
@@ -148,6 +150,7 @@ export const projects: Project[] = [
     tags: ["Lorem", "Ipsum", "Dolor", "Sit"],
     mockupType: "defect-reporter",
     githubUrl: "https://github.com/tristanbudd",
+    publishedAt: "2023-10-15",
   },
   {
     slug: "project-two",
@@ -157,6 +160,7 @@ export const projects: Project[] = [
     tags: ["Amet", "Consectetur", "Adipiscing"],
     mockupType: "logistics",
     projectUrl: "https://www.projectlink.com",
+    publishedAt: "2023-08-10",
   },
   {
     slug: "project-three",
@@ -167,6 +171,7 @@ export const projects: Project[] = [
     mockupType: "study-planner",
     githubUrl: "https://github.com/tristanbudd",
     projectUrl: "https://www.projectlink.com",
+    publishedAt: "2023-06-05",
   },
   {
     slug: "project-four",
@@ -175,6 +180,7 @@ export const projects: Project[] = [
       "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.",
     tags: ["Tempor", "Incididunt", "Eiusmod"],
     mockupType: "study-planner",
+    publishedAt: "2023-04-12",
   },
   {
     slug: "project-five",
@@ -184,6 +190,7 @@ export const projects: Project[] = [
     tags: ["Dolore", "Magna", "Aliqua"],
     mockupType: "defect-reporter",
     githubUrl: "https://github.com/tristanbudd",
+    publishedAt: "2023-02-18",
   },
   {
     slug: "project-six",
@@ -193,6 +200,7 @@ export const projects: Project[] = [
     tags: ["Minim", "Veniam"],
     mockupType: "logistics",
     projectUrl: "https://tristanbudd.com",
+    publishedAt: "2022-12-01",
   },
   {
     slug: "project-seven",
@@ -202,5 +210,6 @@ export const projects: Project[] = [
     tags: ["Quis", "Nostrud"],
     mockupType: "study-planner",
     githubUrl: "https://github.com/tristanbudd",
+    publishedAt: "2022-10-15",
   },
 ];

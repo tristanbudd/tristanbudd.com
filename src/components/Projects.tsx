@@ -7,7 +7,17 @@
 
 import { Project } from "@/data/projects";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
-import { ArrowRight, ChevronLeft, ChevronRight, ExternalLink, Github } from "lucide-react";
+import {
+  ArrowRight,
+  ChevronLeft,
+  ChevronRight,
+  ExternalLink,
+  Github,
+  Search,
+  X,
+  ChevronDown,
+  Check,
+} from "lucide-react";
 import Link from "next/link";
 import * as React from "react";
 import CTAButton from "./CTAButton";
@@ -144,6 +154,32 @@ export interface ProjectsProps {
   showHeader?: boolean;
 }
 
+const getRelevanceScore = (title: string, desc: string, content?: string, query?: string) => {
+  if (!query) return 0;
+  const q = query.toLowerCase();
+  const t = title.toLowerCase();
+  const d = desc.toLowerCase();
+  const c = content ? content.toLowerCase() : "";
+
+  let score = 0;
+  if (t === q) {
+    score += 1000;
+  } else if (t.startsWith(q)) {
+    score += 500;
+  } else if (t.includes(q)) {
+    score += 200;
+  }
+
+  if (d.includes(q)) {
+    score += 50;
+  }
+
+  if (c.includes(q)) {
+    score += 10;
+  }
+  return score;
+};
+
 export default function Projects({
   projects = [],
   title = "Featured Projects",
@@ -152,18 +188,77 @@ export default function Projects({
   showHeader = true,
 }: ProjectsProps) {
   const [currentPage, setCurrentPage] = React.useState(1);
+  const [searchQuery, setSearchQuery] = React.useState("");
+  const [sortBy, setSortBy] = React.useState("newest");
+  const [sortDropdownOpen, setSortDropdownOpen] = React.useState(false);
+
   const { ref, visible: revealVisible } = useScrollReveal<HTMLDivElement>({ threshold: 0.05 });
   const visible = revealVisible;
+
+  // Filter projects based on search query
+  const filteredProjects = React.useMemo(() => {
+    if (!searchQuery) return projects;
+
+    const query = searchQuery.toLowerCase();
+
+    return projects.filter((project) => {
+      const titleMatch = project.title.toLowerCase().includes(query);
+      const descMatch = project.description.toLowerCase().includes(query);
+      const tagMatch = project.tags && project.tags.some((t) => t.toLowerCase().includes(query));
+      const contentMatch =
+        project.extendedDescription && project.extendedDescription.toLowerCase().includes(query);
+      return titleMatch || descMatch || tagMatch || contentMatch;
+    });
+  }, [projects, searchQuery]);
+
+  // Sort projects based on chosen criteria
+  const sortedProjects = React.useMemo(() => {
+    const list = [...filteredProjects];
+    if (sortBy === "relevance" && searchQuery) {
+      list.sort((a, b) => {
+        const scoreA = getRelevanceScore(
+          a.title,
+          a.description,
+          a.extendedDescription,
+          searchQuery
+        );
+        const scoreB = getRelevanceScore(
+          b.title,
+          b.description,
+          b.extendedDescription,
+          searchQuery
+        );
+        return scoreB - scoreA;
+      });
+    } else if (sortBy === "newest") {
+      list.sort((a, b) => {
+        const aDate = a.publishedAt ? new Date(a.publishedAt).getTime() : 0;
+        const bDate = b.publishedAt ? new Date(b.publishedAt).getTime() : 0;
+        return bDate - aDate;
+      });
+    } else if (sortBy === "oldest") {
+      list.sort((a, b) => {
+        const aDate = a.publishedAt ? new Date(a.publishedAt).getTime() : 0;
+        const bDate = b.publishedAt ? new Date(b.publishedAt).getTime() : 0;
+        return aDate - bDate;
+      });
+    } else if (sortBy === "alphabetical-asc") {
+      list.sort((a, b) => a.title.localeCompare(b.title));
+    } else if (sortBy === "alphabetical-desc") {
+      list.sort((a, b) => b.title.localeCompare(a.title));
+    }
+    return list;
+  }, [filteredProjects, sortBy, searchQuery]);
 
   if (!projects.length) return null;
 
   const itemsPerPage = 6;
-  const totalPages = Math.ceil(projects.length / itemsPerPage);
+  const totalPages = Math.ceil(sortedProjects.length / itemsPerPage);
 
   // Render top 3 in preview, otherwise paginate
   const displayedProjects = isPreview
-    ? projects.slice(0, 3)
-    : projects.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+    ? sortedProjects.slice(0, 3)
+    : sortedProjects.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   return (
     <section
@@ -175,7 +270,7 @@ export default function Projects({
           : "3xl:pt-14 3xl:pb-24 pt-8 pb-12 sm:pt-10 sm:pb-16"
       }`}
     >
-      <div className="flex flex-col gap-10">
+      <div ref={ref} className="flex flex-col gap-10">
         {/* Section Header */}
         {showHeader && (
           <div className="flex flex-col gap-2 text-center md:text-left">
@@ -188,56 +283,214 @@ export default function Projects({
           </div>
         )}
 
-        {/* Project Cards Grid */}
-        <div ref={ref} className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {displayedProjects.map((project, idx) => (
-            <ProjectCard
-              key={project.slug}
-              project={project}
-              visible={visible}
-              delay={idx * 100}
-              headingLevel={showHeader ? "h3" : "h2"}
-            />
-          ))}
-        </div>
+        {/* Search and Sorting controls (Full page showcase only) */}
+        {!isPreview && (
+          <div className="flex flex-col gap-4 border-b border-zinc-200/50 pb-8 sm:flex-row sm:items-center sm:justify-between">
+            {/* Search Input */}
+            <div className="relative w-full sm:max-w-xs">
+              <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
+                <Search className="h-4 w-4 text-zinc-400" />
+              </span>
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => {
+                  const newVal = e.target.value;
+                  setSearchQuery(newVal);
+                  setCurrentPage(1);
+                  if (newVal && sortBy !== "relevance") {
+                    setSortBy("relevance");
+                  } else if (!newVal && sortBy === "relevance") {
+                    setSortBy("newest");
+                  }
+                }}
+                placeholder="Search projects..."
+                className="w-full rounded-full border border-zinc-200/60 bg-white/40 py-2.5 pr-10 pl-10 text-sm font-medium shadow-2xs transition-all duration-300 placeholder:text-zinc-400 focus:border-zinc-400 focus:bg-white/80 focus:outline-hidden"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => {
+                    setSearchQuery("");
+                    setCurrentPage(1);
+                    if (sortBy === "relevance") {
+                      setSortBy("newest");
+                    }
+                  }}
+                  className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-zinc-400 transition-colors hover:text-black"
+                  aria-label="Clear Search"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              )}
+            </div>
 
-        {/* Pagination Controls (Full page showcase only) */}
-        {!isPreview && totalPages > 1 && (
-          <div className="mt-8 flex items-center justify-center gap-2">
-            <button
-              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-              disabled={currentPage === 1}
-              className="group flex h-10 w-10 items-center justify-center rounded-full border border-zinc-200 bg-white/40 shadow-xs backdrop-blur-md transition-all duration-300 hover:border-zinc-300 hover:bg-white/80 disabled:opacity-40 disabled:hover:border-zinc-200 disabled:hover:bg-white/40"
-              aria-label="Previous Page"
-            >
-              <ChevronLeft className="h-4 w-4 text-black" />
-            </button>
-
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+            {/* Sort Dropdown */}
+            <div className="relative self-end sm:self-auto">
               <button
-                key={page}
-                onClick={() => setCurrentPage(page)}
-                className={`flex h-10 w-10 items-center justify-center rounded-full border text-sm font-semibold transition-all duration-300 ${
-                  currentPage === page
-                    ? "border-black bg-black text-white"
-                    : "text-zinc-550 border-zinc-200 bg-white/40 hover:border-zinc-300 hover:bg-white/80"
-                }`}
-                aria-label={`Page ${page}`}
-                aria-current={currentPage === page ? "page" : undefined}
+                onClick={() => setSortDropdownOpen(!sortDropdownOpen)}
+                className="flex items-center gap-2 rounded-full border border-zinc-200/60 bg-white/40 px-5 py-2.5 text-sm font-semibold text-zinc-700 shadow-2xs transition-all duration-300 select-none hover:border-zinc-300 hover:bg-white/85"
               >
-                {page}
+                <span>
+                  Sort by:{" "}
+                  {sortBy === "relevance"
+                    ? "Relevance"
+                    : sortBy === "newest"
+                      ? "Newest First"
+                      : sortBy === "oldest"
+                        ? "Oldest First"
+                        : sortBy === "alphabetical-asc"
+                          ? "A-Z"
+                          : "Z-A"}
+                </span>
+                <ChevronDown
+                  className={`text-zinc-550 h-4 w-4 transition-transform duration-300 ${sortDropdownOpen ? "rotate-180" : ""}`}
+                />
               </button>
-            ))}
 
+              {sortDropdownOpen && (
+                <>
+                  {/* Backdrop overlay to close when clicking outside */}
+                  <div className="fixed inset-0 z-20" onClick={() => setSortDropdownOpen(false)} />
+                  <div className="animate-in fade-in slide-in-from-top-2 absolute right-0 z-30 mt-2 w-48 rounded-2xl border border-zinc-200/80 bg-white/95 py-1.5 shadow-lg backdrop-blur-md duration-200">
+                    {searchQuery && (
+                      <button
+                        onClick={() => {
+                          setSortBy("relevance");
+                          setCurrentPage(1);
+                          setSortDropdownOpen(false);
+                        }}
+                        className="text-zinc-750 flex w-full items-center justify-between rounded-t-xl px-4 py-2.5 text-left text-sm font-medium transition-colors hover:bg-black/5"
+                      >
+                        <span>Relevance</span>
+                        {sortBy === "relevance" && <Check className="h-4 w-4 text-black" />}
+                      </button>
+                    )}
+                    <button
+                      onClick={() => {
+                        setSortBy("newest");
+                        setCurrentPage(1);
+                        setSortDropdownOpen(false);
+                      }}
+                      className={`text-zinc-750 flex w-full items-center justify-between px-4 py-2.5 text-left text-sm font-medium transition-colors hover:bg-black/5 ${!searchQuery ? "rounded-t-xl" : ""}`}
+                    >
+                      <span>Newest First</span>
+                      {sortBy === "newest" && <Check className="h-4 w-4 text-black" />}
+                    </button>
+                    <button
+                      onClick={() => {
+                        setSortBy("oldest");
+                        setCurrentPage(1);
+                        setSortDropdownOpen(false);
+                      }}
+                      className="text-zinc-750 flex w-full items-center justify-between px-4 py-2.5 text-left text-sm font-medium transition-colors hover:bg-black/5"
+                    >
+                      <span>Oldest First</span>
+                      {sortBy === "oldest" && <Check className="h-4 w-4 text-black" />}
+                    </button>
+                    <button
+                      onClick={() => {
+                        setSortBy("alphabetical-asc");
+                        setCurrentPage(1);
+                        setSortDropdownOpen(false);
+                      }}
+                      className="text-zinc-750 flex w-full items-center justify-between px-4 py-2.5 text-left text-sm font-medium transition-colors hover:bg-black/5"
+                    >
+                      <span>A-Z</span>
+                      {sortBy === "alphabetical-asc" && <Check className="h-4 w-4 text-black" />}
+                    </button>
+                    <button
+                      onClick={() => {
+                        setSortBy("alphabetical-desc");
+                        setCurrentPage(1);
+                        setSortDropdownOpen(false);
+                      }}
+                      className="text-zinc-750 flex w-full items-center justify-between rounded-b-xl px-4 py-2.5 text-left text-sm font-medium transition-colors hover:bg-black/5"
+                    >
+                      <span>Z-A</span>
+                      {sortBy === "alphabetical-desc" && <Check className="h-4 w-4 text-black" />}
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Project Cards Grid / Empty State */}
+        {sortedProjects.length === 0 ? (
+          <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-zinc-200 bg-white/20 p-12 text-center backdrop-blur-md">
+            <span className="mb-4 text-black">
+              <Search className="h-12 w-12 stroke-[1.5]" />
+            </span>
+            <h3 className="mb-1 text-lg font-bold text-black">No Projects Found</h3>
+            <p className="mb-6 max-w-xs text-sm text-zinc-500">
+              We couldn&apos;t find any projects matching your search criteria. Try modifying your
+              search or filters.
+            </p>
             <button
-              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-              disabled={currentPage === totalPages}
-              className="group flex h-10 w-10 items-center justify-center rounded-full border border-zinc-200 bg-white/40 shadow-xs backdrop-blur-md transition-all duration-300 hover:border-zinc-300 hover:bg-white/80 disabled:opacity-40 disabled:hover:border-zinc-200 disabled:hover:bg-white/40"
-              aria-label="Next Page"
+              onClick={() => {
+                setSearchQuery("");
+                setSortBy("newest");
+                setCurrentPage(1);
+              }}
+              className="rounded-full border border-black bg-black px-6 py-2.5 text-xs font-bold tracking-wider text-white uppercase transition-all duration-300 hover:bg-zinc-900"
             >
-              <ChevronRight className="h-4 w-4 text-black" />
+              Reset Filters
             </button>
           </div>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {displayedProjects.map((project, idx) => (
+                <ProjectCard
+                  key={project.slug}
+                  project={project}
+                  visible={visible}
+                  delay={idx * 100}
+                  headingLevel={showHeader ? "h3" : "h2"}
+                />
+              ))}
+            </div>
+
+            {/* Pagination Controls (Full page showcase only) */}
+            {!isPreview && totalPages > 1 && (
+              <div className="mt-8 flex items-center justify-center gap-2">
+                <button
+                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                  className="group flex h-10 w-10 items-center justify-center rounded-full border border-zinc-200 bg-white/40 shadow-xs backdrop-blur-md transition-all duration-300 hover:border-zinc-300 hover:bg-white/80 disabled:opacity-40 disabled:hover:border-zinc-200 disabled:hover:bg-white/40"
+                  aria-label="Previous Page"
+                >
+                  <ChevronLeft className="h-4 w-4 text-black" />
+                </button>
+
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                  <button
+                    key={page}
+                    onClick={() => setCurrentPage(page)}
+                    className={`flex h-10 w-10 items-center justify-center rounded-full border text-sm font-semibold transition-all duration-300 ${
+                      currentPage === page
+                        ? "border-black bg-black text-white"
+                        : "text-zinc-550 border-zinc-200 bg-white/40 hover:border-zinc-300 hover:bg-white/80"
+                    }`}
+                    aria-label={`Page ${page}`}
+                    aria-current={currentPage === page ? "page" : undefined}
+                  >
+                    {page}
+                  </button>
+                ))}
+
+                <button
+                  onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                  disabled={currentPage === totalPages}
+                  className="group flex h-10 w-10 items-center justify-center rounded-full border border-zinc-200 bg-white/40 shadow-xs backdrop-blur-md transition-all duration-300 hover:border-zinc-300 hover:bg-white/80 disabled:opacity-40 disabled:hover:border-zinc-200 disabled:hover:bg-white/40"
+                  aria-label="Next Page"
+                >
+                  <ChevronRight className="h-4 w-4 text-black" />
+                </button>
+              </div>
+            )}
+          </>
         )}
 
         {/* View All Projects Button (Home page preview only) */}
