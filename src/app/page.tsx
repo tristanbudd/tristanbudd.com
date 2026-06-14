@@ -27,7 +27,12 @@ import {
 } from "../data/portfolio";
 import { type Project } from "../data/projects";
 import { prisma } from "../lib/db";
+import type { Metadata } from "next";
 import { formatDuration, getGitHubContributions, getYearsOfExperience } from "../lib/utils";
+
+export const metadata: Metadata = {
+  title: "Tristan Budd - Home",
+};
 
 export const dynamic = "force-dynamic";
 

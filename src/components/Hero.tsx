@@ -137,6 +137,7 @@ export default function Hero({
                   alt="Tristan Budd Profile"
                   className="h-full w-full rounded-full object-cover object-center"
                   loading="eager"
+                  sizes="(max-width: 400px) 82vw, (max-width: 640px) 220px, (max-width: 1024px) 310px, (max-width: 1536px) 400px, 608px"
                 />
                 {/* Glassmorphic overlay ring */}
                 <div className="pointer-events-none absolute inset-0 rounded-full ring-1 ring-black/10 ring-inset" />
