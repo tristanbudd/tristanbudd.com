@@ -9,6 +9,7 @@ import { Cinzel, Geist, Geist_Mono, Outfit, Syne } from "next/font/google";
 import PageLoader from "@/components/PageLoader";
 import ScreenSizeNotice from "@/components/ScreenSizeNotice";
 import ScrollInit from "@/components/ScrollInit";
+import GoogleTagManager from "@/components/GoogleTagManager";
 import "./globals.css";
 import { Providers } from "./providers";
 
@@ -95,6 +96,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const gtmId = process.env.GTM_ID;
+
   return (
     <html
       lang="en-GB"
@@ -103,6 +106,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="flex min-h-full flex-col" suppressHydrationWarning>
+        <GoogleTagManager gtmId={gtmId} />
         <Providers>
           <ScrollInit />
           <PageLoader />

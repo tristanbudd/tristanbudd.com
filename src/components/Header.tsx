@@ -22,6 +22,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useTransition } from "../context/TransitionContext";
 import CTAButton from "./CTAButton";
+import { trackNavigation } from "@/lib/gtm";
 
 const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
@@ -101,10 +102,16 @@ export default function Header({
 
   const handleLogoClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
+    trackNavigation("Logo", pathname === "/" ? "refresh" : "/");
     triggerTransition(pathname === "/" ? "refresh" : "/");
   };
 
-  const handleNavigation = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+  const handleNavigation = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    href: string,
+    label: string
+  ) => {
+    trackNavigation(label, href);
     const triggered = triggerTransition(href);
     if (triggered) {
       e.preventDefault();
@@ -433,6 +440,7 @@ export default function Header({
                                       ? "noopener noreferrer"
                                       : undefined
                                   }
+                                  onClick={() => trackNavigation(subItem.label, subItem.href)}
                                   role="menuitem"
                                   className="group/item 3xl:text-base 4xl:text-lg 5xl:text-xl relative flex items-center gap-3 px-5 py-2.5 text-[14px] font-semibold whitespace-nowrap text-zinc-700 transition-all duration-200 hover:bg-zinc-50 hover:text-black focus:outline-hidden focus-visible:bg-zinc-50 focus-visible:text-black"
                                 >
@@ -456,7 +464,7 @@ export default function Header({
                           if (isActive) {
                             e.preventDefault();
                           } else {
-                            handleNavigation(e, item.href);
+                            handleNavigation(e, item.href, item.label);
                           }
                         }}
                         className={`relative rounded-xs py-2 whitespace-nowrap transition-colors after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-center after:bg-black after:transition-transform after:duration-300 focus:outline-hidden ${
@@ -541,7 +549,10 @@ export default function Header({
                                   ? "noopener noreferrer"
                                   : undefined
                               }
-                              onClick={() => setMobileMenuOpen(false)}
+                              onClick={() => {
+                                setMobileMenuOpen(false);
+                                trackNavigation(subItem.label, subItem.href);
+                              }}
                               className="group/subitem flex items-center gap-3 rounded-md py-2.5 pr-2 pl-4 text-sm font-semibold whitespace-nowrap text-zinc-700 transition-all duration-200 hover:bg-zinc-50 hover:text-black focus:outline-hidden focus-visible:bg-zinc-50 focus-visible:text-black"
                             >
                               {SocialIcon}
@@ -564,7 +575,7 @@ export default function Header({
                           e.preventDefault();
                         } else {
                           setMobileMenuOpen(false);
-                          handleNavigation(e, item.href);
+                          handleNavigation(e, item.href, item.label);
                         }
                       }}
                       className={`group/item flex w-full items-center justify-between rounded-md px-4 py-2.5 text-base font-bold tracking-wider transition-all duration-200 focus:outline-hidden ${

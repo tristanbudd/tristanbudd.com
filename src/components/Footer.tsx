@@ -10,6 +10,7 @@ import { ArrowUp, Github, Globe, Linkedin, Mail, Twitter } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import { useTransition } from "../context/TransitionContext";
+import { trackNavigation, trackCTA } from "@/lib/gtm";
 
 export interface FooterLink {
   label: string;
@@ -52,6 +53,7 @@ export default function Footer({
 
   const handleScrollToTop = (e: React.MouseEvent) => {
     e.preventDefault();
+    trackCTA("Back to Top");
     if (lenis) {
       lenis.scrollTo(0, { duration: 1.2 });
     } else {
@@ -59,7 +61,8 @@ export default function Footer({
     }
   };
 
-  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string, label: string) => {
+    trackNavigation(label, href);
     const triggered = triggerTransition(href);
     if (triggered) {
       e.preventDefault();
@@ -79,6 +82,7 @@ export default function Footer({
         <div className="3xl:gap-6 4xl:gap-8 5xl:gap-10 col-span-2 flex flex-col items-start gap-4 lg:col-span-2">
           <Link
             href="/"
+            onClick={() => trackNavigation("Footer Logo", "/")}
             aria-label="Tristan Budd Home"
             className="group 3xl:gap-4 4xl:gap-5 5xl:gap-6 flex cursor-pointer items-center gap-2 text-current select-none sm:gap-3"
           >
@@ -125,6 +129,7 @@ export default function Footer({
                     href={social.href}
                     target={social.href.startsWith("mailto:") ? undefined : "_blank"}
                     rel={social.href.startsWith("mailto:") ? undefined : "noopener noreferrer"}
+                    onClick={() => trackCTA(`Footer Social: ${social.platform}`, social.href)}
                     aria-label={social.ariaLabel}
                     id={`footer-social-${social.platform}`}
                     className="group/social text-zinc-650 3xl:h-14 3xl:w-14 4xl:h-16 4xl:w-16 5xl:h-20 5xl:w-20 flex h-10 w-10 items-center justify-center rounded-full border border-zinc-200/80 bg-white/40 backdrop-blur-xs transition-all duration-300 hover:scale-105 hover:border-black hover:bg-black hover:text-white xl:h-12 xl:w-12"
@@ -166,7 +171,7 @@ export default function Footer({
                 <div key={link.label} className="w-fit">
                   <Link
                     href={link.href}
-                    onClick={(e) => handleLinkClick(e, link.href)}
+                    onClick={(e) => handleLinkClick(e, link.href, link.label)}
                     id={`footer-link-${group.title.toLowerCase().replace(/\s+/g, "-")}-${link.label.toLowerCase().replace(/\s+/g, "-")}`}
                     className="3xl:text-lg 4xl:text-xl 5xl:text-2xl relative block py-1 text-sm font-semibold text-zinc-500 transition-colors duration-200 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-center after:scale-x-0 after:bg-black after:transition-transform after:duration-300 hover:text-black hover:after:scale-x-100 xl:text-base"
                   >

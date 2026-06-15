@@ -1,6 +1,7 @@
 import { ArrowRight, RotateCw, Plus } from "lucide-react";
 import React from "react";
 import { useTransition } from "../context/TransitionContext";
+import { trackCTA } from "@/lib/gtm";
 
 export interface CTAButtonProps {
   text: string;
@@ -27,6 +28,7 @@ export default function CTAButton({
   };
 
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    trackCTA(text, href);
     if (onClick) {
       onClick(e);
       if (e.isDefaultPrevented()) return;
@@ -40,6 +42,7 @@ export default function CTAButton({
   };
 
   const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    trackCTA(text);
     if (onClick) {
       onClick(e);
     }

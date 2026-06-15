@@ -23,6 +23,7 @@ import * as React from "react";
 import { useTransition } from "../context/TransitionContext";
 import CTAButton from "./CTAButton";
 import DbOfflineMessage from "./DbOfflineMessage";
+import { trackProjectClick } from "@/lib/gtm";
 
 function ProjectImagePlaceholder() {
   return (
@@ -68,6 +69,7 @@ function ProjectCard({
   const { triggerTransition } = useTransition();
 
   const handleNavigation = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    trackProjectClick(project.title, "view");
     const triggered = triggerTransition(href);
     if (triggered) {
       e.preventDefault();
@@ -133,6 +135,7 @@ function ProjectCard({
                 href={project.githubUrl}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => trackProjectClick(project.title, "repository")}
                 className="text-zinc-400 transition-colors duration-300 hover:text-black"
                 aria-label={`${project.title} GitHub Repository`}
               >
@@ -144,6 +147,7 @@ function ProjectCard({
                 href={project.projectUrl}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => trackProjectClick(project.title, "demo")}
                 className="text-zinc-400 transition-colors duration-300 hover:text-black"
                 aria-label={`${project.title} Project Website`}
               >

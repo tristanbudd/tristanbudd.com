@@ -14,6 +14,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useTransition } from "../context/TransitionContext";
 import CTAButton from "./CTAButton";
 import DbOfflineMessage from "./DbOfflineMessage";
+import { sendGTMEvent } from "@/lib/gtm";
 
 function BlogRow({
   post,
@@ -32,6 +33,11 @@ function BlogRow({
   const { triggerTransition } = useTransition();
 
   const handleNavigation = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    sendGTMEvent("blog_click", {
+      blog_title: post.title,
+      blog_slug: post.slug,
+      blog_category: post.category,
+    });
     const triggered = triggerTransition(href);
     if (triggered) {
       e.preventDefault();

@@ -8,6 +8,7 @@
 import { ArrowRight, CheckCircle, Loader2, Send, XCircle, Mail } from "lucide-react";
 import { useState } from "react";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
+import { trackContactForm, trackCTA } from "@/lib/gtm";
 
 type FormStatus = "idle" | "loading" | "success" | "error";
 
@@ -65,6 +66,7 @@ export default function Contact({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<FormStatus>("idle");
   const [serverError, setServerError] = useState("");
+  const [hasTrackedStart, setHasTrackedStart] = useState(false);
 
   const validate = () => {
     const next: Record<string, string> = {};
@@ -86,6 +88,10 @@ export default function Contact({
     const fieldErrors = validate();
     if (Object.keys(fieldErrors).length > 0) {
       setErrors(fieldErrors);
+      trackContactForm("submit_error", {
+        error_type: "validation",
+        fields: Object.keys(fieldErrors),
+      });
       return;
     }
     setErrors({});
@@ -100,18 +106,30 @@ export default function Contact({
       const data = (await res.json()) as { success?: boolean; error?: string };
 
       if (!res.ok || !data.success) {
-        setServerError(data.error ?? "Something went wrong. Please try again.");
+        const errMsg = data.error ?? "Something went wrong. Please try again.";
+        setServerError(errMsg);
         setStatus("error");
+        trackContactForm("submit_error", {
+          error_type: "server",
+          error_message: errMsg,
+        });
       } else {
         setStatus("success");
         setName("");
         setEmail("");
         setSubject("");
         setMessage("");
+        setHasTrackedStart(false);
+        trackContactForm("submit_success");
       }
     } catch {
-      setServerError("Network error. Please check your connection and try again.");
+      const errMsg = "Network error. Please check your connection and try again.";
+      setServerError(errMsg);
       setStatus("error");
+      trackContactForm("submit_error", {
+        error_type: "network",
+        error_message: errMsg,
+      });
     }
   };
 
@@ -119,6 +137,7 @@ export default function Contact({
     setStatus("idle");
     setServerError("");
     setErrors({});
+    setHasTrackedStart(false);
   };
 
   const revealClass = () =>
@@ -192,6 +211,12 @@ export default function Contact({
             {status !== "success" && (
               <form
                 onSubmit={handleSubmit}
+                onFocus={() => {
+                  if (!hasTrackedStart) {
+                    trackContactForm("start");
+                    setHasTrackedStart(true);
+                  }
+                }}
                 noValidate
                 className="3xl:gap-8 4xl:gap-10 5xl:gap-12 flex flex-col gap-6"
               >
@@ -324,6 +349,7 @@ export default function Contact({
               href={linkedInUrl}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackCTA("LinkedIn Profile", linkedInUrl)}
               aria-label={`View LinkedIn profile of ${linkedInHandle}`}
               className="group 3xl:px-6 3xl:py-5 flex w-full items-center gap-3 rounded-xl border border-zinc-200/70 bg-white/40 px-5 py-4 backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-zinc-400 hover:bg-white hover:shadow-md"
             >
@@ -348,6 +374,7 @@ export default function Contact({
 
             <a
               href={`mailto:${emailAddress}`}
+              onClick={() => trackCTA("Email Address", `mailto:${emailAddress}`)}
               aria-label={`Send email to ${emailAddress}`}
               className="group 3xl:px-6 3xl:py-5 flex w-full items-center gap-3 rounded-xl border border-zinc-200/70 bg-white/40 px-5 py-4 backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-zinc-400 hover:bg-white hover:shadow-md"
             >
