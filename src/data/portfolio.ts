@@ -114,6 +114,7 @@ export const languages: TechItem[] = [
   { name: "HTML", slug: "html5" },
   { name: "CSS", slug: "css" },
   { name: "Dart", slug: "dart" },
+  { name: "Rust", slug: "rust" },
   { name: "R", slug: "r" },
 ];
 
