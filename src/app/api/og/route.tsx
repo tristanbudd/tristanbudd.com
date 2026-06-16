@@ -7,25 +7,7 @@ import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
 
-async function fetchOutfitFont(): Promise<ArrayBuffer> {
-  const css = await fetch("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900", {
-    headers: {
-      // Old Safari UA → Google Fonts returns format('truetype') TTF.
-      // Modern browser UAs get woff2, which Satori cannot parse.
-      "User-Agent":
-        "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_8; de-at) AppleWebKit/533.21.1 (KHTML, like Gecko) Version/5.0.5 Safari/533.21.1",
-    },
-  }).then((res) => res.text());
-
-  const match = css.match(/src: url\((.+?)\) format\('truetype'\)/);
-  if (!match) throw new Error("Could not find Outfit TTF URL in Google Fonts response");
-
-  return fetch(match[1]).then((res) => res.arrayBuffer());
-}
-
 export async function GET() {
-  const outfitFont = await fetchOutfitFont();
-
   return new ImageResponse(
     <div
       style={{
@@ -35,7 +17,6 @@ export async function GET() {
         height: "100%",
         background: "#FAFAFA",
         padding: "100px",
-        fontFamily: "Outfit",
         position: "relative",
         alignItems: "flex-start",
         justifyContent: "center",
@@ -85,11 +66,10 @@ export async function GET() {
             style={{
               display: "flex",
               fontSize: "88px",
-              fontWeight: "900",
+              fontWeight: 700,
               color: "#000000",
               letterSpacing: "-0.04em",
               lineHeight: 1,
-              fontFamily: "Outfit",
             }}
           >
             Tristan Budd
@@ -98,11 +78,10 @@ export async function GET() {
             style={{
               display: "flex",
               fontSize: "38px",
-              fontWeight: "500",
+              fontWeight: 500,
               color: "#32383d",
               marginTop: "20px",
               letterSpacing: "-0.02em",
-              fontFamily: "Outfit",
             }}
           >
             Software Engineer
@@ -117,11 +96,10 @@ export async function GET() {
           bottom: "80px",
           left: "100px",
           fontSize: "20px",
-          fontWeight: "600",
+          fontWeight: 600,
           color: "#A1A1AA",
           letterSpacing: "0.08em",
           textTransform: "uppercase",
-          fontFamily: "Outfit",
         }}
       >
         tristanbudd.com
@@ -130,20 +108,6 @@ export async function GET() {
     {
       width: 1200,
       height: 630,
-      fonts: [
-        {
-          name: "Outfit",
-          data: outfitFont,
-          weight: 500 as const,
-          style: "normal" as const,
-        },
-        {
-          name: "Outfit",
-          data: outfitFont,
-          weight: 900 as const,
-          style: "normal" as const,
-        },
-      ],
     }
   );
 }
