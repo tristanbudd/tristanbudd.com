@@ -1,5 +1,8 @@
 # https://www.robotstxt.org/robotstxt.html
 User-agent: *
-Allow: /
+Allow: /api/og
+Disallow: /api/
+Disallow: /admin/
+Disallow: /maintenance/
 
 Sitemap: https://tristanbudd.com/sitemap.xml
