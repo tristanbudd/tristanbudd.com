@@ -39,6 +39,30 @@ Anyone is more than welcome to use this projects setup as a basis for their own 
 
 ---
 
+## Preview Images
+
+### Portfolio Homepage
+
+<img width="1920" height="8356" alt="Portfolio Homepage (Full)" src="https://github.com/user-attachments/assets/83053154-e908-4ee8-9774-f62dd4e4a56a" />
+
+### Blog Page
+
+<img width="1920" height="1594" alt="Blog Page" src="https://github.com/user-attachments/assets/ce8c20b7-1d9e-4359-8620-e472392f0392" />
+
+### Viewing Blog Article Page
+
+<img width="1920" height="5346" alt="Viewing Blog Article Page" src="https://github.com/user-attachments/assets/e23e99a4-0665-4191-86b3-4c404a366210" />
+
+### Projects Page
+
+<img width="1920" height="1877" alt="Projects Page" src="https://github.com/user-attachments/assets/8769b6ee-09b0-47ef-96e8-32ba01295c6c" />
+
+### Viewing Project Page
+
+<img width="1920" height="4278" alt="Viewing Project Page" src="https://github.com/user-attachments/assets/42aed5ea-60b0-4f83-b8a6-daafeeac2c75" />
+
+---
+
 ## Tech Stack
 
 - **Framework:** Next.js 16 (React 19, TypeScript)
