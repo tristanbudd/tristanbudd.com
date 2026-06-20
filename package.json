@@ -80,5 +80,13 @@
   },
   "prisma": {
     "seed": "node prisma/seed.js"
+  },
+  "pnpm": {
+    "overrides": {
+      "postcss": "^8.5.10",
+      "@hono/node-server": "^1.19.13",
+      "js-yaml": "^4.2.0",
+      "@babel/core": "^7.29.6"
+    }
   }
 }
