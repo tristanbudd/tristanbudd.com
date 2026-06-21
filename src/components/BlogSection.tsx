@@ -134,6 +134,44 @@ function BlogRow({
   );
 }
 
+function BlogRowSkeleton() {
+  return (
+    <div className="group/blog relative w-full animate-pulse pt-1 pb-1">
+      <div className="3xl:p-10 4xl:p-12 5xl:p-16 3xl:gap-10 relative flex flex-col gap-6 overflow-hidden rounded-2xl border border-zinc-200/40 bg-white/20 p-8 shadow-xs md:flex-row md:items-start md:gap-8">
+        {/* Date stamp sidebar */}
+        <div className="border-zinc-150/50 3xl:w-48 4xl:w-56 5xl:w-64 3xl:pr-10 4xl:pr-12 5xl:pr-16 flex flex-row items-center justify-between border-b pb-4 md:w-36 md:shrink-0 md:flex-col md:items-start md:gap-2 md:border-r md:border-b-0 md:pr-6 md:pb-0">
+          <div className="flex flex-col items-start gap-2">
+            <div className="h-10 w-12 rounded-lg bg-zinc-200/60" />
+            <div className="h-3 w-16 rounded-md bg-zinc-200/60" />
+          </div>
+          <div className="mt-2 hidden h-[2px] w-8 bg-zinc-100 md:block" />
+          <div className="h-3 w-16 rounded-md bg-zinc-200/60" />
+        </div>
+
+        {/* Main content body */}
+        <div className="flex flex-1 flex-col gap-4">
+          <div className="flex flex-col gap-2">
+            <div className="h-3 w-20 rounded-md bg-zinc-200/60" />
+            <div className="h-6 w-3/4 rounded-lg bg-zinc-200/80" />
+          </div>
+          <div className="flex flex-col gap-2">
+            <div className="h-4 w-full rounded-md bg-zinc-200/50" />
+            <div className="h-4 w-5/6 rounded-md bg-zinc-200/50" />
+          </div>
+          <div className="flex flex-col gap-4 border-t border-zinc-100/50 pt-4 sm:flex-row sm:items-center sm:justify-between sm:gap-2">
+            <div className="flex flex-wrap gap-1.5">
+              <div className="h-5 w-12 rounded-full bg-zinc-200/50" />
+              <div className="h-5 w-16 rounded-full bg-zinc-200/50" />
+              <div className="h-5 w-14 rounded-full bg-zinc-200/50" />
+            </div>
+            <div className="h-4 w-24 rounded-md bg-zinc-200/60" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export interface BlogSectionProps {
   posts: BlogPost[];
   title?: string;
@@ -141,6 +179,7 @@ export interface BlogSectionProps {
   isPreview?: boolean;
   showHeader?: boolean;
   isDbOffline?: boolean;
+  isLoading?: boolean;
 }
 
 const getRelevanceScore = (title: string, desc: string, content?: string, query?: string) => {
@@ -176,6 +215,7 @@ export default function BlogSection({
   isPreview = false,
   showHeader = true,
   isDbOffline = false,
+  isLoading = false,
 }: BlogSectionProps) {
   const [visibleCount, setVisibleCount] = useState(5);
   const [searchQuery, setSearchQuery] = useState("");
@@ -244,7 +284,7 @@ export default function BlogSection({
     return list;
   }, [filteredPosts, sortBy, searchQuery]);
 
-  if (!posts.length && !isDbOffline) return null;
+  if (!posts.length && !isDbOffline && !isLoading) return null;
 
   // Show top 3 in preview, otherwise render up to visibleCount
   const displayedPosts = isPreview ? sortedPosts.slice(0, 3) : sortedPosts.slice(0, visibleCount);
@@ -469,7 +509,13 @@ export default function BlogSection({
         )}
 
         {/* Blog Posts Rows / Empty State */}
-        {isDbOffline ? (
+        {isLoading ? (
+          <div className="flex animate-pulse flex-col gap-6">
+            <BlogRowSkeleton />
+            <BlogRowSkeleton />
+            <BlogRowSkeleton />
+          </div>
+        ) : isDbOffline ? (
           <DbOfflineMessage
             title="Articles Unavailable"
             description="We could not load the blog articles because the database is unavailable."

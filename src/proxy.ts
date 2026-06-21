@@ -24,9 +24,15 @@ export default async function proxy(request: NextRequest) {
       ? `http://127.0.0.1:${internalPort}/api/maintenance`
       : new URL("/api/maintenance", request.url).toString();
 
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 1000);
+
     const res = await fetch(fetchUrl, {
       cache: "no-store",
+      signal: controller.signal,
     });
+    clearTimeout(timeoutId);
+
     if (res.ok) {
       const data = await res.json();
       maintenanceMode = data.maintenanceMode;

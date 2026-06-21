@@ -37,6 +37,8 @@ const createPrismaClient = () => {
     password,
     database,
     connectionLimit: 10,
+    connectTimeout: process.env.NODE_ENV === "development" ? 1000 : 10000,
+    acquireTimeout: process.env.NODE_ENV === "development" ? 1000 : 10000,
   });
 
   return new PrismaClient({

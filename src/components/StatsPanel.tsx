@@ -9,7 +9,7 @@ import { useEffect, useRef, useState } from "react";
 import { formatCompactNumber } from "../lib/utils";
 
 export interface StatItem {
-  value: number;
+  value: number | null;
   label: string;
   prefix?: string;
   suffix?: string;
@@ -18,6 +18,7 @@ export interface StatItem {
   duration?: number;
   decimals?: number;
   unit?: string;
+  isError?: boolean;
 }
 
 export interface StatsPanelProps {
@@ -200,7 +201,8 @@ export default function StatsPanel({
           {stats.map((stat, idx) => {
             // Item-level animate overrides panel-level animate
             const shouldAnimate = stat.animate !== undefined ? stat.animate : panelAnimate;
-            const isError = stat.value === 0;
+            const isLoading = stat.value === null;
+            const isError = stat.isError || false;
 
             return (
               <div
@@ -212,7 +214,9 @@ export default function StatsPanel({
 
                 <div className="3xl:gap-5 5xl:gap-7 flex flex-col gap-3">
                   <div className="3xl:text-6xl 4xl:text-7xl 5xl:text-8xl flex items-baseline text-4xl font-extrabold tracking-tight text-black sm:text-5xl">
-                    {isError ? (
+                    {isLoading ? (
+                      <span className="block h-10 w-24 animate-pulse rounded-lg bg-zinc-200/50" />
+                    ) : isError ? (
                       <span>ERROR</span>
                     ) : (
                       <>
@@ -222,7 +226,7 @@ export default function StatsPanel({
                           </span>
                         )}
                         <CountUp
-                          value={stat.value}
+                          value={stat.value!}
                           duration={stat.duration || 2000}
                           animate={shouldAnimate}
                           decimals={stat.decimals}

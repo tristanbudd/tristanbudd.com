@@ -1,16 +1,5 @@
-/**
- * @file page.tsx
- * @description All blog posts directory listing page (route: /blog).
- */
-
+import BlogPageClient from "../../components/BlogPageClient";
 import type { Metadata } from "next";
-import BackButton from "../../components/BackButton";
-import Footer from "../../components/Footer";
-import Header from "../../components/Header";
-import BlogSection from "../../components/BlogSection";
-import { footerNavGroups, footerSocials, navItems } from "../../data/portfolio";
-import { prisma } from "../../lib/db";
-import { type BlogPost } from "../../data/blog";
 
 export const metadata: Metadata = {
   title: "Blog",
@@ -18,64 +7,6 @@ export const metadata: Metadata = {
     "Read articles and technical insights on software engineering and UX design by Tristan Budd.",
 };
 
-export const dynamic = "force-dynamic";
-
-export default async function BlogPage() {
-  let posts: BlogPost[] = [];
-  let dbError = false;
-  try {
-    posts = (await prisma.blogPost.findMany({
-      orderBy: {
-        createdAt: "desc",
-      },
-    })) as unknown as BlogPost[];
-  } catch (error) {
-    console.warn("Warning: Database connection failed on blog list query.", error);
-    dbError = true;
-  }
-
-  const formattedPosts = posts.map((post) => ({
-    ...post,
-    tags: Array.isArray(post.tags) ? (post.tags as string[]) : [],
-  }));
-
-  return (
-    <div className="bg-background flex min-h-screen flex-col">
-      {/* Header */}
-      <Header navItems={navItems} ctaText="Get in touch?" ctaHref="/#contact" />
-
-      {/* Main Content Area */}
-      <main
-        role="main"
-        className="3xl:max-w-440 4xl:max-w-560 5xl:max-w-720 3xl:pt-36 4xl:pt-40 5xl:pt-44 mx-auto flex w-full flex-col px-4 pt-20 pb-8 font-sans transition-all duration-500 ease-in-out sm:max-w-screen-sm sm:pt-24 md:max-w-3xl md:pt-28 md:pb-16 lg:max-w-5xl xl:max-w-6xl 2xl:max-w-7xl"
-      >
-        {/* Page Header block including Back Button */}
-        <div className="mt-4 flex flex-wrap items-end justify-between gap-x-4 gap-y-3 border-b border-zinc-200/50 pb-6">
-          <div className="flex flex-col gap-2 text-left">
-            <span className="3xl:text-sm 4xl:text-base 5xl:text-lg text-xs font-bold tracking-widest text-zinc-500 uppercase">
-              Insights & Ideas
-            </span>
-            <h1 className="3xl:text-5xl 4xl:text-6xl 5xl:text-7xl text-3xl font-extrabold tracking-tight text-black sm:text-4xl">
-              Blog & Articles
-            </h1>
-          </div>
-
-          <div className="flex justify-start">
-            <BackButton />
-          </div>
-        </div>
-
-        {/* Full Blog Listing Showcase without internal header */}
-        <BlogSection
-          posts={formattedPosts}
-          isPreview={false}
-          showHeader={false}
-          isDbOffline={dbError}
-        />
-      </main>
-
-      {/* Footer Area */}
-      <Footer navGroups={footerNavGroups} socials={footerSocials} />
-    </div>
-  );
+export default function BlogPage() {
+  return <BlogPageClient />;
 }

@@ -161,6 +161,38 @@ function ProjectCard({
   );
 }
 
+function ProjectCardSkeleton() {
+  return (
+    <div className="3xl:rounded-3xl relative flex animate-pulse flex-col overflow-hidden rounded-2xl border border-zinc-200/40 bg-white/20 p-0 shadow-xs backdrop-blur-md">
+      {/* Outline Placeholder Top Portion */}
+      <div className="3xl:p-6 4xl:p-8 5xl:p-10 relative w-full bg-zinc-50/20 p-4">
+        <div className="aspect-video w-full rounded-lg bg-zinc-200/40" />
+      </div>
+
+      {/* Content Bottom Portion */}
+      <div className="3xl:px-6 3xl:pb-8 3xl:pt-4 4xl:px-8 4xl:pb-10 4xl:pt-5 5xl:px-10 5xl:pb-12 5xl:pt-6 flex flex-1 flex-col gap-4 px-4 pt-2 pb-6 sm:pt-3">
+        <div className="h-6 w-3/4 rounded-lg bg-zinc-200/60" />
+        <div className="flex flex-1 flex-col gap-2">
+          <div className="h-4 w-full rounded-md bg-zinc-200/30" />
+          <div className="h-4 w-5/6 rounded-md bg-zinc-200/30" />
+        </div>
+        <div className="mt-2 flex flex-wrap gap-1.5">
+          <div className="h-5 w-14 rounded-full bg-zinc-200/40" />
+          <div className="h-5 w-16 rounded-full bg-zinc-200/40" />
+          <div className="h-5 w-12 rounded-full bg-zinc-200/40" />
+        </div>
+        <div className="mt-2 flex items-center justify-between border-t border-zinc-100/50 pt-4">
+          <div className="h-4 w-20 rounded-md bg-zinc-200/50" />
+          <div className="flex gap-3">
+            <div className="h-5 w-5 rounded-full bg-zinc-200/40" />
+            <div className="h-5 w-5 rounded-full bg-zinc-200/40" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export interface ProjectSectionProps {
   projects: Project[];
   title?: string;
@@ -168,6 +200,7 @@ export interface ProjectSectionProps {
   isPreview?: boolean;
   showHeader?: boolean;
   isDbOffline?: boolean;
+  isLoading?: boolean;
 }
 
 const getRelevanceScore = (title: string, desc: string, content?: string, query?: string) => {
@@ -203,6 +236,7 @@ export default function ProjectSection({
   isPreview = false,
   showHeader = true,
   isDbOffline = false,
+  isLoading = false,
 }: ProjectSectionProps) {
   const [currentPage, setCurrentPage] = React.useState(1);
   const [searchQuery, setSearchQuery] = React.useState("");
@@ -267,7 +301,7 @@ export default function ProjectSection({
     return list;
   }, [filteredProjects, sortBy, searchQuery]);
 
-  if (!projects.length && !isDbOffline) return null;
+  if (!projects.length && !isDbOffline && !isLoading) return null;
 
   const itemsPerPage = 6;
   const totalPages = Math.ceil(sortedProjects.length / itemsPerPage);
@@ -434,7 +468,13 @@ export default function ProjectSection({
         )}
 
         {/* Project Cards Grid / Empty State */}
-        {isDbOffline ? (
+        {isLoading ? (
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <ProjectCardSkeleton />
+            <ProjectCardSkeleton />
+            <ProjectCardSkeleton />
+          </div>
+        ) : isDbOffline ? (
           <DbOfflineMessage
             title="Projects Unavailable"
             description="We could not load the portfolio projects because the database is unavailable."
