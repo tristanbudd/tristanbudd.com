@@ -1,17 +1,12 @@
 #!/bin/sh
 
-# Exit immediately if a command exits with a non-zero status
 set -e
 
-echo "Checking database status and running migrations..."
+echo "Running database schema sync..."
 if [ -n "$DATABASE_URL" ]; then
-  echo "Running Prisma db push..."
-  ./node_modules/.bin/prisma db push || echo "Prisma push failed, continuing startup..."
-  
-  echo "Running Prisma database seeding..."
-  ./node_modules/.bin/prisma db seed || echo "Prisma seed failed, continuing startup..."
+  ./node_modules/.bin/prisma db push || echo "Prisma db push failed, continuing startup..."
 else
-  echo "DATABASE_URL not set, skipping database push and seed."
+  echo "DATABASE_URL not set, skipping database sync."
 fi
 
 echo "Starting Next.js application..."

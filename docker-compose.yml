@@ -40,12 +40,10 @@ services:
       MYSQL_PASSWORD: ${DB_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
     volumes:
-      - mysql_data:/var/lib/mysql
+      - /var/lib/tristanbudd-mysql:/var/lib/mysql
     healthcheck:
       test: ["CMD-SHELL", 'mysqladmin ping -h localhost -uroot -p"$$DB_ROOT_PASSWORD" --silent']
       interval: 10s
       timeout: 5s
       retries: 12
 
-volumes:
-  mysql_data:
