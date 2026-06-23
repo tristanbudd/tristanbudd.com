@@ -301,8 +301,6 @@ export default function ProjectSection({
     return list;
   }, [filteredProjects, sortBy, searchQuery]);
 
-  if (!projects.length && !isDbOffline && !isLoading) return null;
-
   const itemsPerPage = 6;
   const totalPages = Math.ceil(sortedProjects.length / itemsPerPage);
 
@@ -335,7 +333,7 @@ export default function ProjectSection({
         )}
 
         {/* Search and Sorting controls (Full page showcase only) */}
-        {!isPreview && (
+        {!isPreview && projects.length > 0 && (
           <div className="flex flex-col gap-4 border-b border-zinc-200/50 pb-8 sm:flex-row sm:items-center sm:justify-between">
             {/* Search Input */}
             <div className="relative w-full sm:max-w-xs">
@@ -479,6 +477,16 @@ export default function ProjectSection({
             title="Projects Unavailable"
             description="We could not load the portfolio projects because the database is unavailable."
           />
+        ) : projects.length === 0 ? (
+          <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-zinc-200 bg-white/20 p-12 text-center backdrop-blur-md">
+            <span className="mb-4 text-black">
+              <Search className="h-12 w-12 stroke-[1.5]" />
+            </span>
+            <h3 className="mb-1 text-lg font-bold text-black">No Projects Found</h3>
+            <p className="max-w-xs text-sm text-zinc-500">
+              There are currently no projects available. Please check back later.
+            </p>
+          </div>
         ) : sortedProjects.length === 0 ? (
           <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-zinc-200 bg-white/20 p-12 text-center backdrop-blur-md">
             <span className="mb-4 text-black">
@@ -556,7 +564,7 @@ export default function ProjectSection({
         )}
 
         {/* View All Projects Button (Home page preview only) */}
-        {isPreview && (
+        {isPreview && projects.length > 0 && (
           <div className="mt-4 flex justify-center md:justify-start">
             <CTAButton text="View All Projects" href="/projects" />
           </div>

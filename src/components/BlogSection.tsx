@@ -284,8 +284,6 @@ export default function BlogSection({
     return list;
   }, [filteredPosts, sortBy, searchQuery]);
 
-  if (!posts.length && !isDbOffline && !isLoading) return null;
-
   // Show top 3 in preview, otherwise render up to visibleCount
   const displayedPosts = isPreview ? sortedPosts.slice(0, 3) : sortedPosts.slice(0, visibleCount);
 
@@ -313,7 +311,7 @@ export default function BlogSection({
         )}
 
         {/* Search and Filters (Full page showcase only) */}
-        {!isPreview && (
+        {!isPreview && posts.length > 0 && (
           <div className="flex flex-col gap-6 border-b border-zinc-200/50 pb-8">
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
               {/* Search Input */}
@@ -377,7 +375,7 @@ export default function BlogSection({
                                 : "Reading Time (Long)"}
                   </span>
                   <ChevronDown
-                    className={`text-zinc-550 h-4 w-4 transition-transform duration-300 ${sortDropdownOpen ? "rotate-180" : ""}`}
+                    className={`text-zinc-555 h-4 w-4 transition-transform duration-300 ${sortDropdownOpen ? "rotate-180" : ""}`}
                   />
                 </button>
 
@@ -498,7 +496,7 @@ export default function BlogSection({
                   className={`rounded-full border px-4 py-2 text-xs font-bold tracking-wider whitespace-nowrap uppercase transition-all duration-300 ${
                     selectedCategory === category
                       ? "border-black bg-black text-white"
-                      : "text-zinc-550 border-zinc-200 bg-white/40 hover:border-zinc-300 hover:bg-white/85 hover:text-black"
+                      : "text-zinc-555 border-zinc-200 bg-white/40 hover:border-zinc-300 hover:bg-white/85 hover:text-black"
                   }`}
                 >
                   {category}
@@ -520,6 +518,16 @@ export default function BlogSection({
             title="Articles Unavailable"
             description="We could not load the blog articles because the database is unavailable."
           />
+        ) : posts.length === 0 ? (
+          <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-zinc-200 bg-white/20 p-12 text-center backdrop-blur-md">
+            <span className="mb-4 text-black">
+              <Search className="h-12 w-12 stroke-[1.5]" />
+            </span>
+            <h3 className="mb-1 text-lg font-bold text-black">No Articles Found</h3>
+            <p className="max-w-xs text-sm text-zinc-500">
+              There are currently no articles published. Please check back later.
+            </p>
+          </div>
         ) : sortedPosts.length === 0 ? (
           <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-zinc-200 bg-white/20 p-12 text-center backdrop-blur-md">
             <span className="mb-4 text-black">
@@ -570,7 +578,7 @@ export default function BlogSection({
         )}
 
         {/* View All Articles Button (Home page preview only) */}
-        {isPreview && (
+        {isPreview && posts.length > 0 && (
           <div className="mt-4 flex justify-center md:justify-start">
             <CTAButton text="View All Articles" href="/blog" />
           </div>
