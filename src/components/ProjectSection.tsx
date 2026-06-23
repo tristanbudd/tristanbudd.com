@@ -478,22 +478,26 @@ export default function ProjectSection({
             description="We could not load the portfolio projects because the database is unavailable."
           />
         ) : projects.length === 0 ? (
-          <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-zinc-200 bg-white/20 p-12 text-center backdrop-blur-md">
-            <span className="mb-4 text-black">
-              <Search className="h-12 w-12 stroke-[1.5]" />
-            </span>
-            <h3 className="mb-1 text-lg font-bold text-black">No Projects Found</h3>
-            <p className="max-w-xs text-sm text-zinc-500">
+          <div className="3xl:p-16 3xl:rounded-3xl 3xl:border-2 4xl:p-20 4xl:rounded-4xl 5xl:p-28 5xl:rounded-[3rem] flex flex-col items-center justify-center rounded-2xl border border-zinc-200/60 bg-white/40 p-8 text-center shadow-xs backdrop-blur-md transition-all duration-300 md:p-12">
+            <div className="text-zinc-650 3xl:h-20 3xl:w-20 3xl:mb-6 4xl:h-24 4xl:w-24 4xl:mb-8 5xl:h-32 5xl:w-32 5xl:mb-12 relative mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-zinc-100">
+              <Search className="3xl:h-[36px] 3xl:w-[36px] 4xl:h-[44px] 4xl:w-[44px] 5xl:h-[64px] 5xl:w-[64px] h-6 w-6" />
+            </div>
+            <h3 className="font-outfit 3xl:text-2xl 4xl:text-3xl 5xl:text-4xl text-lg font-bold text-black sm:text-xl">
+              No Projects Found
+            </h3>
+            <p className="text-zinc-550 3xl:mt-4 3xl:text-lg 3xl:max-w-xl 4xl:mt-5 4xl:text-xl 4xl:max-w-2xl 5xl:mt-6 5xl:text-2xl 5xl:max-w-4xl mt-2 max-w-md text-sm leading-relaxed sm:text-base">
               There are currently no projects available. Please check back later.
             </p>
           </div>
         ) : sortedProjects.length === 0 ? (
-          <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-zinc-200 bg-white/20 p-12 text-center backdrop-blur-md">
-            <span className="mb-4 text-black">
-              <Search className="h-12 w-12 stroke-[1.5]" />
-            </span>
-            <h3 className="mb-1 text-lg font-bold text-black">No Projects Found</h3>
-            <p className="mb-6 max-w-xs text-sm text-zinc-500">
+          <div className="3xl:p-16 3xl:rounded-3xl 3xl:border-2 4xl:p-20 4xl:rounded-4xl 5xl:p-28 5xl:rounded-[3rem] flex flex-col items-center justify-center rounded-2xl border border-zinc-200/60 bg-white/40 p-8 text-center shadow-xs backdrop-blur-md transition-all duration-300 md:p-12">
+            <div className="text-zinc-650 3xl:h-20 3xl:w-20 3xl:mb-6 4xl:h-24 4xl:w-24 4xl:mb-8 5xl:h-32 5xl:w-32 5xl:mb-12 relative mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-zinc-100">
+              <Search className="3xl:h-[36px] 3xl:w-[36px] 4xl:h-[44px] 4xl:w-[44px] 5xl:h-[64px] 5xl:w-[64px] h-6 w-6" />
+            </div>
+            <h3 className="font-outfit 3xl:text-2xl 4xl:text-3xl 5xl:text-4xl text-lg font-bold text-black sm:text-xl">
+              No Projects Found
+            </h3>
+            <p className="text-zinc-550 3xl:mt-4 3xl:text-lg 3xl:max-w-xl 4xl:mt-5 4xl:text-xl 4xl:max-w-2xl 5xl:mt-6 5xl:text-2xl 5xl:max-w-4xl mt-2 max-w-md text-sm leading-relaxed sm:text-base">
               We couldn&apos;t find any projects matching your search criteria. Try modifying your
               search or filters.
             </p>
@@ -503,7 +507,7 @@ export default function ProjectSection({
                 setSortBy("newest");
                 setCurrentPage(1);
               }}
-              className="rounded-full border border-black bg-black px-6 py-2.5 text-xs font-bold tracking-wider text-white uppercase transition-all duration-300 hover:bg-zinc-900"
+              className="3xl:mt-8 3xl:px-8 3xl:py-3.5 3xl:text-sm 3xl:gap-3 4xl:mt-10 4xl:px-10 4xl:py-4.5 4xl:text-base 4xl:gap-3.5 5xl:mt-14 5xl:px-14 5xl:py-6 5xl:text-lg 5xl:gap-4 mt-6 inline-flex items-center gap-2 rounded-full border border-black bg-black px-6 py-2.5 text-xs font-bold tracking-wider text-white uppercase transition-all duration-300 hover:bg-zinc-900"
             >
               Reset Filters
             </button>
