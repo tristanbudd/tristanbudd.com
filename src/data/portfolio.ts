@@ -65,6 +65,7 @@ export const footerNavGroups: FooterLinkGroup[] = [
       { label: "Blog", href: "/blog" },
       { label: "Projects", href: "/projects" },
       { label: "Contact", href: "/#contact" },
+      { label: "RSS Feed", href: "/feed.xml" },
     ],
   },
   {

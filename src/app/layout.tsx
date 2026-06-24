@@ -43,6 +43,12 @@ const outfit = Outfit({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://tristanbudd.com"),
+  alternates: {
+    canonical: "https://tristanbudd.com",
+    types: {
+      "application/rss+xml": [{ url: "/feed.xml", title: "Tristan Budd - Blog RSS Feed" }],
+    },
+  },
   title: {
     default: "Tristan Budd",
     template: "Tristan Budd - %s",

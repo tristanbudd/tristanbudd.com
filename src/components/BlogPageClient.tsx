@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { type BlogPost } from "../data/blog";
+import { footerNavGroups, footerSocials, navItems } from "../data/portfolio";
 import BackButton from "./BackButton";
+import BlogSection from "./BlogSection";
 import Footer from "./Footer";
 import Header from "./Header";
-import BlogSection from "./BlogSection";
-import { footerNavGroups, footerSocials, navItems } from "../data/portfolio";
-import { type BlogPost } from "../data/blog";
 
 export default function BlogPageClient() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
@@ -62,7 +62,8 @@ export default function BlogPageClient() {
             </h1>
           </div>
 
-          <div className="flex justify-start">
+          <div className="flex flex-wrap items-center gap-3">
+            <BackButton variant="rss" href="/feed.xml" label="RSS Feed" />
             <BackButton />
           </div>
         </div>
