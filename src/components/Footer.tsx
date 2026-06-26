@@ -11,6 +11,7 @@ import Link from "next/link";
 import React from "react";
 import { useTransition } from "../context/TransitionContext";
 import { trackNavigation, trackCTA } from "@/lib/gtm";
+import packageJson from "../../package.json";
 
 export interface FooterLink {
   label: string;
@@ -155,6 +156,11 @@ export default function Footer({
               })}
             </div>
           )}
+
+          {/* Version */}
+          <div className="3xl:text-xl 4xl:text-2xl 5xl:text-3xl mt-4 text-base font-semibold tracking-tight text-zinc-400 select-none">
+            v{packageJson.version}
+          </div>
         </div>
 
         {/* Links Groups */}

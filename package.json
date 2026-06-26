@@ -1,7 +1,7 @@
 {
   "$schema": "https://www.schemastore.org/package.json",
   "name": "tristanbudd.com",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Personal Portfolio & Professional Showcase | Built with Next.js 16, React 19, and Tailwind CSS 4",
   "author": "Tristan Budd <https://github.com/tristanbudd>",
   "license": "MIT",
