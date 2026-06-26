@@ -17,16 +17,22 @@ import {
   Settings,
   Copy,
   Check,
+  Menu,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 import { type BlogPost } from "../../data/blog";
 import { type CustomField, type Project } from "../../data/projects";
+import DbOfflineMessage from "../../components/DbOfflineMessage";
 
 export default function AdminDashboard() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<"blogs" | "projects" | "maintenance">("blogs");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   // Content States
   const [blogs, setBlogs] = useState<BlogPost[]>([]);
@@ -366,34 +372,82 @@ export default function AdminDashboard() {
 
   return (
     <div className="font-outfit flex min-h-screen bg-zinc-50 text-black">
+      {/* Mobile Sidebar Overlay */}
+      <div
+        className={`fixed inset-0 z-40 bg-black/45 backdrop-blur-xs transition-opacity duration-300 lg:hidden ${
+          isSidebarOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
+        }`}
+        onClick={() => setIsSidebarOpen(false)}
+      />
+
       {/* Sidebar Navigation */}
       <aside
-        className="flex w-64 flex-col justify-between border-r border-zinc-200 bg-white"
+        className={`fixed inset-y-0 left-0 z-50 flex flex-col justify-between overflow-x-hidden border-r border-zinc-200 bg-white shadow-xl transition-all duration-300 ease-in-out lg:static lg:flex lg:translate-x-0 lg:shadow-none ${
+          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } ${
+          isSidebarCollapsed
+            ? "3xl:w-24 4xl:w-28 5xl:w-32 w-64 lg:w-20"
+            : "3xl:w-80 4xl:w-96 5xl:w-112 w-64 lg:w-64"
+        }`}
         aria-label="Sidebar navigation"
       >
         <div>
           {/* Sidebar Header */}
-          <div className="border-b border-zinc-100 p-6">
-            <h2 className="text-sm font-extrabold tracking-wider text-black uppercase">
+          <div className="3xl:p-8 4xl:p-10 5xl:p-12 flex items-center justify-between border-b border-zinc-100 p-6">
+            <h2
+              className={`3xl:text-lg 4xl:text-xl 5xl:text-2xl text-sm font-extrabold tracking-wider whitespace-nowrap text-black uppercase ${
+                isSidebarCollapsed ? "lg:hidden" : "block"
+              }`}
+            >
               admin panel
             </h2>
+            <button
+              onClick={() => setIsSidebarOpen(false)}
+              className="flex h-8 w-8 items-center justify-center rounded-lg hover:bg-zinc-100 lg:hidden"
+              aria-label="Close sidebar"
+            >
+              <X className="h-4 w-4" />
+            </button>
+            <button
+              onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+              className={`3xl:h-11 3xl:w-11 4xl:h-14 4xl:w-14 5xl:h-17 5xl:w-17 hidden h-8 w-8 items-center justify-center rounded-lg text-zinc-500 hover:bg-zinc-100 lg:flex ${
+                isSidebarCollapsed ? "lg:mx-auto" : ""
+              }`}
+              aria-label={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            >
+              {isSidebarCollapsed ? (
+                <ChevronRight className="3xl:h-6 3xl:w-6 4xl:h-7.5 4xl:w-7.5 5xl:h-9 5xl:w-9 h-4 w-4" />
+              ) : (
+                <ChevronLeft className="3xl:h-6 3xl:w-6 4xl:h-7.5 4xl:w-7.5 5xl:h-9 5xl:w-9 h-4 w-4" />
+              )}
+            </button>
           </div>
 
           {/* Navigation Links */}
-          <nav className="space-y-1.5 p-4" aria-label="Dashboard views">
+          <nav
+            className="3xl:space-y-2.5 3xl:p-6 3xl:px-4 4xl:space-y-3.5 4xl:p-8 4xl:px-4.5 5xl:space-y-4 5xl:p-10 5xl:px-5 space-y-1.5 p-4 lg:px-3 lg:py-4"
+            aria-label="Dashboard views"
+          >
             <button
-              onClick={() => setActiveTab("blogs")}
-              className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold transition-all ${
+              onClick={() => {
+                setActiveTab("blogs");
+                setIsSidebarOpen(false);
+              }}
+              className={`3xl:gap-4.5 3xl:text-base 4xl:gap-6 4xl:text-lg 5xl:gap-8 5xl:text-xl 3xl:pl-[20px] 3xl:pr-4 4xl:pl-[23px] 4xl:pr-4.5 5xl:pl-[26px] 5xl:pr-5 flex w-full items-center gap-3 overflow-hidden rounded-xl px-4 py-3 text-sm font-semibold whitespace-nowrap transition-all lg:justify-start lg:pr-3 lg:pl-[19px] ${
                 activeTab === "blogs"
                   ? "bg-black text-white"
                   : "text-zinc-650 hover:bg-zinc-100 hover:text-black"
               }`}
               aria-current={activeTab === "blogs" ? "page" : undefined}
             >
-              <FileText className="h-4.5 w-4.5" />
-              <span>Blog Posts</span>
+              <FileText className="3xl:h-6 3xl:w-6 4xl:h-7.5 4xl:w-7.5 5xl:h-9 5xl:w-9 h-4.5 w-4.5 shrink-0" />
+              <span className={`whitespace-nowrap ${isSidebarCollapsed ? "lg:hidden" : "inline"}`}>
+                Blog Posts
+              </span>
               <span
-                className={`ml-auto rounded-full px-2 py-0.5 text-xs ${
+                className={`3xl:px-3 3xl:py-1 3xl:text-sm 4xl:px-4 4xl:py-1.5 4xl:text-base 5xl:px-5 5xl:py-2 5xl:text-lg ml-auto rounded-full px-2 py-0.5 text-xs whitespace-nowrap ${
+                  isSidebarCollapsed ? "lg:hidden" : "inline-block"
+                } ${
                   activeTab === "blogs" ? "bg-zinc-800 text-white" : "bg-zinc-100 text-zinc-600"
                 }`}
               >
@@ -401,18 +455,25 @@ export default function AdminDashboard() {
               </span>
             </button>
             <button
-              onClick={() => setActiveTab("projects")}
-              className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold transition-all ${
+              onClick={() => {
+                setActiveTab("projects");
+                setIsSidebarOpen(false);
+              }}
+              className={`3xl:gap-4.5 3xl:text-base 4xl:gap-6 4xl:text-lg 5xl:gap-8 5xl:text-xl 3xl:pl-[20px] 3xl:pr-4 4xl:pl-[23px] 4xl:pr-4.5 5xl:pl-[26px] 5xl:pr-5 flex w-full items-center gap-3 overflow-hidden rounded-xl px-4 py-3 text-sm font-semibold whitespace-nowrap transition-all lg:justify-start lg:pr-3 lg:pl-[19px] ${
                 activeTab === "projects"
                   ? "bg-black text-white"
                   : "text-zinc-650 hover:bg-zinc-100 hover:text-black"
               }`}
               aria-current={activeTab === "projects" ? "page" : undefined}
             >
-              <Folder className="h-4.5 w-4.5" />
-              <span>Projects</span>
+              <Folder className="3xl:h-6 3xl:w-6 4xl:h-7.5 4xl:w-7.5 5xl:h-9 5xl:w-9 h-4.5 w-4.5 shrink-0" />
+              <span className={`whitespace-nowrap ${isSidebarCollapsed ? "lg:hidden" : "inline"}`}>
+                Projects
+              </span>
               <span
-                className={`ml-auto rounded-full px-2 py-0.5 text-xs ${
+                className={`3xl:px-3 3xl:py-1 3xl:text-sm 4xl:px-4 4xl:py-1.5 4xl:text-base 5xl:px-5 5xl:py-2 5xl:text-lg ml-auto rounded-full px-2 py-0.5 text-xs whitespace-nowrap ${
+                  isSidebarCollapsed ? "lg:hidden" : "inline-block"
+                } ${
                   activeTab === "projects" ? "bg-zinc-800 text-white" : "bg-zinc-100 text-zinc-600"
                 }`}
               >
@@ -420,29 +481,36 @@ export default function AdminDashboard() {
               </span>
             </button>
             <button
-              onClick={() => setActiveTab("maintenance")}
-              className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold transition-all ${
+              onClick={() => {
+                setActiveTab("maintenance");
+                setIsSidebarOpen(false);
+              }}
+              className={`3xl:gap-4.5 3xl:text-base 4xl:gap-6 4xl:text-lg 5xl:gap-8 5xl:text-xl 3xl:pl-[20px] 3xl:pr-4 4xl:pl-[23px] 4xl:pr-4.5 5xl:pl-[26px] 5xl:pr-5 flex w-full items-center gap-3 overflow-hidden rounded-xl px-4 py-3 text-sm font-semibold whitespace-nowrap transition-all lg:justify-start lg:pr-3 lg:pl-[19px] ${
                 activeTab === "maintenance"
                   ? "bg-black text-white"
                   : "text-zinc-650 hover:bg-zinc-100 hover:text-black"
               }`}
               aria-current={activeTab === "maintenance" ? "page" : undefined}
             >
-              <Settings className="h-4.5 w-4.5" />
-              <span>Maintenance</span>
+              <Settings className="3xl:h-6 3xl:w-6 4xl:h-7.5 4xl:w-7.5 5xl:h-9 5xl:w-9 h-4.5 w-4.5 shrink-0" />
+              <span className={`whitespace-nowrap ${isSidebarCollapsed ? "lg:hidden" : "inline"}`}>
+                Maintenance
+              </span>
             </button>
           </nav>
         </div>
 
         {/* Sidebar Footer Logout */}
-        <div className="border-t border-zinc-100 p-4">
+        <div className="3xl:p-6 3xl:px-4 4xl:p-8 4xl:px-4.5 5xl:p-10 5xl:px-5 border-t border-zinc-100 p-4 lg:px-3 lg:py-4">
           <button
             onClick={handleLogout}
-            className="text-red-650 flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold transition-all hover:bg-red-50 hover:text-red-700 focus:ring-2 focus:ring-red-500 focus:outline-hidden"
+            className="text-red-650 3xl:pl-[20px] 3xl:pr-4 4xl:pl-[23px] 4xl:pr-4.5 5xl:pl-[26px] 5xl:pr-5 3xl:gap-4.5 3xl:text-base 4xl:gap-6 4xl:text-lg 5xl:gap-8 5xl:text-xl flex w-full items-center gap-3 overflow-hidden rounded-xl px-4 py-3 text-sm font-semibold whitespace-nowrap transition-all hover:bg-red-50 hover:text-red-700 focus:ring-2 focus:ring-red-500 focus:outline-hidden lg:justify-start lg:pr-3 lg:pl-[19px]"
             aria-label="Log out of admin panel"
           >
-            <LogOut className="h-4.5 w-4.5" />
-            <span>Logout</span>
+            <LogOut className="3xl:h-6 3xl:w-6 4xl:h-7.5 4xl:w-7.5 5xl:h-9 5xl:w-9 h-4.5 w-4.5 shrink-0" />
+            <span className={`whitespace-nowrap ${isSidebarCollapsed ? "lg:hidden" : "inline"}`}>
+              Logout
+            </span>
           </button>
         </div>
       </aside>
@@ -450,9 +518,29 @@ export default function AdminDashboard() {
       {/* Main Content Dashboard */}
       <main className="flex min-w-0 flex-1 flex-col" role="main">
         {/* Top Header */}
-        <header className="flex h-20 items-center justify-between border-b border-zinc-200 bg-white px-8">
-          <div>
-            <h1 className="text-2xl font-extrabold tracking-tight text-black">
+        <header className="3xl:h-28 3xl:px-12 4xl:h-36 4xl:px-16 5xl:h-44 5xl:px-20 flex h-20 items-center justify-between border-b border-zinc-200 bg-white px-4 sm:px-8">
+          <div className="flex items-center gap-3">
+            {/* Hamburger Menu Toggle */}
+            <button
+              onClick={() => setIsSidebarOpen(true)}
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-zinc-200 bg-white text-zinc-700 transition-all hover:bg-zinc-50 hover:text-black active:scale-95 lg:hidden"
+              aria-label="Open sidebar menu"
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                className="h-5 w-5"
+              >
+                <line x1="4" y1="8" x2="20" y2="8" />
+                <line x1="4" y1="16" x2="14" y2="16" />
+              </svg>
+            </button>
+            <h1 className="3xl:text-3xl 4xl:text-4xl 5xl:text-5xl text-lg font-extrabold tracking-tight text-black sm:text-2xl">
               {activeTab === "blogs"
                 ? "Manage Blog Posts"
                 : activeTab === "projects"
@@ -466,390 +554,307 @@ export default function AdminDashboard() {
             <button
               onClick={openBlogCreate}
               disabled={isDbOffline}
-              className="inline-flex items-center gap-2 rounded-xl bg-black px-4 py-2.5 text-sm font-bold text-white transition-colors hover:bg-zinc-800 focus:ring-2 focus:ring-black focus:outline-hidden disabled:cursor-not-allowed disabled:opacity-50"
+              className="3xl:gap-3 3xl:px-6 3xl:py-3.5 3xl:text-base 4xl:gap-4 4xl:px-8 4xl:py-4.5 4xl:text-lg 5xl:gap-5 5xl:px-10 5xl:py-6 5xl:text-xl flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-black text-white transition-all hover:bg-zinc-800 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 sm:inline-flex sm:h-auto sm:w-auto sm:items-center sm:gap-2 sm:rounded-xl sm:px-4 sm:py-2.5 sm:text-sm sm:font-bold"
               aria-label="Create new blog post"
             >
-              <Plus className="h-4.5 w-4.5" />
-              <span>New Post</span>
+              <Plus className="3xl:h-6 3xl:w-6 4xl:h-7.5 4xl:w-7.5 5xl:h-9 5xl:w-9 h-4.5 w-4.5" />
+              <span className="hidden sm:inline">New Post</span>
             </button>
           ) : activeTab === "projects" ? (
             <button
               onClick={openProjCreate}
               disabled={isDbOffline}
-              className="inline-flex items-center gap-2 rounded-xl bg-black px-4 py-2.5 text-sm font-bold text-white transition-colors hover:bg-zinc-800 focus:ring-2 focus:ring-black focus:outline-hidden disabled:cursor-not-allowed disabled:opacity-50"
+              className="3xl:gap-3 3xl:px-6 3xl:py-3.5 3xl:text-base 4xl:gap-4 4xl:px-8 4xl:py-4.5 4xl:text-lg 5xl:gap-5 5xl:px-10 5xl:py-6 5xl:text-xl flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-black text-white transition-all hover:bg-zinc-800 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 sm:inline-flex sm:h-auto sm:w-auto sm:items-center sm:gap-2 sm:rounded-xl sm:px-4 sm:py-2.5 sm:text-sm sm:font-bold"
               aria-label="Create new project study"
             >
-              <Plus className="h-4.5 w-4.5" />
-              <span>New Project</span>
+              <Plus className="3xl:h-6 3xl:w-6 4xl:h-7.5 4xl:w-7.5 5xl:h-9 5xl:w-9 h-4.5 w-4.5" />
+              <span className="hidden sm:inline">New Project</span>
             </button>
           ) : null}
         </header>
 
         {/* Content Body Container */}
-        <div className="flex-1 space-y-8 overflow-y-auto p-8">
-          {isDbOffline && (
-            <div className="flex animate-pulse items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-4 text-red-800 shadow-xs">
-              <span className="relative mt-1.5 flex h-3 w-3 shrink-0">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75"></span>
-                <span className="bg-red-650 relative inline-flex h-3 w-3 rounded-full"></span>
-              </span>
-              <div>
-                <h4 className="text-sm font-bold">Database connection is offline</h4>
-                <p className="mt-1 text-xs leading-relaxed text-red-700">
-                  We are unable to connect to the database. You will not be able to view, create,
-                  edit, or delete items. Please ensure database services are running.
-                </p>
-              </div>
-            </div>
-          )}
-
-          {/* Quick Statistics Panels - Tab Specific */}
-          {(activeTab === "blogs" || activeTab === "projects") && (
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-              {activeTab === "blogs" ? (
-                <>
-                  <div className="relative overflow-hidden rounded-2xl border border-zinc-200/80 bg-white p-6 shadow-xs">
-                    <div className="absolute top-0 left-0 h-[2px] w-full bg-zinc-200" />
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-semibold tracking-wider text-zinc-500 uppercase">
-                        Total Blogs
-                      </span>
-                      <FileText className="h-5 w-5 text-zinc-400" />
-                    </div>
-                    <h2 className="mt-2 text-3xl font-extrabold tracking-tight">{totalBlogs}</h2>
-                  </div>
-                  <div className="relative overflow-hidden rounded-2xl border border-zinc-200/80 bg-white p-6 shadow-xs">
-                    <div className="absolute top-0 left-0 h-[2px] w-full bg-zinc-200" />
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-semibold tracking-wider text-zinc-500 uppercase">
-                        Latest Post Date
-                      </span>
-                      <Calendar className="h-5 w-5 text-zinc-400" />
-                    </div>
-                    <h2 className="mt-2 text-3xl font-extrabold tracking-tight">
-                      {blogs.length > 0
-                        ? blogs.reduce(
-                            (latest, current) =>
-                              new Date(current.publishedAt) > new Date(latest)
-                                ? current.publishedAt
-                                : latest,
-                            blogs[0].publishedAt
-                          )
-                        : "No posts"}
-                    </h2>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className="relative overflow-hidden rounded-2xl border border-zinc-200/80 bg-white p-6 shadow-xs">
-                    <div className="absolute top-0 left-0 h-[2px] w-full bg-zinc-200" />
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-semibold tracking-wider text-zinc-500 uppercase">
-                        Total Projects
-                      </span>
-                      <Folder className="h-5 w-5 text-zinc-400" />
-                    </div>
-                    <h2 className="mt-2 text-3xl font-extrabold tracking-tight">{totalProjects}</h2>
-                  </div>
-                  <div className="relative overflow-hidden rounded-2xl border border-zinc-200/80 bg-white p-6 shadow-xs">
-                    <div className="absolute top-0 left-0 h-[2px] w-full bg-zinc-200" />
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-semibold tracking-wider text-zinc-500 uppercase">
-                        Latest Project Date
-                      </span>
-                      <Calendar className="h-5 w-5 text-zinc-400" />
-                    </div>
-                    <h2 className="mt-2 text-3xl font-extrabold tracking-tight">
-                      {projects.length > 0
-                        ? projects.reduce((latest, current) => {
-                            const date = current.publishedAt || "";
-                            return date && new Date(date) > new Date(latest) ? date : latest;
-                          }, projects[0].publishedAt || "")
-                        : "No projects"}
-                    </h2>
-                  </div>
-                </>
-              )}
-            </div>
-          )}
-
-          {/* List Area */}
-          <div className="overflow-hidden rounded-2xl border border-zinc-200/80 bg-white shadow-xs">
-            {activeTab === "maintenance" ? (
-              <form onSubmit={handleSaveSettings} className="space-y-6 p-8">
-                <div className="space-y-2">
-                  <h3 className="text-lg font-bold text-black">Maintenance Settings</h3>
-                  <p className="text-sm leading-relaxed text-zinc-500">
-                    Toggle maintenance mode across the application. When enabled, non-admin visitors
-                    will see the maintenance screen. Authenticated administrators can bypass this
-                    screen and browse normally.
-                  </p>
-                </div>
-
-                {isEnvForced && (
-                  <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
-                    <strong>Notice:</strong> Maintenance Mode is currently forced{" "}
-                    <strong>ON</strong> by the server environment configuration (
-                    <code>MAINTENANCE_MODE=true</code>) and cannot be disabled from this panel.
-                  </div>
-                )}
-
-                <hr className="border-zinc-150/40" />
-
-                {/* Toggle switch */}
-                <div className="flex items-center justify-between">
-                  <div className="space-y-1 pr-4">
-                    <label
-                      htmlFor="maintenance-mode-toggle"
-                      className="text-sm font-bold text-zinc-700"
-                    >
-                      Enable Maintenance Mode
-                    </label>
-                    <p className="text-xs text-zinc-500">
-                      Redirect all standard website traffic to the system upgrades screen.
-                    </p>
-                  </div>
-                  <button
-                    type="button"
-                    id="maintenance-mode-toggle"
-                    disabled={isEnvForced}
-                    onClick={() => setMaintenanceMode(!maintenanceMode)}
-                    className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:ring-2 focus:ring-black focus:ring-offset-2 focus:outline-hidden ${
-                      maintenanceMode ? "bg-black" : "bg-zinc-200"
-                    } ${isEnvForced ? "cursor-not-allowed opacity-50" : ""}`}
-                    role="switch"
-                    aria-checked={maintenanceMode}
-                  >
-                    <span
-                      className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-xs ring-0 transition duration-200 ease-in-out ${
-                        maintenanceMode ? "translate-x-5" : "translate-x-0"
-                      }`}
-                    />
-                  </button>
-                </div>
-
-                <hr className="border-zinc-150/40" />
-
-                {/* Password/Bypass token */}
-                <div className="space-y-2">
-                  <label htmlFor="bypass-key" className="text-sm font-bold text-zinc-700 uppercase">
-                    Bypass Password / Token
-                  </label>
-                  <p className="text-xs text-zinc-500">
-                    A secure password allowing visitors to bypass the maintenance page by appending
-                    `?bypass=YOUR_PASSWORD` to the URL.
-                  </p>
-                  <input
-                    type="text"
-                    id="bypass-key"
-                    value={bypassKey}
-                    onChange={(e) => {
-                      setBypassKey(e.target.value);
-                      setMaintenanceFormError("");
-                    }}
-                    placeholder="Enter bypass password"
-                    className="border-zinc-250 w-full rounded-xl border px-4 py-2.5 text-sm focus:border-black focus:ring-1 focus:ring-black focus:outline-hidden"
-                  />
-                  {maintenanceFormError && (
-                    <p className="text-red-650 text-xs font-semibold">{maintenanceFormError}</p>
+        <div className="3xl:space-y-12 3xl:p-12 4xl:space-y-16 4xl:p-16 5xl:space-y-20 5xl:p-20 flex-1 space-y-8 overflow-y-auto p-4 sm:p-8">
+          {isDbOffline ? (
+            <DbOfflineMessage
+              title="Database Connection Offline"
+              description="We are unable to connect to the database. You will not be able to view, create, edit, or delete items. Please ensure database services are running."
+            />
+          ) : (
+            <>
+              {/* Quick Statistics Panels - Tab Specific */}
+              {(activeTab === "blogs" || activeTab === "projects") && (
+                <div className="3xl:gap-8 4xl:gap-10 5xl:gap-12 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6">
+                  {activeTab === "blogs" ? (
+                    <>
+                      <div className="3xl:rounded-3xl 3xl:p-8 4xl:p-10 5xl:p-12 relative overflow-hidden rounded-2xl border border-zinc-200/80 bg-white p-6 shadow-xs">
+                        <div className="3xl:h-[3px] 4xl:h-[4px] absolute top-0 left-0 h-[2px] w-full bg-zinc-200" />
+                        <div className="flex items-center justify-between">
+                          <span className="3xl:text-sm 4xl:text-base 5xl:text-lg text-xs font-semibold tracking-wider text-zinc-500 uppercase">
+                            Total Blogs
+                          </span>
+                          <FileText className="3xl:h-7 3xl:w-7 4xl:h-9 4xl:w-9 5xl:h-11 5xl:w-11 h-5 w-5 text-zinc-400" />
+                        </div>
+                        <h2 className="3xl:text-4xl 4xl:text-5xl 5xl:text-6xl mt-2 text-3xl font-extrabold tracking-tight">
+                          {totalBlogs}
+                        </h2>
+                      </div>
+                      <div className="3xl:rounded-3xl 3xl:p-8 4xl:p-10 5xl:p-12 relative overflow-hidden rounded-2xl border border-zinc-200/80 bg-white p-6 shadow-xs">
+                        <div className="3xl:h-[3px] 4xl:h-[4px] absolute top-0 left-0 h-[2px] w-full bg-zinc-200" />
+                        <div className="flex items-center justify-between">
+                          <span className="3xl:text-sm 4xl:text-base 5xl:text-lg text-xs font-semibold tracking-wider text-zinc-500 uppercase">
+                            Latest Post Date
+                          </span>
+                          <Calendar className="3xl:h-7 3xl:w-7 4xl:h-9 4xl:w-9 5xl:h-11 5xl:w-11 h-5 w-5 text-zinc-400" />
+                        </div>
+                        <h2 className="3xl:text-4xl 4xl:text-5xl 5xl:text-6xl mt-2 text-3xl font-extrabold tracking-tight">
+                          {blogs.length > 0
+                            ? blogs.reduce(
+                                (latest, current) =>
+                                  new Date(current.publishedAt) > new Date(latest)
+                                    ? current.publishedAt
+                                    : latest,
+                                blogs[0].publishedAt
+                              )
+                            : "No posts"}
+                        </h2>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="3xl:rounded-3xl 3xl:p-8 4xl:p-10 5xl:p-12 relative overflow-hidden rounded-2xl border border-zinc-200/80 bg-white p-6 shadow-xs">
+                        <div className="3xl:h-[3px] 4xl:h-[4px] absolute top-0 left-0 h-[2px] w-full bg-zinc-200" />
+                        <div className="flex items-center justify-between">
+                          <span className="3xl:text-sm 4xl:text-base 5xl:text-lg text-xs font-semibold tracking-wider text-zinc-500 uppercase">
+                            Total Projects
+                          </span>
+                          <Folder className="3xl:h-7 3xl:w-7 4xl:h-9 4xl:w-9 5xl:h-11 5xl:w-11 h-5 w-5 text-zinc-400" />
+                        </div>
+                        <h2 className="3xl:text-4xl 4xl:text-5xl 5xl:text-6xl mt-2 text-3xl font-extrabold tracking-tight">
+                          {totalProjects}
+                        </h2>
+                      </div>
+                      <div className="3xl:rounded-3xl 3xl:p-8 4xl:p-10 5xl:p-12 relative overflow-hidden rounded-2xl border border-zinc-200/80 bg-white p-6 shadow-xs">
+                        <div className="3xl:h-[3px] 4xl:h-[4px] absolute top-0 left-0 h-[2px] w-full bg-zinc-200" />
+                        <div className="flex items-center justify-between">
+                          <span className="3xl:text-sm 4xl:text-base 5xl:text-lg text-xs font-semibold tracking-wider text-zinc-500 uppercase">
+                            Latest Project Date
+                          </span>
+                          <Calendar className="3xl:h-7 3xl:w-7 4xl:h-9 4xl:w-9 5xl:h-11 5xl:w-11 h-5 w-5 text-zinc-400" />
+                        </div>
+                        <h2 className="3xl:text-4xl 4xl:text-5xl 5xl:text-6xl mt-2 text-3xl font-extrabold tracking-tight">
+                          {projects.length > 0
+                            ? projects.reduce((latest, current) => {
+                                const date = current.publishedAt || "";
+                                return date && new Date(date) > new Date(latest) ? date : latest;
+                              }, projects[0].publishedAt || "")
+                            : "No projects"}
+                        </h2>
+                      </div>
+                    </>
                   )}
                 </div>
+              )}
 
-                {/* Bypass Link Documentation */}
-                <div className="space-y-2.5 rounded-xl border border-zinc-200 bg-zinc-50 p-4">
-                  <h4 className="text-sm font-bold text-zinc-800">Bypassing Maintenance Mode</h4>
-                  <p className="text-xs leading-relaxed text-zinc-500">
-                    Admins bypass maintenance mode automatically when authenticated. To allow
-                    guests, clients, or testers to bypass the offline screen, share the bypass link
-                    below.
-                  </p>
-                  {bypassKey && (
-                    <div className="pt-1">
-                      <p className="text-zinc-650 mb-1.5 text-xs font-semibold">
-                        Bypass Link for Guests:
+              {/* List Area */}
+              <div className="overflow-hidden rounded-2xl border border-zinc-200/80 bg-white shadow-xs">
+                {activeTab === "maintenance" ? (
+                  <form onSubmit={handleSaveSettings} className="space-y-6 p-8">
+                    <div className="space-y-2">
+                      <h3 className="text-lg font-bold text-black">Maintenance Settings</h3>
+                      <p className="text-sm leading-relaxed text-zinc-500">
+                        Toggle maintenance mode across the application. When enabled, non-admin
+                        visitors will see the maintenance screen. Authenticated administrators can
+                        bypass this screen and browse normally.
                       </p>
-                      <div className="flex items-center gap-2">
+                    </div>
+
+                    {isEnvForced && (
+                      <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
+                        <strong>Notice:</strong> Maintenance Mode is currently forced{" "}
+                        <strong>ON</strong> via environment variable configuration.
+                      </div>
+                    )}
+
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between rounded-xl border border-zinc-200 p-4">
+                        <div>
+                          <label className="text-sm font-bold text-black">Maintenance Mode</label>
+                          <p className="mt-0.5 text-xs text-zinc-500">
+                            Toggle site accessibility on/off
+                          </p>
+                        </div>
+                        <input
+                          type="checkbox"
+                          checked={maintenanceMode}
+                          onChange={(e) => setMaintenanceMode(e.target.checked)}
+                          disabled={isEnvForced}
+                          className="h-5 w-5 rounded-md border-zinc-300 text-black accent-black focus:ring-black"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="text-sm font-bold text-black">Bypass Key</label>
+                        <p className="text-xs text-zinc-500">
+                          Appended as a query parameter (e.g. ?bypass=key) to view the live site in
+                          maintenance mode.
+                        </p>
                         <input
                           type="text"
-                          readOnly
-                          value={
-                            typeof window !== "undefined"
-                              ? `${window.location.origin}/?bypass=${bypassKey}`
-                              : `/?bypass=${bypassKey}`
-                          }
-                          className="flex-1 rounded-lg border border-zinc-200 bg-zinc-100 px-3 py-1.5 text-xs text-zinc-600 select-all focus:outline-hidden"
+                          value={bypassKey}
+                          onChange={(e) => setBypassKey(e.target.value)}
+                          className="w-full rounded-xl border border-zinc-200 px-4 py-2.5 text-sm font-medium focus:border-black focus:ring-1 focus:ring-black focus:outline-hidden"
+                          placeholder="e.g. secret_bypass_key"
                         />
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const bypassUrl =
-                              typeof window !== "undefined"
-                                ? `${window.location.origin}/?bypass=${bypassKey}`
-                                : `/?bypass=${bypassKey}`;
-                            navigator.clipboard.writeText(bypassUrl);
-                            setCopiedBypass(true);
-                            setTimeout(() => setCopiedBypass(false), 2000);
-                          }}
-                          className="flex h-8 items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-3 text-xs font-semibold transition-colors hover:bg-zinc-50"
-                          aria-label="Copy bypass link"
-                        >
-                          {copiedBypass ? (
-                            <>
-                              <Check className="text-green-650 h-3.5 w-3.5" />
-                              <span className="font-bold text-green-700">Copied!</span>
-                            </>
-                          ) : (
-                            <>
-                              <Copy className="h-3.5 w-3.5" />
-                              <span>Copy</span>
-                            </>
-                          )}
-                        </button>
                       </div>
                     </div>
-                  )}
-                </div>
 
-                {saveSettingsSuccess && (
-                  <div
-                    role="alert"
-                    className="rounded-xl border border-green-200 bg-green-50 p-4 text-sm text-green-800"
-                  >
-                    Maintenance settings saved successfully.
+                    <button
+                      type="submit"
+                      className="inline-flex items-center gap-2 rounded-xl bg-black px-6 py-2.5 text-sm font-bold text-white transition-colors hover:bg-zinc-800 focus:ring-2 focus:ring-black focus:outline-hidden"
+                    >
+                      Save Settings
+                    </button>
+                  </form>
+                ) : activeTab === "blogs" ? (
+                  // Blogs List Table
+                  blogs.length === 0 ? (
+                    <div className="3xl:p-16 3xl:text-base 4xl:p-20 4xl:text-lg 5xl:p-24 5xl:text-xl p-12 text-center text-zinc-500">
+                      No blog posts found. Click &quot;New Post&quot; to write one.
+                    </div>
+                  ) : (
+                    <div className="w-full overflow-x-auto">
+                      <table className="w-full min-w-[650px] border-collapse text-left lg:min-w-0">
+                        <thead>
+                          <tr className="3xl:text-sm 4xl:text-base 5xl:text-lg border-b border-zinc-200 bg-zinc-50 text-xs font-bold tracking-wider text-zinc-500 uppercase">
+                            <th className="3xl:px-8 3xl:py-6 4xl:px-10 4xl:py-8 5xl:px-12 5xl:py-10 px-6 py-4">
+                              Title
+                            </th>
+                            <th className="3xl:px-8 3xl:py-6 4xl:px-10 4xl:py-8 5xl:px-12 5xl:py-10 px-6 py-4">
+                              Published At
+                            </th>
+                            <th className="3xl:px-8 3xl:py-6 4xl:px-10 4xl:py-8 5xl:px-12 5xl:py-10 px-6 py-4 text-right">
+                              Actions
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className="3xl:text-base 4xl:text-lg 5xl:text-xl divide-y divide-zinc-100 text-sm font-medium">
+                          {blogs.map((blog) => (
+                            <tr key={blog.slug} className="transition-colors hover:bg-zinc-50/50">
+                              <td className="3xl:px-8 3xl:py-6 4xl:px-10 4xl:py-8 5xl:px-12 5xl:py-10 px-6 py-4">
+                                <span className="3xl:max-w-lg 4xl:max-w-xl 5xl:max-w-2xl block max-w-md truncate font-semibold text-black">
+                                  {blog.title}
+                                </span>
+                                <span className="3xl:text-sm 4xl:text-base 5xl:text-lg block text-xs font-normal text-zinc-400">
+                                  {blog.slug}
+                                </span>
+                              </td>
+                              <td className="text-zinc-650 3xl:px-8 3xl:py-6 4xl:px-10 4xl:py-8 5xl:px-12 5xl:py-10 px-6 py-4">
+                                {blog.publishedAt}
+                              </td>
+                              <td className="3xl:px-8 3xl:py-6 4xl:px-10 4xl:py-8 5xl:px-12 5xl:py-10 px-6 py-4 text-right">
+                                <div className="3xl:gap-3 4xl:gap-4 5xl:gap-5 flex items-center justify-end gap-2">
+                                  <button
+                                    onClick={() => openBlogEdit(blog)}
+                                    className="3xl:h-11 3xl:w-11 3xl:rounded-xl 4xl:h-14 4xl:w-14 5xl:h-17 5xl:w-17 flex h-8 w-8 items-center justify-center rounded-lg border border-zinc-200 text-zinc-600 transition-all hover:border-black hover:bg-zinc-50 hover:text-black"
+                                    aria-label={`Edit ${blog.title}`}
+                                  >
+                                    <Edit className="3xl:h-5.5 3xl:w-5.5 4xl:h-7 4xl:w-7 5xl:h-8.5 5xl:w-8.5 h-4 w-4" />
+                                  </button>
+                                  <button
+                                    onClick={() => deleteBlog(blog.slug)}
+                                    className="text-red-650 3xl:h-11 3xl:w-11 3xl:rounded-xl 4xl:h-14 4xl:w-14 5xl:h-17 5xl:w-17 flex h-8 w-8 items-center justify-center rounded-lg border border-zinc-200 transition-all hover:border-red-300 hover:bg-red-50 hover:text-red-700"
+                                    aria-label={`Delete ${blog.title}`}
+                                  >
+                                    <Trash2 className="3xl:h-5.5 3xl:w-5.5 4xl:h-7 4xl:w-7 5xl:h-8.5 5xl:w-8.5 h-4 w-4" />
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )
+                ) : // Projects List Table
+                projects.length === 0 ? (
+                  <div className="3xl:p-16 3xl:text-base 4xl:p-20 4xl:text-lg 5xl:p-24 5xl:text-xl p-12 text-center text-zinc-500">
+                    No projects found. Click &quot;New Project&quot; to build one.
+                  </div>
+                ) : (
+                  <div className="w-full overflow-x-auto">
+                    <table className="w-full min-w-[650px] border-collapse text-left lg:min-w-0">
+                      <thead>
+                        <tr className="3xl:text-sm 4xl:text-base 5xl:text-lg border-b border-zinc-200 bg-zinc-50 text-xs font-bold tracking-wider text-zinc-500 uppercase">
+                          <th className="3xl:px-8 3xl:py-6 4xl:px-10 4xl:py-8 5xl:px-12 5xl:py-10 px-6 py-4">
+                            Title
+                          </th>
+                          <th className="3xl:px-8 3xl:py-6 4xl:px-10 4xl:py-8 5xl:px-12 5xl:py-10 px-6 py-4">
+                            Published At
+                          </th>
+                          <th className="3xl:px-8 3xl:py-6 4xl:px-10 4xl:py-8 5xl:px-12 5xl:py-10 px-6 py-4">
+                            Urls
+                          </th>
+                          <th className="3xl:px-8 3xl:py-6 4xl:px-10 4xl:py-8 5xl:px-12 5xl:py-10 px-6 py-4 text-right">
+                            Actions
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="3xl:text-base 4xl:text-lg 5xl:text-xl divide-y divide-zinc-100 text-sm font-medium">
+                        {projects.map((proj) => (
+                          <tr key={proj.slug} className="transition-colors hover:bg-zinc-50/50">
+                            <td className="3xl:px-8 3xl:py-6 4xl:px-10 4xl:py-8 5xl:px-12 5xl:py-10 px-6 py-4">
+                              <span className="3xl:max-w-lg 4xl:max-w-xl 5xl:max-w-2xl block max-w-md truncate font-semibold text-black">
+                                {proj.title}
+                              </span>
+                              <span className="3xl:text-sm 4xl:text-base 5xl:text-lg block text-xs font-normal text-zinc-400">
+                                {proj.slug}
+                              </span>
+                            </td>
+                            <td className="text-zinc-650 3xl:px-8 3xl:py-6 4xl:px-10 4xl:py-8 5xl:px-12 5xl:py-10 px-6 py-4">
+                              {proj.publishedAt || "N/A"}
+                            </td>
+                            <td className="text-zinc-450 3xl:px-8 3xl:py-6 4xl:px-10 4xl:py-8 5xl:px-12 5xl:py-10 px-6 py-4 font-normal">
+                              <div className="3xl:gap-3 4xl:gap-4 5xl:gap-5 flex gap-2">
+                                {proj.githubUrl && (
+                                  <span className="3xl:px-3 3xl:py-1 3xl:text-sm 4xl:px-4 4xl:py-1.5 4xl:text-base 5xl:px-5 5xl:py-2 5xl:text-lg rounded-sm border border-zinc-200 px-2 py-0.5 text-xs">
+                                    GitHub
+                                  </span>
+                                )}
+                                {proj.projectUrl && (
+                                  <span className="3xl:px-3 3xl:py-1 3xl:text-sm 4xl:px-4 4xl:py-1.5 4xl:text-base 5xl:px-5 5xl:py-2 5xl:text-lg rounded-sm border border-zinc-200 px-2 py-0.5 text-xs">
+                                    Live
+                                  </span>
+                                )}
+                              </div>
+                            </td>
+                            <td className="3xl:px-8 3xl:py-6 4xl:px-10 4xl:py-8 5xl:px-12 5xl:py-10 px-6 py-4 text-right">
+                              <div className="3xl:gap-3 4xl:gap-4 5xl:gap-5 flex items-center justify-end gap-2">
+                                <button
+                                  onClick={() => openProjEdit(proj)}
+                                  className="3xl:h-11 3xl:w-11 3xl:rounded-xl 4xl:h-14 4xl:w-14 5xl:h-17 5xl:w-17 flex h-8 w-8 items-center justify-center rounded-lg border border-zinc-200 text-zinc-600 transition-all hover:border-black hover:bg-zinc-50 hover:text-black"
+                                  aria-label={`Edit ${proj.title}`}
+                                >
+                                  <Edit className="3xl:h-5.5 3xl:w-5.5 4xl:h-7 4xl:w-7 5xl:h-8.5 5xl:w-8.5 h-4 w-4" />
+                                </button>
+                                <button
+                                  onClick={() => deleteProj(proj.slug)}
+                                  className="text-red-650 3xl:h-11 3xl:w-11 3xl:rounded-xl 4xl:h-14 4xl:w-14 5xl:h-17 5xl:w-17 flex h-8 w-8 items-center justify-center rounded-lg border border-zinc-200 transition-all hover:border-red-300 hover:bg-red-50 hover:text-red-700"
+                                  aria-label={`Delete ${proj.title}`}
+                                >
+                                  <Trash2 className="3xl:h-5.5 3xl:w-5.5 4xl:h-7 4xl:w-7 5xl:h-8.5 5xl:w-8.5 h-4 w-4" />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
                 )}
-
-                <div className="flex justify-end pt-4">
-                  <button
-                    type="submit"
-                    disabled={isSavingSettings}
-                    className="rounded-xl bg-black px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-zinc-800 focus:ring-2 focus:ring-black focus:outline-hidden disabled:cursor-not-allowed disabled:opacity-50"
-                  >
-                    {isSavingSettings ? "Saving..." : "Save Configuration"}
-                  </button>
-                </div>
-              </form>
-            ) : activeTab === "blogs" ? (
-              // Blogs List Table
-              blogs.length === 0 ? (
-                <div className="p-12 text-center text-zinc-500">
-                  No blog posts found. Click &quot;New Post&quot; to write one.
-                </div>
-              ) : (
-                <table className="w-full border-collapse text-left">
-                  <thead>
-                    <tr className="border-b border-zinc-200 bg-zinc-50 text-xs font-bold tracking-wider text-zinc-500 uppercase">
-                      <th className="px-6 py-4">Title</th>
-                      <th className="px-6 py-4">Category</th>
-                      <th className="px-6 py-4">Published At</th>
-                      <th className="px-6 py-4">Reading Time</th>
-                      <th className="px-6 py-4 text-right">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-zinc-100 text-sm font-medium">
-                    {blogs.map((post) => (
-                      <tr key={post.slug} className="transition-colors hover:bg-zinc-50/50">
-                        <td className="px-6 py-4">
-                          <span className="block max-w-md truncate font-semibold text-black">
-                            {post.title}
-                          </span>
-                          <span className="block text-xs font-normal text-zinc-400">
-                            {post.slug}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4">
-                          <span className="rounded-full border border-zinc-200/50 bg-zinc-100 px-2.5 py-1 text-xs font-bold text-zinc-700">
-                            {post.category}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 text-zinc-600">{post.publishedAt}</td>
-                        <td className="px-6 py-4 font-normal text-zinc-500">{post.readingTime}</td>
-                        <td className="px-6 py-4 text-right">
-                          <div className="flex items-center justify-end gap-2">
-                            <button
-                              onClick={() => openBlogEdit(post)}
-                              className="flex h-8 w-8 items-center justify-center rounded-lg border border-zinc-200 text-zinc-600 transition-all hover:border-black hover:bg-zinc-50 hover:text-black"
-                              aria-label={`Edit ${post.title}`}
-                            >
-                              <Edit className="h-4 w-4" />
-                            </button>
-                            <button
-                              onClick={() => deleteBlog(post.slug)}
-                              className="text-red-650 flex h-8 w-8 items-center justify-center rounded-lg border border-zinc-200 transition-all hover:border-red-300 hover:bg-red-50 hover:text-red-700"
-                              aria-label={`Delete ${post.title}`}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              )
-            ) : // Projects List Table
-            projects.length === 0 ? (
-              <div className="p-12 text-center text-zinc-500">
-                No projects found. Click &quot;New Project&quot; to build one.
               </div>
-            ) : (
-              <table className="w-full border-collapse text-left">
-                <thead>
-                  <tr className="border-b border-zinc-200 bg-zinc-50 text-xs font-bold tracking-wider text-zinc-500 uppercase">
-                    <th className="px-6 py-4">Title</th>
-                    <th className="px-6 py-4">Published At</th>
-                    <th className="px-6 py-4">Urls</th>
-                    <th className="px-6 py-4 text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-zinc-100 text-sm font-medium">
-                  {projects.map((proj) => (
-                    <tr key={proj.slug} className="transition-colors hover:bg-zinc-50/50">
-                      <td className="px-6 py-4">
-                        <span className="block max-w-md truncate font-semibold text-black">
-                          {proj.title}
-                        </span>
-                        <span className="block text-xs font-normal text-zinc-400">{proj.slug}</span>
-                      </td>
-                      <td className="text-zinc-650 px-6 py-4">{proj.publishedAt || "N/A"}</td>
-                      <td className="text-zinc-450 px-6 py-4 font-normal">
-                        <div className="flex gap-2">
-                          {proj.githubUrl && (
-                            <span className="rounded-sm border border-zinc-200 px-2 py-0.5 text-xs">
-                              GitHub
-                            </span>
-                          )}
-                          {proj.projectUrl && (
-                            <span className="rounded-sm border border-zinc-200 px-2 py-0.5 text-xs">
-                              Live
-                            </span>
-                          )}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <div className="flex items-center justify-end gap-2">
-                          <button
-                            onClick={() => openProjEdit(proj)}
-                            className="flex h-8 w-8 items-center justify-center rounded-lg border border-zinc-200 text-zinc-600 transition-all hover:border-black hover:bg-zinc-50 hover:text-black"
-                            aria-label={`Edit ${proj.title}`}
-                          >
-                            <Edit className="h-4 w-4" />
-                          </button>
-                          <button
-                            onClick={() => deleteProj(proj.slug)}
-                            className="text-red-650 flex h-8 w-8 items-center justify-center rounded-lg border border-zinc-200 transition-all hover:border-red-300 hover:bg-red-50 hover:text-red-700"
-                            aria-label={`Delete ${proj.title}`}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
-          </div>
+            </>
+          )}
         </div>
       </main>
 
@@ -861,26 +866,32 @@ export default function AdminDashboard() {
           aria-modal="true"
           aria-labelledby="blog-modal-title"
         >
-          <div className="flex max-h-[90vh] w-full max-w-2xl flex-col overflow-y-auto rounded-2xl border border-zinc-200 bg-white shadow-xl">
-            <header className="border-zinc-150 flex items-center justify-between border-b px-6 py-4">
-              <h2 id="blog-modal-title" className="text-base font-bold">
+          <div className="3xl:max-w-4xl 4xl:max-w-5xl 5xl:max-w-6xl 3xl:rounded-3xl flex max-h-[90vh] w-full max-w-2xl flex-col overflow-y-auto rounded-2xl border border-zinc-200 bg-white shadow-xl">
+            <header className="border-zinc-150 3xl:px-8 3xl:py-6 4xl:px-10 4xl:py-8 5xl:px-12 5xl:py-10 flex items-center justify-between border-b px-6 py-4">
+              <h2
+                id="blog-modal-title"
+                className="3xl:text-xl 4xl:text-2xl 5xl:text-3xl text-base font-bold"
+              >
                 {currentBlog.slug ? "Edit Blog Post" : "Create New Blog Post"}
               </h2>
               <button
                 onClick={() => setIsBlogModalOpen(false)}
-                className="flex h-8 w-8 items-center justify-center rounded-lg hover:bg-zinc-100"
+                className="3xl:h-11 3xl:w-11 3xl:rounded-xl 4xl:h-14 4xl:w-14 5xl:h-17 5xl:w-17 flex h-8 w-8 items-center justify-center rounded-lg hover:bg-zinc-100"
                 aria-label="Close modal"
               >
-                <X className="h-4 w-4" />
+                <X className="3xl:h-6 3xl:w-6 4xl:h-7.5 4xl:w-7.5 5xl:h-9 5xl:w-9 h-4 w-4" />
               </button>
             </header>
 
-            <form onSubmit={saveBlog} className="flex-1 space-y-4 p-6">
+            <form
+              onSubmit={saveBlog}
+              className="3xl:space-y-6 3xl:p-8 4xl:space-y-8 4xl:p-10 5xl:space-y-10 5xl:p-12 flex-1 space-y-4 p-6"
+            >
               {/* Title */}
               <div>
                 <label
                   htmlFor="blog-title"
-                  className="mb-1 block text-xs font-bold text-zinc-700 uppercase"
+                  className="3xl:text-sm 4xl:text-base 5xl:text-lg mb-1 block text-xs font-bold text-zinc-700 uppercase"
                 >
                   Title
                 </label>
@@ -905,13 +916,16 @@ export default function AdminDashboard() {
                           : computedSlug,
                     });
                   }}
-                  className={`w-full rounded-xl border px-4 py-2.5 text-sm focus:border-black focus:ring-1 focus:ring-black ${
+                  className={`3xl:px-6 3xl:py-4 3xl:text-base 4xl:px-8 4xl:py-5.5 4xl:text-lg 5xl:px-10 5xl:py-7 5xl:text-xl w-full rounded-xl border px-4 py-2.5 text-sm focus:border-black focus:ring-1 focus:ring-black ${
                     blogFormErrors.title ? "border-red-500" : "border-zinc-300"
                   }`}
                   aria-describedby={blogFormErrors.title ? "blog-title-err" : undefined}
                 />
                 {blogFormErrors.title && (
-                  <p id="blog-title-err" className="text-red-650 mt-1 text-xs font-semibold">
+                  <p
+                    id="blog-title-err"
+                    className="text-red-650 3xl:text-sm 4xl:text-base 5xl:text-lg mt-1 text-xs font-semibold"
+                  >
                     {blogFormErrors.title}
                   </p>
                 )}
@@ -921,7 +935,7 @@ export default function AdminDashboard() {
               <div>
                 <label
                   htmlFor="blog-slug"
-                  className="mb-1 block text-xs font-bold text-zinc-700 uppercase"
+                  className="3xl:text-sm 4xl:text-base 5xl:text-lg mb-1 block text-xs font-bold text-zinc-700 uppercase"
                 >
                   Slug
                 </label>
@@ -932,24 +946,27 @@ export default function AdminDashboard() {
                   onChange={(e) =>
                     setCurrentBlog({ ...currentBlog, slug: e.target.value.toLowerCase() })
                   }
-                  className={`w-full rounded-xl border px-4 py-2.5 text-sm focus:border-black focus:ring-1 focus:ring-black ${
+                  className={`3xl:px-6 3xl:py-4 3xl:text-base 4xl:px-8 4xl:py-5.5 4xl:text-lg 5xl:px-10 5xl:py-7 5xl:text-xl w-full rounded-xl border px-4 py-2.5 text-sm focus:border-black focus:ring-1 focus:ring-black ${
                     blogFormErrors.slug ? "border-red-500" : "border-zinc-300"
                   }`}
                   aria-describedby={blogFormErrors.slug ? "blog-slug-err" : undefined}
                 />
                 {blogFormErrors.slug && (
-                  <p id="blog-slug-err" className="text-red-650 mt-1 text-xs font-semibold">
+                  <p
+                    id="blog-slug-err"
+                    className="text-red-650 3xl:text-sm 4xl:text-base 5xl:text-lg mt-1 text-xs font-semibold"
+                  >
                     {blogFormErrors.slug}
                   </p>
                 )}
               </div>
 
               {/* Category & Date Grid */}
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div className="3xl:gap-6 4xl:gap-8 5xl:gap-10 grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
                   <label
                     htmlFor="blog-category"
-                    className="mb-1 block text-xs font-bold text-zinc-700 uppercase"
+                    className="3xl:text-sm 4xl:text-base 5xl:text-lg mb-1 block text-xs font-bold text-zinc-700 uppercase"
                   >
                     Category
                   </label>
@@ -957,7 +974,7 @@ export default function AdminDashboard() {
                     id="blog-category"
                     value={currentBlog.category || "Tech"}
                     onChange={(e) => setCurrentBlog({ ...currentBlog, category: e.target.value })}
-                    className="w-full rounded-xl border border-zinc-300 bg-white px-4 py-2.5 text-sm focus:border-black focus:ring-1 focus:ring-black"
+                    className="3xl:px-6 3xl:py-4 3xl:text-base 4xl:px-8 4xl:py-5.5 4xl:text-lg 5xl:px-10 5xl:py-7 5xl:text-xl w-full rounded-xl border border-zinc-300 bg-white px-4 py-2.5 text-sm focus:border-black focus:ring-1 focus:ring-black"
                   >
                     <option value="Tech">Tech</option>
                     <option value="Tutorial">Tutorial</option>
@@ -968,7 +985,7 @@ export default function AdminDashboard() {
                 <div>
                   <label
                     htmlFor="blog-date"
-                    className="mb-1 block text-xs font-bold text-zinc-700 uppercase"
+                    className="3xl:text-sm 4xl:text-base 5xl:text-lg mb-1 block text-xs font-bold text-zinc-700 uppercase"
                   >
                     Publish Date
                   </label>
@@ -979,7 +996,7 @@ export default function AdminDashboard() {
                     onChange={(e) =>
                       setCurrentBlog({ ...currentBlog, publishedAt: e.target.value })
                     }
-                    className="w-full rounded-xl border border-zinc-300 px-4 py-2.5 text-sm focus:border-black focus:ring-1 focus:ring-black"
+                    className="3xl:px-6 3xl:py-4 3xl:text-base 4xl:px-8 4xl:py-5.5 4xl:text-lg 5xl:px-10 5xl:py-7 5xl:text-xl w-full rounded-xl border border-zinc-300 px-4 py-2.5 text-sm focus:border-black focus:ring-1 focus:ring-black"
                   />
                 </div>
               </div>
@@ -988,7 +1005,7 @@ export default function AdminDashboard() {
               <div>
                 <label
                   htmlFor="blog-excerpt"
-                  className="mb-1 block text-xs font-bold text-zinc-700 uppercase"
+                  className="3xl:text-sm 4xl:text-base 5xl:text-lg mb-1 block text-xs font-bold text-zinc-700 uppercase"
                 >
                   Excerpt / Brief Description
                 </label>
@@ -997,13 +1014,16 @@ export default function AdminDashboard() {
                   rows={2}
                   value={currentBlog.excerpt || ""}
                   onChange={(e) => setCurrentBlog({ ...currentBlog, excerpt: e.target.value })}
-                  className={`w-full rounded-xl border px-4 py-2.5 text-sm focus:border-black focus:ring-1 focus:ring-black ${
+                  className={`3xl:px-6 3xl:py-4 3xl:text-base 4xl:px-8 4xl:py-5.5 4xl:text-lg 5xl:px-10 5xl:py-7 5xl:text-xl w-full rounded-xl border px-4 py-2.5 text-sm focus:border-black focus:ring-1 focus:ring-black ${
                     blogFormErrors.excerpt ? "border-red-500" : "border-zinc-300"
                   }`}
                   aria-describedby={blogFormErrors.excerpt ? "blog-excerpt-err" : undefined}
                 />
                 {blogFormErrors.excerpt && (
-                  <p id="blog-excerpt-err" className="text-red-650 mt-1 text-xs font-semibold">
+                  <p
+                    id="blog-excerpt-err"
+                    className="text-red-650 3xl:text-sm 4xl:text-base 5xl:text-lg mt-1 text-xs font-semibold"
+                  >
                     {blogFormErrors.excerpt}
                   </p>
                 )}
@@ -1013,7 +1033,7 @@ export default function AdminDashboard() {
               <div>
                 <label
                   htmlFor="blog-content"
-                  className="mb-1 block text-xs font-bold text-zinc-700 uppercase"
+                  className="3xl:text-sm 4xl:text-base 5xl:text-lg mb-1 block text-xs font-bold text-zinc-700 uppercase"
                 >
                   Markdown Content
                 </label>
@@ -1022,31 +1042,34 @@ export default function AdminDashboard() {
                   rows={6}
                   value={currentBlog.content || ""}
                   onChange={(e) => setCurrentBlog({ ...currentBlog, content: e.target.value })}
-                  className={`w-full rounded-xl border px-4 py-2.5 font-mono text-sm focus:border-black focus:ring-1 focus:ring-black ${
+                  className={`3xl:px-6 3xl:py-4 3xl:text-base 4xl:px-8 4xl:py-5.5 4xl:text-lg 5xl:px-10 5xl:py-7 5xl:text-xl w-full rounded-xl border px-4 py-2.5 font-mono text-sm focus:border-black focus:ring-1 focus:ring-black ${
                     blogFormErrors.content ? "border-red-500" : "border-zinc-300"
                   }`}
                   placeholder="# Enter your markdown text here..."
                   aria-describedby={blogFormErrors.content ? "blog-content-err" : undefined}
                 />
                 {blogFormErrors.content && (
-                  <p id="blog-content-err" className="text-red-650 mt-1 text-xs font-semibold">
+                  <p
+                    id="blog-content-err"
+                    className="text-red-650 3xl:text-sm 4xl:text-base 5xl:text-lg mt-1 text-xs font-semibold"
+                  >
                     {blogFormErrors.content}
                   </p>
                 )}
               </div>
 
               {/* Actions Footer */}
-              <div className="flex justify-end gap-3 border-t border-zinc-100 pt-4">
+              <div className="3xl:gap-4.5 3xl:pt-6 4xl:gap-6 4xl:pt-8 5xl:gap-8 5xl:pt-10 flex justify-end gap-3 border-t border-zinc-100 pt-4">
                 <button
                   type="button"
                   onClick={() => setIsBlogModalOpen(false)}
-                  className="rounded-xl border border-zinc-300 px-4 py-2.5 text-sm font-semibold transition-colors hover:bg-zinc-50"
+                  className="3xl:px-6 3xl:py-3.5 3xl:text-base 4xl:px-8 4xl:py-4.5 4xl:text-lg 5xl:px-10 5xl:py-6 5xl:text-xl rounded-xl border border-zinc-300 px-4 py-2.5 text-sm font-semibold transition-colors hover:bg-zinc-50"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="rounded-xl bg-black px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-zinc-800"
+                  className="3xl:px-7 3xl:py-3.5 3xl:text-base 4xl:px-9 4xl:py-4.5 4xl:text-lg 5xl:px-11 5xl:py-6 5xl:text-xl rounded-xl bg-black px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-zinc-800"
                 >
                   Save Post
                 </button>
@@ -1064,26 +1087,32 @@ export default function AdminDashboard() {
           aria-modal="true"
           aria-labelledby="proj-modal-title"
         >
-          <div className="flex max-h-[90vh] w-full max-w-2xl flex-col overflow-y-auto rounded-2xl border border-zinc-200 bg-white shadow-xl">
-            <header className="border-zinc-150 flex items-center justify-between border-b px-6 py-4">
-              <h2 id="proj-modal-title" className="text-base font-bold">
+          <div className="3xl:max-w-4xl 4xl:max-w-5xl 5xl:max-w-6xl 3xl:rounded-3xl flex max-h-[90vh] w-full max-w-2xl flex-col overflow-y-auto rounded-2xl border border-zinc-200 bg-white shadow-xl">
+            <header className="border-zinc-150 3xl:px-8 3xl:py-6 4xl:px-10 4xl:py-8 5xl:px-12 5xl:py-10 flex items-center justify-between border-b px-6 py-4">
+              <h2
+                id="proj-modal-title"
+                className="3xl:text-xl 4xl:text-2xl 5xl:text-3xl text-base font-bold"
+              >
                 {currentProj._originalSlug ? "Edit Project" : "Create New Project"}
               </h2>
               <button
                 onClick={() => setIsProjModalOpen(false)}
-                className="flex h-8 w-8 items-center justify-center rounded-lg hover:bg-zinc-100"
+                className="3xl:h-11 3xl:w-11 3xl:rounded-xl 4xl:h-14 4xl:w-14 5xl:h-17 5xl:w-17 flex h-8 w-8 items-center justify-center rounded-lg hover:bg-zinc-100"
                 aria-label="Close modal"
               >
-                <X className="h-4 w-4" />
+                <X className="3xl:h-6 3xl:w-6 4xl:h-7.5 4xl:w-7.5 5xl:h-9 5xl:w-9 h-4 w-4" />
               </button>
             </header>
 
-            <form onSubmit={saveProj} className="flex-1 space-y-4 p-6 text-xs">
+            <form
+              onSubmit={saveProj}
+              className="3xl:space-y-6 3xl:p-8 4xl:space-y-8 4xl:p-10 5xl:space-y-10 5xl:p-12 3xl:text-sm 4xl:text-base 5xl:text-lg flex-1 space-y-4 p-6 text-xs"
+            >
               {/* Title */}
               <div>
                 <label
                   htmlFor="proj-title"
-                  className="mb-1 block text-[10px] font-bold text-zinc-700 uppercase"
+                  className="3xl:text-[14px] 4xl:text-[18px] 5xl:text-[22px] mb-1 block text-[10px] font-bold text-zinc-700 uppercase"
                 >
                   Project Title
                 </label>
@@ -1104,13 +1133,16 @@ export default function AdminDashboard() {
                       slug: currentProj._originalSlug ? currentProj.slug : computedSlug,
                     });
                   }}
-                  className={`w-full rounded-xl border px-4 py-2.5 text-sm focus:border-black focus:ring-1 focus:ring-black ${
+                  className={`3xl:px-6 3xl:py-4 3xl:text-base 4xl:px-8 4xl:py-5.5 4xl:text-lg 5xl:px-10 5xl:py-7 5xl:text-xl w-full rounded-xl border px-4 py-2.5 text-sm focus:border-black focus:ring-1 focus:ring-black ${
                     projFormErrors.title ? "border-red-500" : "border-zinc-300"
                   }`}
                   aria-describedby={projFormErrors.title ? "proj-title-err" : undefined}
                 />
                 {projFormErrors.title && (
-                  <p id="proj-title-err" className="text-red-650 mt-1 text-xs font-semibold">
+                  <p
+                    id="proj-title-err"
+                    className="text-red-650 3xl:text-sm 4xl:text-base 5xl:text-lg mt-1 text-xs font-semibold"
+                  >
                     {projFormErrors.title}
                   </p>
                 )}
@@ -1120,7 +1152,7 @@ export default function AdminDashboard() {
               <div>
                 <label
                   htmlFor="proj-slug"
-                  className="mb-1 block text-[10px] font-bold text-zinc-700 uppercase"
+                  className="3xl:text-[14px] 4xl:text-[18px] 5xl:text-[22px] mb-1 block text-[10px] font-bold text-zinc-700 uppercase"
                 >
                   Slug
                 </label>
@@ -1131,13 +1163,16 @@ export default function AdminDashboard() {
                   onChange={(e) =>
                     setCurrentProj({ ...currentProj, slug: e.target.value.toLowerCase() })
                   }
-                  className={`w-full rounded-xl border px-4 py-2.5 text-sm focus:border-black focus:ring-1 focus:ring-black ${
+                  className={`3xl:px-6 3xl:py-4 3xl:text-base 4xl:px-8 4xl:py-5.5 4xl:text-lg 5xl:px-10 5xl:py-7 5xl:text-xl w-full rounded-xl border px-4 py-2.5 text-sm focus:border-black focus:ring-1 focus:ring-black ${
                     projFormErrors.slug ? "border-red-500" : "border-zinc-300"
                   }`}
                   aria-describedby={projFormErrors.slug ? "proj-slug-err" : undefined}
                 />
                 {projFormErrors.slug && (
-                  <p id="proj-slug-err" className="text-red-650 mt-1 text-xs font-semibold">
+                  <p
+                    id="proj-slug-err"
+                    className="text-red-650 3xl:text-sm 4xl:text-base 5xl:text-lg mt-1 text-xs font-semibold"
+                  >
                     {projFormErrors.slug}
                   </p>
                 )}
@@ -1147,7 +1182,7 @@ export default function AdminDashboard() {
               <div>
                 <label
                   htmlFor="proj-date"
-                  className="mb-1 block text-[10px] font-bold text-zinc-700 uppercase"
+                  className="3xl:text-[14px] 4xl:text-[18px] 5xl:text-[22px] mb-1 block text-[10px] font-bold text-zinc-700 uppercase"
                 >
                   Published Date
                 </label>
@@ -1156,14 +1191,14 @@ export default function AdminDashboard() {
                   id="proj-date"
                   value={currentProj.publishedAt || ""}
                   onChange={(e) => setCurrentProj({ ...currentProj, publishedAt: e.target.value })}
-                  className="w-full rounded-xl border border-zinc-300 px-4 py-2.5 text-sm focus:border-black focus:ring-1 focus:ring-black"
+                  className="3xl:px-6 3xl:py-4 3xl:text-base 4xl:px-8 4xl:py-5.5 4xl:text-lg 5xl:px-10 5xl:py-7 5xl:text-xl w-full rounded-xl border border-zinc-300 px-4 py-2.5 text-sm focus:border-black focus:ring-1 focus:ring-black"
                 />
               </div>
 
               {/* Sidebar Custom Fields */}
-              <div className="space-y-3">
+              <div className="3xl:space-y-4.5 4xl:space-y-6 5xl:space-y-7.5 space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="block text-[10px] font-bold text-zinc-700 uppercase">
+                  <span className="3xl:text-[14px] 4xl:text-[18px] 5xl:text-[22px] block text-[10px] font-bold text-zinc-700 uppercase">
                     Sidebar Metadata Fields
                   </span>
                   <button
@@ -1173,22 +1208,26 @@ export default function AdminDashboard() {
                       fields.push({ label: "", value: "", icon: "" });
                       setCurrentProj({ ...currentProj, customFields: fields });
                     }}
-                    className="hover:text-zinc-650 flex items-center gap-1 text-xs font-bold text-black transition-colors"
+                    className="hover:text-zinc-650 3xl:text-sm 4xl:text-base 5xl:text-lg flex items-center gap-1 text-xs font-bold text-black transition-colors"
                   >
-                    <Plus className="h-3.5 w-3.5" /> Add Field
+                    <Plus className="3xl:h-4.5 3xl:w-4.5 4xl:h-6 4xl:w-6 5xl:h-7.5 5xl:w-7.5 h-3.5 w-3.5" />{" "}
+                    Add Field
                   </button>
                 </div>
 
                 {!currentProj.customFields ||
                 (currentProj.customFields as CustomField[]).length === 0 ? (
-                  <p className="text-xs text-zinc-400 italic">
+                  <p className="3xl:text-sm 4xl:text-base 5xl:text-lg text-xs text-zinc-400 italic">
                     No custom fields added. Default fields (Role, Timeline, Platform) will be shown.
                   </p>
                 ) : (
-                  <div className="space-y-2">
+                  <div className="3xl:space-y-4 4xl:space-y-5 5xl:space-y-6 space-y-2.5">
                     {(currentProj.customFields as CustomField[]).map(
                       (field: CustomField, index: number) => (
-                        <div key={index} className="flex items-center gap-2">
+                        <div
+                          key={index}
+                          className="border-zinc-150 grid grid-cols-1 gap-2 border-b pb-3 last:border-b-0 sm:grid-cols-3 sm:items-center sm:gap-2 sm:border-0 sm:pb-0"
+                        >
                           <input
                             type="text"
                             placeholder="Label (e.g. Client)"
@@ -1198,7 +1237,7 @@ export default function AdminDashboard() {
                               fields[index] = { ...fields[index], label: e.target.value };
                               setCurrentProj({ ...currentProj, customFields: fields });
                             }}
-                            className="flex-1 rounded-xl border border-zinc-300 px-3 py-2 text-xs focus:border-black focus:ring-1 focus:ring-black"
+                            className="3xl:px-4 3xl:py-3 3xl:text-sm 4xl:px-5 4xl:py-3.5 4xl:text-base 5xl:px-6 5xl:py-4 5xl:text-lg w-full rounded-xl border border-zinc-300 px-3 py-2 text-xs focus:border-black focus:ring-1 focus:ring-black"
                           />
                           <input
                             type="text"
@@ -1209,31 +1248,33 @@ export default function AdminDashboard() {
                               fields[index] = { ...fields[index], icon: e.target.value };
                               setCurrentProj({ ...currentProj, customFields: fields });
                             }}
-                            className="w-28 rounded-xl border border-zinc-300 px-3 py-2 text-xs focus:border-black focus:ring-1 focus:ring-black"
+                            className="3xl:px-4 3xl:py-3 3xl:text-sm 4xl:px-5 4xl:py-3.5 4xl:text-base 5xl:px-6 5xl:py-4 5xl:text-lg w-full rounded-xl border border-zinc-300 px-3 py-2 text-xs focus:border-black focus:ring-1 focus:ring-black"
                           />
-                          <input
-                            type="text"
-                            placeholder="Value (e.g. Acme Corp)"
-                            value={field.value}
-                            onChange={(e) => {
-                              const fields = [...(currentProj.customFields as CustomField[])];
-                              fields[index] = { ...fields[index], value: e.target.value };
-                              setCurrentProj({ ...currentProj, customFields: fields });
-                            }}
-                            className="flex-1 rounded-xl border border-zinc-300 px-3 py-2 text-xs focus:border-black focus:ring-1 focus:ring-black"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => {
-                              const fields = (currentProj.customFields as CustomField[]).filter(
-                                (_: CustomField, i: number) => i !== index
-                              );
-                              setCurrentProj({ ...currentProj, customFields: fields });
-                            }}
-                            className="rounded-lg p-2 text-zinc-400 transition-all hover:bg-zinc-50 hover:text-red-500"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </button>
+                          <div className="flex w-full items-center gap-2">
+                            <input
+                              type="text"
+                              placeholder="Value (e.g. Acme Corp)"
+                              value={field.value}
+                              onChange={(e) => {
+                                const fields = [...(currentProj.customFields as CustomField[])];
+                                fields[index] = { ...fields[index], value: e.target.value };
+                                setCurrentProj({ ...currentProj, customFields: fields });
+                              }}
+                              className="3xl:px-4 3xl:py-3 3xl:text-sm 4xl:px-5 4xl:py-3.5 4xl:text-base 5xl:px-6 5xl:py-4 5xl:text-lg min-w-0 flex-1 rounded-xl border border-zinc-300 px-3 py-2 text-xs focus:border-black focus:ring-1 focus:ring-black"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const fields = (currentProj.customFields as CustomField[]).filter(
+                                  (_: CustomField, i: number) => i !== index
+                                );
+                                setCurrentProj({ ...currentProj, customFields: fields });
+                              }}
+                              className="3xl:p-3 4xl:p-4 5xl:p-5 shrink-0 rounded-lg p-2 text-zinc-400 transition-all hover:bg-zinc-50 hover:text-red-500"
+                            >
+                              <Trash2 className="3xl:h-5.5 3xl:w-5.5 4xl:h-7 4xl:w-7 5xl:h-8.5 5xl:w-8.5 h-4 w-4" />
+                            </button>
+                          </div>
                         </div>
                       )
                     )}
@@ -1245,7 +1286,7 @@ export default function AdminDashboard() {
               <div>
                 <label
                   htmlFor="proj-desc"
-                  className="mb-1 block text-[10px] font-bold text-zinc-700 uppercase"
+                  className="3xl:text-[14px] 4xl:text-[18px] 5xl:text-[22px] mb-1 block text-[10px] font-bold text-zinc-700 uppercase"
                 >
                   Short Description
                 </label>
@@ -1254,24 +1295,27 @@ export default function AdminDashboard() {
                   rows={2}
                   value={currentProj.description || ""}
                   onChange={(e) => setCurrentProj({ ...currentProj, description: e.target.value })}
-                  className={`w-full rounded-xl border px-4 py-2.5 text-sm focus:border-black focus:ring-1 focus:ring-black ${
+                  className={`3xl:px-6 3xl:py-4 3xl:text-base 4xl:px-8 4xl:py-5.5 4xl:text-lg 5xl:px-10 5xl:py-7 5xl:text-xl w-full rounded-xl border px-4 py-2.5 text-sm focus:border-black focus:ring-1 focus:ring-black ${
                     projFormErrors.description ? "border-red-500" : "border-zinc-300"
                   }`}
                   aria-describedby={projFormErrors.description ? "proj-desc-err" : undefined}
                 />
                 {projFormErrors.description && (
-                  <p id="proj-desc-err" className="text-red-650 mt-1 text-xs font-semibold">
+                  <p
+                    id="proj-desc-err"
+                    className="text-red-650 3xl:text-sm 4xl:text-base 5xl:text-lg mt-1 text-xs font-semibold"
+                  >
                     {projFormErrors.description}
                   </p>
                 )}
               </div>
 
               {/* External URLs Grid */}
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div className="3xl:gap-6 4xl:gap-8 5xl:gap-10 grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
                   <label
                     htmlFor="proj-github"
-                    className="mb-1 block text-[10px] font-bold text-zinc-700 uppercase"
+                    className="3xl:text-[14px] 4xl:text-[18px] 5xl:text-[22px] mb-1 block text-[10px] font-bold text-zinc-700 uppercase"
                   >
                     GitHub URL (optional)
                   </label>
@@ -1280,14 +1324,14 @@ export default function AdminDashboard() {
                     id="proj-github"
                     value={currentProj.githubUrl || ""}
                     onChange={(e) => setCurrentProj({ ...currentProj, githubUrl: e.target.value })}
-                    className="w-full rounded-xl border border-zinc-300 px-4 py-2.5 text-sm focus:border-black focus:ring-1 focus:ring-black"
+                    className="3xl:px-6 3xl:py-4 3xl:text-base 4xl:px-8 4xl:py-5.5 4xl:text-lg 5xl:px-10 5xl:py-7 5xl:text-xl w-full rounded-xl border border-zinc-300 px-4 py-2.5 text-sm focus:border-black focus:ring-1 focus:ring-black"
                     placeholder="https://github.com/..."
                   />
                 </div>
                 <div>
                   <label
                     htmlFor="proj-link"
-                    className="mb-1 block text-[10px] font-bold text-zinc-700 uppercase"
+                    className="3xl:text-[14px] 4xl:text-[18px] 5xl:text-[22px] mb-1 block text-[10px] font-bold text-zinc-700 uppercase"
                   >
                     Live Demo URL (optional)
                   </label>
@@ -1296,7 +1340,7 @@ export default function AdminDashboard() {
                     id="proj-link"
                     value={currentProj.projectUrl || ""}
                     onChange={(e) => setCurrentProj({ ...currentProj, projectUrl: e.target.value })}
-                    className="w-full rounded-xl border border-zinc-300 px-4 py-2.5 text-sm focus:border-black focus:ring-1 focus:ring-black"
+                    className="3xl:px-6 3xl:py-4 3xl:text-base 4xl:px-8 4xl:py-5.5 4xl:text-lg 5xl:px-10 5xl:py-7 5xl:text-xl w-full rounded-xl border border-zinc-300 px-4 py-2.5 text-sm focus:border-black focus:ring-1 focus:ring-black"
                     placeholder="https://..."
                   />
                 </div>
@@ -1306,7 +1350,7 @@ export default function AdminDashboard() {
               <div>
                 <label
                   htmlFor="proj-ext"
-                  className="mb-1 block text-[10px] font-bold text-zinc-700 uppercase"
+                  className="3xl:text-[14px] 4xl:text-[18px] 5xl:text-[22px] mb-1 block text-[10px] font-bold text-zinc-700 uppercase"
                 >
                   Extended Case Study Description (optional)
                 </label>
@@ -1317,23 +1361,23 @@ export default function AdminDashboard() {
                   onChange={(e) =>
                     setCurrentProj({ ...currentProj, extendedDescription: e.target.value })
                   }
-                  className="w-full rounded-xl border border-zinc-300 px-4 py-2.5 font-mono text-sm focus:border-black focus:ring-1 focus:ring-black"
+                  className="3xl:px-6 3xl:py-4 3xl:text-base 4xl:px-8 4xl:py-5.5 4xl:text-lg 5xl:px-10 5xl:py-7 5xl:text-xl w-full rounded-xl border border-zinc-300 px-4 py-2.5 font-mono text-sm focus:border-black focus:ring-1 focus:ring-black"
                   placeholder="# Extended details..."
                 />
               </div>
 
               {/* Actions Footer */}
-              <div className="flex justify-end gap-3 border-t border-zinc-100 pt-4">
+              <div className="3xl:gap-4.5 3xl:pt-6 4xl:gap-6 4xl:pt-8 5xl:gap-8 5xl:pt-10 flex justify-end gap-3 border-t border-zinc-100 pt-4">
                 <button
                   type="button"
                   onClick={() => setIsProjModalOpen(false)}
-                  className="rounded-xl border border-zinc-300 px-4 py-2.5 text-sm font-semibold transition-colors hover:bg-zinc-50"
+                  className="3xl:px-6 3xl:py-3.5 3xl:text-base 4xl:px-8 4xl:py-4.5 4xl:text-lg 5xl:px-10 5xl:py-6 5xl:text-xl rounded-xl border border-zinc-300 px-4 py-2.5 text-sm font-semibold transition-colors hover:bg-zinc-50"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="rounded-xl bg-black px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-zinc-800"
+                  className="3xl:px-7 3xl:py-3.5 3xl:text-base 4xl:px-9 4xl:py-4.5 4xl:text-lg 5xl:px-11 5xl:py-6 5xl:text-xl rounded-xl bg-black px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-zinc-800"
                 >
                   Save Project
                 </button>
