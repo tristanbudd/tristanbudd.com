@@ -17,7 +17,6 @@ import {
   Settings,
   Copy,
   Check,
-  Menu,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
@@ -699,21 +698,54 @@ export default function AdminDashboard() {
                           Appended as a query parameter (e.g. ?bypass=key) to view the live site in
                           maintenance mode.
                         </p>
-                        <input
-                          type="text"
-                          value={bypassKey}
-                          onChange={(e) => setBypassKey(e.target.value)}
-                          className="w-full rounded-xl border border-zinc-200 px-4 py-2.5 text-sm font-medium focus:border-black focus:ring-1 focus:ring-black focus:outline-hidden"
-                          placeholder="e.g. secret_bypass_key"
-                        />
+                        <div className="flex gap-2">
+                          <input
+                            type="text"
+                            value={bypassKey}
+                            onChange={(e) => setBypassKey(e.target.value)}
+                            className="flex-1 rounded-xl border border-zinc-200 px-4 py-2.5 text-sm font-medium focus:border-black focus:ring-1 focus:ring-black focus:outline-hidden"
+                            placeholder="e.g. secret_bypass_key"
+                          />
+                          {bypassKey && typeof window !== "undefined" && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const bypassUrl = `${window.location.origin}/?bypass=${bypassKey}`;
+                                navigator.clipboard.writeText(bypassUrl);
+                                setCopiedBypass(true);
+                                setTimeout(() => setCopiedBypass(false), 2000);
+                              }}
+                              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-zinc-200 bg-white text-zinc-700 transition-all hover:bg-zinc-50 active:scale-95"
+                              title="Copy Bypass URL"
+                            >
+                              {copiedBypass ? (
+                                <Check className="h-4.5 w-4.5 text-green-600" />
+                              ) : (
+                                <Copy className="h-4.5 w-4.5" />
+                              )}
+                            </button>
+                          )}
+                        </div>
+                        {maintenanceFormError && (
+                          <p className="text-red-650 mt-1 text-xs font-semibold">
+                            {maintenanceFormError}
+                          </p>
+                        )}
                       </div>
                     </div>
 
+                    {saveSettingsSuccess && (
+                      <div className="rounded-xl border border-green-200 bg-green-50 p-4 text-sm text-green-800">
+                        Settings saved successfully.
+                      </div>
+                    )}
+
                     <button
                       type="submit"
-                      className="inline-flex items-center gap-2 rounded-xl bg-black px-6 py-2.5 text-sm font-bold text-white transition-colors hover:bg-zinc-800 focus:ring-2 focus:ring-black focus:outline-hidden"
+                      disabled={isSavingSettings}
+                      className="inline-flex items-center gap-2 rounded-xl bg-black px-6 py-2.5 text-sm font-bold text-white transition-colors hover:bg-zinc-800 focus:ring-2 focus:ring-black focus:outline-hidden disabled:cursor-not-allowed disabled:opacity-50"
                     >
-                      Save Settings
+                      {isSavingSettings ? "Saving Settings..." : "Save Settings"}
                     </button>
                   </form>
                 ) : activeTab === "blogs" ? (
