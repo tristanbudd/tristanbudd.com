@@ -23,7 +23,7 @@ import {
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
-import { type BlogPost } from "../../data/blog";
+import { type BlogPost, BLOG_CATEGORIES } from "../../data/blog";
 import { type CustomField, type Project } from "../../data/projects";
 import DbOfflineMessage from "../../components/DbOfflineMessage";
 
@@ -111,7 +111,7 @@ export default function AdminDashboard() {
     setCurrentBlog({
       title: "",
       slug: "",
-      category: "Tech",
+      category: BLOG_CATEGORIES[0],
       excerpt: "",
       content: "",
       publishedAt: new Date().toISOString().split("T")[0],
@@ -1004,14 +1004,15 @@ export default function AdminDashboard() {
                   </label>
                   <select
                     id="blog-category"
-                    value={currentBlog.category || "Tech"}
+                    value={currentBlog.category || BLOG_CATEGORIES[0]}
                     onChange={(e) => setCurrentBlog({ ...currentBlog, category: e.target.value })}
                     className="3xl:px-6 3xl:py-4 3xl:text-base 4xl:px-8 4xl:py-5.5 4xl:text-lg 5xl:px-10 5xl:py-7 5xl:text-xl w-full rounded-xl border border-zinc-300 bg-white px-4 py-2.5 text-sm focus:border-black focus:ring-1 focus:ring-black"
                   >
-                    <option value="Tech">Tech</option>
-                    <option value="Tutorial">Tutorial</option>
-                    <option value="DevLog">DevLog</option>
-                    <option value="General">General</option>
+                    {BLOG_CATEGORIES.map((cat) => (
+                      <option key={cat} value={cat}>
+                        {cat}
+                      </option>
+                    ))}
                   </select>
                 </div>
                 <div>

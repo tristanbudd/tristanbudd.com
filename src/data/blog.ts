@@ -13,3 +13,19 @@ export interface BlogPost {
   readingTime: string;
   tags: string[];
 }
+
+export const BLOG_CATEGORIES = [
+  "Technical Insights",
+  "Tutorials & Guides",
+  "DevLog",
+  "Software Engineering",
+  "Web Development",
+  "UI/UX Design",
+  "Cloud & DevOps",
+  "Career & Productivity",
+  "General Tech",
+  "System Administration",
+  "Cybersecurity",
+] as const;
+
+export type BlogCategory = (typeof BLOG_CATEGORIES)[number];

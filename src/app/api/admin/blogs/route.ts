@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { BLOG_CATEGORIES } from "@/data/blog";
 
 // GET all blogs
 export async function GET() {
@@ -41,7 +42,7 @@ export async function POST(request: NextRequest) {
         excerpt: excerpt || "",
         content,
         publishedAt: publishedAt || new Date().toISOString().split("T")[0],
-        category: category || "Tech",
+        category: category || BLOG_CATEGORIES[0],
         readingTime: readingTime || "5 min read",
         tags: tags || [],
       },
