@@ -21,7 +21,7 @@ services:
     ports:
       - "${APP_BIND_PORT:-18050}:3000"
     volumes:
-      - /var/lib/tristanbudd-uploads:/app/public/uploads
+      - uploads_data:/app/public/uploads
     healthcheck:
       test:
         [
@@ -49,3 +49,5 @@ services:
       timeout: 5s
       retries: 12
 
+volumes:
+  uploads_data:
