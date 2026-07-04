@@ -68,8 +68,7 @@ And much more!
 
 <img width="1920" height="4278" alt="Viewing Project Page" src="https://github.com/user-attachments/assets/42aed5ea-60b0-4f83-b8a6-daafeeac2c75" />
 
-</div>
----
+## </div>
 
 ## Tech Stack
 
