@@ -19,6 +19,10 @@ import {
   Check,
   ChevronLeft,
   ChevronRight,
+  Image as ImageIcon,
+  Upload,
+  ExternalLink,
+  Search,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -29,7 +33,9 @@ import DbOfflineMessage from "../../components/DbOfflineMessage";
 
 export default function AdminDashboard() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<"blogs" | "projects" | "maintenance">("blogs");
+  const [activeTab, setActiveTab] = useState<"blogs" | "projects" | "maintenance" | "images">(
+    "blogs"
+  );
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
@@ -37,6 +43,20 @@ export default function AdminDashboard() {
   const [blogs, setBlogs] = useState<BlogPost[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
   const [isDbOffline, setIsDbOffline] = useState(false);
+
+  // Image Management States
+  interface ImageMetadata {
+    name: string;
+    size: number;
+    createdAt: string;
+    url: string;
+  }
+  const [images, setImages] = useState<ImageMetadata[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
+  const [imageSearch, setImageSearch] = useState("");
+  const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
+  const [copiedMarkdownIndex, setCopiedMarkdownIndex] = useState<number | null>(null);
 
   // Maintenance Settings States
   const [maintenanceMode, setMaintenanceMode] = useState(false);
@@ -65,10 +85,11 @@ export default function AdminDashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [blogsRes, projectsRes, maintRes] = await Promise.all([
+        const [blogsRes, projectsRes, maintRes, imagesRes] = await Promise.all([
           fetch("/api/admin/blogs"),
           fetch("/api/admin/projects"),
           fetch("/api/maintenance"),
+          fetch("/api/admin/images"),
         ]);
         if (blogsRes.ok && projectsRes.ok && maintRes.ok) {
           const blogsData = await blogsRes.json();
@@ -83,6 +104,11 @@ export default function AdminDashboard() {
         } else {
           setIsDbOffline(true);
         }
+
+        if (imagesRes.ok) {
+          const imagesData = await imagesRes.json();
+          setImages(imagesData);
+        }
       } catch (error) {
         console.error("Failed to load admin dashboard data:", error);
         setIsDbOffline(true);
@@ -90,6 +116,82 @@ export default function AdminDashboard() {
     };
     fetchData();
   }, []);
+
+  // Image Handlers
+  const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      await uploadImageFile(e.target.files[0]);
+    }
+  };
+
+  const handleImageDrop = async (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      await uploadImageFile(e.dataTransfer.files[0]);
+    }
+  };
+
+  const uploadImageFile = async (file: File) => {
+    setIsUploading(true);
+    setUploadError("");
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const res = await fetch("/api/admin/images", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        setImages((prev) => [data, ...prev]);
+      } else {
+        setUploadError(data.error || "Failed to upload image.");
+      }
+    } catch (err) {
+      console.error("Upload error:", err);
+      setUploadError("An error occurred during upload.");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const deleteImage = async (filename: string) => {
+    if (!confirm(`Are you sure you want to delete ${filename}? This action cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/admin/images?name=${encodeURIComponent(filename)}`, {
+        method: "DELETE",
+      });
+
+      if (res.ok) {
+        setImages((prev) => prev.filter((img) => img.name !== filename));
+      } else {
+        const data = await res.json();
+        alert(data.error || "Failed to delete image.");
+      }
+    } catch (err) {
+      console.error("Delete error:", err);
+      alert("An error occurred during deletion.");
+    }
+  };
+
+  const copyToClipboard = (text: string, index: number) => {
+    navigator.clipboard.writeText(text);
+    setCopiedIndex(index);
+    setTimeout(() => setCopiedIndex(null), 2000);
+  };
+
+  const copyMarkdownToClipboard = (url: string, name: string, index: number) => {
+    const md = `![${name.split("_")[0] || "Image"}](${url})`;
+    navigator.clipboard.writeText(md);
+    setCopiedMarkdownIndex(index);
+    setTimeout(() => setCopiedMarkdownIndex(null), 2000);
+  };
 
   // Logout Handler
   const handleLogout = async () => {
@@ -369,6 +471,10 @@ export default function AdminDashboard() {
   const totalBlogs = blogs.length;
   const totalProjects = projects.length;
 
+  const filteredImages = images.filter((img) =>
+    img.name.toLowerCase().includes(imageSearch.toLowerCase())
+  );
+
   return (
     <div className="font-outfit flex min-h-screen bg-zinc-50 text-black">
       {/* Mobile Sidebar Overlay */}
@@ -386,7 +492,7 @@ export default function AdminDashboard() {
         } ${
           isSidebarCollapsed
             ? "3xl:w-24 4xl:w-28 5xl:w-32 w-64 lg:w-20"
-            : "3xl:w-80 4xl:w-96 5xl:w-112 w-64 lg:w-64"
+            : "3xl:w-80 4xl:w-96 5xl:w-md w-64 lg:w-64"
         }`}
         aria-label="Sidebar navigation"
       >
@@ -481,6 +587,32 @@ export default function AdminDashboard() {
             </button>
             <button
               onClick={() => {
+                setActiveTab("images");
+                setIsSidebarOpen(false);
+              }}
+              className={`3xl:gap-4.5 3xl:text-base 4xl:gap-6 4xl:text-lg 5xl:gap-8 5xl:text-xl 3xl:pl-[20px] 3xl:pr-4 4xl:pl-[23px] 4xl:pr-4.5 5xl:pl-[26px] 5xl:pr-5 flex w-full items-center gap-3 overflow-hidden rounded-xl px-4 py-3 text-sm font-semibold whitespace-nowrap transition-all lg:justify-start lg:pr-3 lg:pl-[19px] ${
+                activeTab === "images"
+                  ? "bg-black text-white"
+                  : "text-zinc-650 hover:bg-zinc-100 hover:text-black"
+              }`}
+              aria-current={activeTab === "images" ? "page" : undefined}
+            >
+              <ImageIcon className="3xl:h-6 3xl:w-6 4xl:h-7.5 4xl:w-7.5 5xl:h-9 5xl:w-9 h-4.5 w-4.5 shrink-0" />
+              <span className={`whitespace-nowrap ${isSidebarCollapsed ? "lg:hidden" : "inline"}`}>
+                Images
+              </span>
+              <span
+                className={`3xl:px-3 3xl:py-1 3xl:text-sm 4xl:px-4 4xl:py-1.5 4xl:text-base 5xl:px-5 5xl:py-2 5xl:text-lg ml-auto rounded-full px-2 py-0.5 text-xs whitespace-nowrap ${
+                  isSidebarCollapsed ? "lg:hidden" : "inline-block"
+                } ${
+                  activeTab === "images" ? "bg-zinc-800 text-white" : "bg-zinc-100 text-zinc-600"
+                }`}
+              >
+                {images.length}
+              </span>
+            </button>
+            <button
+              onClick={() => {
                 setActiveTab("maintenance");
                 setIsSidebarOpen(false);
               }}
@@ -544,7 +676,9 @@ export default function AdminDashboard() {
                 ? "Manage Blog Posts"
                 : activeTab === "projects"
                   ? "Manage Case Studies"
-                  : "Maintenance Configuration"}
+                  : activeTab === "images"
+                    ? "Manage Media Library"
+                    : "Maintenance Configuration"}
             </h1>
           </div>
 
@@ -568,6 +702,16 @@ export default function AdminDashboard() {
             >
               <Plus className="3xl:h-6 3xl:w-6 4xl:h-7.5 4xl:w-7.5 5xl:h-9 5xl:w-9 h-4.5 w-4.5" />
               <span className="hidden sm:inline">New Project</span>
+            </button>
+          ) : activeTab === "images" ? (
+            <button
+              onClick={() => document.getElementById("image-file-input")?.click()}
+              disabled={isDbOffline}
+              className="3xl:gap-3 3xl:px-6 3xl:py-3.5 3xl:text-base 4xl:gap-4 4xl:px-8 4xl:py-4.5 4xl:text-lg 5xl:gap-5 5xl:px-10 5xl:py-6 5xl:text-xl flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-black text-white transition-all hover:bg-zinc-800 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 sm:inline-flex sm:h-auto sm:w-auto sm:items-center sm:gap-2 sm:rounded-xl sm:px-4 sm:py-2.5 sm:text-sm sm:font-bold"
+              aria-label="Upload new image"
+            >
+              <Plus className="3xl:h-6 3xl:w-6 4xl:h-7.5 4xl:w-7.5 5xl:h-9 5xl:w-9 h-4.5 w-4.5" />
+              <span className="hidden sm:inline">Upload Image</span>
             </button>
           ) : null}
         </header>
@@ -748,6 +892,213 @@ export default function AdminDashboard() {
                       {isSavingSettings ? "Saving Settings..." : "Save Settings"}
                     </button>
                   </form>
+                ) : activeTab === "images" ? (
+                  <div className="space-y-6 p-8">
+                    {/* Header Details */}
+                    <div className="space-y-2">
+                      <h3 className="font-outfit text-lg font-bold text-black">Media Library</h3>
+                      <p className="text-sm leading-relaxed text-zinc-500">
+                        Upload and manage images for your blog posts and project case studies. Files
+                        are hosted on the tristanbudd.com domain.
+                      </p>
+                    </div>
+
+                    {/* Upload & Search Controls Grid */}
+                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                      {/* Upload Section */}
+                      <div className="space-y-4">
+                        <label className="block text-xs font-bold tracking-wider text-zinc-700 uppercase">
+                          Upload New Image
+                        </label>
+                        <div
+                          onDragOver={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                          }}
+                          onDrop={handleImageDrop}
+                          className="relative flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-zinc-200 bg-zinc-50/50 p-6 text-center transition-all hover:border-black hover:bg-zinc-50"
+                        >
+                          <input
+                            type="file"
+                            id="image-file-input"
+                            accept="image/*"
+                            onChange={handleImageSelect}
+                            className="hidden"
+                          />
+                          <Upload className="mb-3 h-8 w-8 text-zinc-400" />
+                          <p className="text-sm font-semibold text-zinc-900">
+                            Drag and drop image here, or{" "}
+                            <label
+                              htmlFor="image-file-input"
+                              className="cursor-pointer font-bold text-black underline hover:text-zinc-700"
+                            >
+                              browse files
+                            </label>
+                          </p>
+                          <p className="mt-1 text-xs text-zinc-400">
+                            Supports PNG, JPEG, GIF, WebP, SVG up to 5MB
+                          </p>
+                          {isUploading && (
+                            <div className="absolute inset-0 flex flex-col items-center justify-center rounded-xl bg-white/85 backdrop-blur-xs">
+                              <div className="h-6 w-6 animate-spin rounded-full border-2 border-black border-t-transparent" />
+                              <span className="mt-2 text-xs font-bold text-black">
+                                Uploading image...
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                        {uploadError && (
+                          <p className="text-red-650 text-xs font-semibold">{uploadError}</p>
+                        )}
+                      </div>
+
+                      {/* Search & Stats Section */}
+                      <div className="flex flex-col justify-between space-y-4">
+                        <div className="space-y-4">
+                          <label
+                            htmlFor="image-search-input"
+                            className="block text-xs font-bold tracking-wider text-zinc-700 uppercase"
+                          >
+                            Filter Images
+                          </label>
+                          <div className="relative">
+                            <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-zinc-400" />
+                            <input
+                              type="text"
+                              id="image-search-input"
+                              placeholder="Search by filename..."
+                              value={imageSearch}
+                              onChange={(e) => setImageSearch(e.target.value)}
+                              className="w-full rounded-xl border border-zinc-200 py-2.5 pr-4 pl-10 text-sm focus:border-black focus:ring-1 focus:ring-black"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="border-zinc-150 rounded-xl border bg-zinc-50/50 p-4 text-xs font-semibold text-zinc-500">
+                          <div className="flex justify-between py-1">
+                            <span>Total Files:</span>
+                            <span className="font-bold text-black">{images.length}</span>
+                          </div>
+                          <div className="flex justify-between py-1">
+                            <span>Total Storage Used:</span>
+                            <span className="font-bold text-black">
+                              {(
+                                images.reduce((acc, img) => acc + img.size, 0) /
+                                (1024 * 1024)
+                              ).toFixed(2)}{" "}
+                              MB
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Image Grid */}
+                    <div className="border-t border-zinc-100 pt-6">
+                      {filteredImages.length === 0 ? (
+                        <div className="py-12 text-center text-sm font-semibold text-zinc-400">
+                          {imageSearch
+                            ? "No images match your search."
+                            : "No images uploaded yet. Upload your first image above!"}
+                        </div>
+                      ) : (
+                        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                          {filteredImages.map((img, idx) => (
+                            <div
+                              key={img.name}
+                              className="group relative flex flex-col overflow-hidden rounded-xl border border-zinc-200/80 bg-white transition-all hover:shadow-md"
+                            >
+                              {/* Thumbnail Container */}
+                              <div className="relative flex aspect-video w-full items-center justify-center overflow-hidden border-b border-zinc-100 bg-zinc-50">
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img
+                                  src={img.url}
+                                  alt={img.name}
+                                  className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                />
+                                {/* Quick hover overlay */}
+                                <div className="absolute inset-0 flex items-center justify-center gap-2 bg-black/40 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                                  <a
+                                    href={img.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="scale-90 transform rounded-lg bg-white/95 p-2 text-black transition-all group-hover:scale-100 hover:bg-white"
+                                    title="Open image in new window"
+                                  >
+                                    <ExternalLink className="h-4 w-4" />
+                                  </a>
+                                </div>
+                              </div>
+
+                              {/* Details and Actions */}
+                              <div className="flex flex-1 flex-col justify-between space-y-3 p-4">
+                                <div>
+                                  <h4
+                                    className="truncate text-sm font-bold text-zinc-950"
+                                    title={img.name}
+                                  >
+                                    {img.name}
+                                  </h4>
+                                  <p className="text-zinc-450 mt-1 text-[11px] font-semibold">
+                                    {(img.size / 1024).toFixed(1)} KB •{" "}
+                                    {new Date(img.createdAt).toLocaleDateString()}
+                                  </p>
+                                </div>
+
+                                <div className="space-y-1.5 pt-1">
+                                  <div className="flex gap-2">
+                                    <button
+                                      onClick={() => copyToClipboard(img.url, idx)}
+                                      className="text-zinc-650 flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-zinc-200 px-2 py-1.5 text-xs font-semibold transition-colors hover:border-black hover:bg-zinc-50 hover:text-black"
+                                    >
+                                      {copiedIndex === idx ? (
+                                        <>
+                                          <Check className="h-3.5 w-3.5 text-green-600" />
+                                          <span className="font-bold text-green-600">Copied!</span>
+                                        </>
+                                      ) : (
+                                        <>
+                                          <Copy className="h-3.5 w-3.5" />
+                                          <span>Link</span>
+                                        </>
+                                      )}
+                                    </button>
+
+                                    <button
+                                      onClick={() =>
+                                        copyMarkdownToClipboard(img.url, img.name, idx)
+                                      }
+                                      className="text-zinc-650 flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-zinc-200 px-2 py-1.5 text-xs font-semibold transition-colors hover:border-black hover:bg-zinc-50 hover:text-black"
+                                    >
+                                      {copiedMarkdownIndex === idx ? (
+                                        <>
+                                          <Check className="h-3.5 w-3.5 text-green-600" />
+                                          <span className="font-bold text-green-600">Copied!</span>
+                                        </>
+                                      ) : (
+                                        <>
+                                          <Copy className="h-3.5 w-3.5" />
+                                          <span>Markdown</span>
+                                        </>
+                                      )}
+                                    </button>
+                                  </div>
+
+                                  <button
+                                    onClick={() => deleteImage(img.name)}
+                                    className="text-red-650 flex w-full items-center justify-center gap-1.5 rounded-lg border border-red-200 bg-red-50/20 px-2 py-1.5 text-xs font-semibold transition-colors hover:border-red-300 hover:bg-red-50 hover:text-red-700"
+                                  >
+                                    <Trash2 className="h-3.5 w-3.5" />
+                                    <span>Delete Image</span>
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 ) : activeTab === "blogs" ? (
                   // Blogs List Table
                   blogs.length === 0 ? (

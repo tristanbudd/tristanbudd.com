@@ -20,6 +20,8 @@ services:
       GTM_ID: ${GTM_ID}
     ports:
       - "${APP_BIND_PORT:-18050}:3000"
+    volumes:
+      - /var/lib/tristanbudd-uploads:/app/public/uploads
     healthcheck:
       test:
         [
