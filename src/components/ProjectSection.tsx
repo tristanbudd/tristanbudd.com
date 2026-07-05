@@ -7,6 +7,7 @@
 
 import { Project } from "@/data/projects";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
+import { trackProjectClick } from "@/lib/gtm";
 import {
   ArrowRight,
   Check,
@@ -23,7 +24,6 @@ import * as React from "react";
 import { useTransition } from "../context/TransitionContext";
 import CTAButton from "./CTAButton";
 import DbOfflineMessage from "./DbOfflineMessage";
-import { trackProjectClick } from "@/lib/gtm";
 
 function ProjectImagePlaceholder() {
   return (
@@ -97,9 +97,16 @@ function ProjectCard({
 
       {/* Content Bottom Portion */}
       <div className="3xl:px-6 3xl:pb-8 3xl:pt-4 4xl:px-8 4xl:pb-10 4xl:pt-5 5xl:px-10 5xl:pb-12 5xl:pt-6 flex flex-1 flex-col px-4 pt-2 pb-6 sm:pt-3">
-        <HeadingTag className="3xl:text-2xl 4xl:text-3xl 5xl:text-4xl text-lg font-bold text-black transition-colors duration-300 group-hover/card:text-zinc-800 sm:text-xl">
-          {project.title}
-        </HeadingTag>
+        <div className="flex items-start justify-between gap-2">
+          <HeadingTag className="3xl:text-2xl 4xl:text-3xl 5xl:text-4xl text-lg font-bold text-black transition-colors duration-300 group-hover/card:text-zinc-800 sm:text-xl">
+            {project.title}
+          </HeadingTag>
+          {project.featured && (
+            <span className="3xl:text-[14px] 3xl:px-3 3xl:py-1 4xl:text-[18px] 4xl:px-4 4xl:py-1.5 5xl:text-[22px] 5xl:px-5 5xl:py-2 shrink-0 rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-[10px] font-bold text-amber-700 select-none">
+              Featured
+            </span>
+          )}
+        </div>
         <p className="text-zinc-650 3xl:mt-3 3xl:text-base 4xl:mt-4 4xl:text-lg 5xl:text-xl mt-2 flex-1 text-sm leading-relaxed">
           {project.description}
         </p>
@@ -304,10 +311,14 @@ export default function ProjectSection({
   const itemsPerPage = 6;
   const totalPages = Math.ceil(sortedProjects.length / itemsPerPage);
 
-  // Render top 3 in preview, otherwise paginate
-  const displayedProjects = isPreview
-    ? sortedProjects.slice(0, 3)
-    : sortedProjects.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  // Render pre-sorted/randomised projects list in preview (home page), otherwise normal filtering/sorting/pagination
+  const displayedProjects = React.useMemo(() => {
+    if (isPreview) {
+      return projects;
+    } else {
+      return sortedProjects.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+    }
+  }, [isPreview, projects, sortedProjects, currentPage, itemsPerPage]);
 
   return (
     <section

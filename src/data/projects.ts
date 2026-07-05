@@ -19,4 +19,5 @@ export interface Project {
   githubUrl?: string | null;
   customFields?: CustomField[];
   publishedAt?: string | null;
+  featured?: boolean;
 }

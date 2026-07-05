@@ -1,16 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import BlogSection from "./BlogSection";
-import Certifications from "./Certifications";
-import Contact from "./Contact";
-import Footer from "./Footer";
-import Header from "./Header";
-import Hero from "./Hero";
-import ProjectSection from "./ProjectSection";
-import StatsPanel from "./StatsPanel";
-import TechStack from "./TechStack";
-import Timeline from "./Timeline";
 import { type BlogPost } from "../data/blog";
 import {
   certificates,
@@ -25,10 +15,21 @@ import {
 } from "../data/portfolio";
 import { type Project } from "../data/projects";
 import { formatDuration, getYearsOfExperience } from "../lib/utils";
+import BlogSection from "./BlogSection";
+import Certifications from "./Certifications";
+import Contact from "./Contact";
+import Footer from "./Footer";
+import Header from "./Header";
+import Hero from "./Hero";
+import ProjectSection from "./ProjectSection";
+import StatsPanel from "./StatsPanel";
+import TechStack from "./TechStack";
+import Timeline from "./Timeline";
 
 export default function HomeClient() {
   const [blogs, setBlogs] = useState<BlogPost[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
+  const [previewProjects, setPreviewProjects] = useState<Project[]>([]);
   const [githubContributions, setGithubContributions] = useState<number | null>(null);
 
   const [blogsLoading, setBlogsLoading] = useState(true);
@@ -86,6 +87,30 @@ export default function HomeClient() {
             }))
           : [];
         setProjects(formatted);
+
+        // Compute preview projects (featured/randomised fallback)
+        const LIMIT = 3;
+        const featured = formatted.filter((p) => p.featured);
+        const nonFeatured = formatted.filter((p) => !p.featured);
+        let selected: Project[] = [];
+        if (featured.length > LIMIT) {
+          const shuffled = [...featured].sort(() => 0.5 - Math.random());
+          selected = shuffled.slice(0, LIMIT);
+        } else if (featured.length === LIMIT) {
+          selected = featured;
+        } else {
+          const parseDate = (dStr: string | null | undefined) => {
+            if (!dStr) return 0;
+            const t = new Date(dStr).getTime();
+            return isNaN(t) ? 0 : t;
+          };
+          const sortedNonFeatured = [...nonFeatured].sort(
+            (a, b) => parseDate(b.publishedAt) - parseDate(a.publishedAt)
+          );
+          const needed = LIMIT - featured.length;
+          selected = [...featured, ...sortedNonFeatured.slice(0, needed)];
+        }
+        setPreviewProjects(selected);
         setProjectsLoading(false);
       })
       .catch((err) => {
@@ -161,7 +186,7 @@ export default function HomeClient() {
 
         {/* Featured Projects Preview Showcase */}
         <ProjectSection
-          projects={projects}
+          projects={previewProjects}
           title="Featured Projects"
           subtitle="My Work"
           isPreview

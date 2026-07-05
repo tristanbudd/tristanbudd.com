@@ -330,6 +330,7 @@ export default function AdminDashboard() {
       githubUrl: "",
       customFields: [],
       publishedAt: new Date().toISOString().split("T")[0],
+      featured: false,
     });
     setProjFormErrors({});
     setIsProjModalOpen(true);
@@ -1187,9 +1188,16 @@ export default function AdminDashboard() {
                         {projects.map((proj) => (
                           <tr key={proj.slug} className="transition-colors hover:bg-zinc-50/50">
                             <td className="3xl:px-8 3xl:py-6 4xl:px-10 4xl:py-8 5xl:px-12 5xl:py-10 px-6 py-4">
-                              <span className="3xl:max-w-lg 4xl:max-w-xl 5xl:max-w-2xl block max-w-md truncate font-semibold text-black">
-                                {proj.title}
-                              </span>
+                              <div className="flex items-center gap-2">
+                                <span className="3xl:max-w-lg 4xl:max-w-xl 5xl:max-w-2xl block max-w-md truncate font-semibold text-black">
+                                  {proj.title}
+                                </span>
+                                {proj.featured && (
+                                  <span className="inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-2.5 py-0.5 text-xs font-bold text-amber-700">
+                                    Featured
+                                  </span>
+                                )}
+                              </div>
                               <span className="3xl:text-sm 4xl:text-base 5xl:text-lg block text-xs font-normal text-zinc-400">
                                 {proj.slug}
                               </span>
@@ -1577,6 +1585,23 @@ export default function AdminDashboard() {
                   onChange={(e) => setCurrentProj({ ...currentProj, publishedAt: e.target.value })}
                   className="3xl:px-6 3xl:py-4 3xl:text-base 4xl:px-8 4xl:py-5.5 4xl:text-lg 5xl:px-10 5xl:py-7 5xl:text-xl w-full rounded-xl border border-zinc-300 px-4 py-2.5 text-sm focus:border-black focus:ring-1 focus:ring-black"
                 />
+              </div>
+
+              {/* Featured Project Checkbox */}
+              <div className="flex items-center gap-3 py-1">
+                <input
+                  type="checkbox"
+                  id="proj-featured"
+                  checked={currentProj.featured || false}
+                  onChange={(e) => setCurrentProj({ ...currentProj, featured: e.target.checked })}
+                  className="h-5 w-5 cursor-pointer rounded-md border-zinc-300 text-black accent-black focus:ring-black"
+                />
+                <label
+                  htmlFor="proj-featured"
+                  className="3xl:text-[14px] 4xl:text-[18px] 5xl:text-[22px] cursor-pointer text-xs font-bold text-zinc-700 uppercase select-none"
+                >
+                  Featured Project
+                </label>
               </div>
 
               {/* Sidebar Custom Fields */}

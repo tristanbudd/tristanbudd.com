@@ -70,6 +70,7 @@ const defaultProjects = [
       { label: "Platform", value: "Dolor Sit Amet", icon: "layers" },
     ],
     publishedAt: "2026-01-01",
+    featured: true,
   },
 ];
 
@@ -107,6 +108,7 @@ async function main() {
         projectUrl: project.projectUrl,
         customFields: project.customFields || [],
         publishedAt: project.publishedAt,
+        featured: project.featured || false,
       },
     });
   }

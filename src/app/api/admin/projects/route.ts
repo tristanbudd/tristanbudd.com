@@ -30,6 +30,7 @@ export async function POST(request: NextRequest) {
       projectUrl,
       customFields,
       publishedAt,
+      featured,
     } = body;
 
     if (!slug || !title || !description) {
@@ -54,6 +55,7 @@ export async function POST(request: NextRequest) {
       projectUrl: projectUrl || null,
       customFields: customFields || [],
       publishedAt: publishedAt || null,
+      featured: !!featured,
     };
 
     const project = await prisma.project.create({
@@ -81,6 +83,7 @@ export async function PUT(request: NextRequest) {
       projectUrl,
       customFields,
       publishedAt,
+      featured,
       _originalSlug,
     } = body;
 
@@ -119,6 +122,7 @@ export async function PUT(request: NextRequest) {
       projectUrl,
       customFields: customFields || [],
       publishedAt,
+      featured: !!featured,
     };
 
     const updated = await prisma.project.update({
