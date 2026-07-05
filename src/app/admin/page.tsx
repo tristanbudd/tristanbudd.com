@@ -380,6 +380,9 @@ export default function AdminDashboard() {
       if (duplicate) errors.slug = "Slug already exists in another project.";
     }
     if (!currentProj.description?.trim()) errors.description = "Short description is required.";
+    if (!currentProj.extendedDescription?.trim()) {
+      errors.extendedDescription = "Extended case study description is required.";
+    }
 
     if (Object.keys(errors).length > 0) {
       setProjFormErrors(errors);
@@ -1761,7 +1764,7 @@ export default function AdminDashboard() {
                   htmlFor="proj-ext"
                   className="3xl:text-[14px] 4xl:text-[18px] 5xl:text-[22px] mb-1 block text-[10px] font-bold text-zinc-700 uppercase"
                 >
-                  Extended Case Study Description (optional)
+                  Extended Case Study Description
                 </label>
                 <textarea
                   id="proj-ext"
@@ -1770,9 +1773,22 @@ export default function AdminDashboard() {
                   onChange={(e) =>
                     setCurrentProj({ ...currentProj, extendedDescription: e.target.value })
                   }
-                  className="3xl:px-6 3xl:py-4 3xl:text-base 4xl:px-8 4xl:py-5.5 4xl:text-lg 5xl:px-10 5xl:py-7 5xl:text-xl w-full rounded-xl border border-zinc-300 px-4 py-2.5 font-mono text-sm focus:border-black focus:ring-1 focus:ring-black"
+                  className={`3xl:px-6 3xl:py-4 3xl:text-base 4xl:px-8 4xl:py-5.5 4xl:text-lg 5xl:px-10 5xl:py-7 5xl:text-xl w-full rounded-xl border px-4 py-2.5 font-mono text-sm focus:border-black focus:ring-1 focus:ring-black ${
+                    projFormErrors.extendedDescription
+                      ? "animate-shake border-red-500"
+                      : "border-zinc-300"
+                  }`}
                   placeholder="# Extended details..."
+                  aria-describedby={projFormErrors.extendedDescription ? "proj-ext-err" : undefined}
                 />
+                {projFormErrors.extendedDescription && (
+                  <p
+                    id="proj-ext-err"
+                    className="text-red-650 3xl:text-sm 4xl:text-base 5xl:text-lg mt-1 text-xs font-semibold"
+                  >
+                    {projFormErrors.extendedDescription}
+                  </p>
+                )}
               </div>
 
               {/* Actions Footer */}

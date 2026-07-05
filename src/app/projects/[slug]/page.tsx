@@ -97,25 +97,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
     customFields: (dbProject as unknown as { customFields?: CustomField[] }).customFields,
   };
 
-  // Generate fallback markdown if no extendedDescription is present
-  const content =
-    project.extendedDescription ||
-    `
-# Case Study: ${project.title}
-
-${project.description}
-
----
-
-## Project Stack & Details
-
-This project was built with the following core stack:
-${project.tags.map((tag) => `- **${tag}**`).join("\n")}
-
-You can explore the source code in the [GitHub Repository](${
-      project.githubUrl || "https://github.com/tristanbudd"
-    }) or view the [live application website](${project.projectUrl || "#"}) to see it in action.
-`;
+  const content = project.extendedDescription;
 
   return (
     <div className="bg-background flex min-h-screen flex-col">

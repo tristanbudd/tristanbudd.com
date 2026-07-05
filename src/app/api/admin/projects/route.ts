@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
       featured,
     } = body;
 
-    if (!slug || !title || !description) {
+    if (!slug || !title || !description || !extendedDescription) {
       return NextResponse.json({ error: "Missing required fields." }, { status: 400 });
     }
 
@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
       slug,
       title,
       description,
-      extendedDescription: extendedDescription || "",
+      extendedDescription,
       tags: tags || [],
       githubUrl: githubUrl || null,
       projectUrl: projectUrl || null,
@@ -89,8 +89,8 @@ export async function PUT(request: NextRequest) {
 
     const targetSlug = _originalSlug || slug;
 
-    if (!targetSlug) {
-      return NextResponse.json({ error: "Target slug is required for update." }, { status: 400 });
+    if (!targetSlug || !slug || !title || !description || !extendedDescription) {
+      return NextResponse.json({ error: "Missing required fields." }, { status: 400 });
     }
 
     // Check if target exists
