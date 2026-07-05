@@ -6,30 +6,31 @@
  */
 
 import {
-  Edit,
-  FileText,
-  Folder,
-  LogOut,
-  Plus,
-  Trash2,
-  X,
   Calendar,
-  Settings,
-  Copy,
   Check,
   ChevronLeft,
   ChevronRight,
-  Image as ImageIcon,
-  Upload,
+  Copy,
+  Download,
+  Edit,
   ExternalLink,
+  FileText,
+  Folder,
+  Image as ImageIcon,
+  LogOut,
+  Plus,
   Search,
+  Settings,
+  Trash2,
+  Upload,
+  X,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
+import DbOfflineMessage from "../../components/DbOfflineMessage";
 import { type BlogPost, BLOG_CATEGORIES } from "../../data/blog";
 import { type CustomField, type Project } from "../../data/projects";
-import DbOfflineMessage from "../../components/DbOfflineMessage";
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -80,6 +81,21 @@ export default function AdminDashboard() {
 
   const [blogFormErrors, setBlogFormErrors] = useState<Record<string, string>>({});
   const [projFormErrors, setProjFormErrors] = useState<Record<string, string>>({});
+
+  // Import/Export States (Unified for Blogs and Projects)
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+  const [importType, setImportType] = useState<"blogs" | "projects">("blogs");
+  const [importedItems, setImportedItems] = useState<(BlogPost | Project)[]>([]);
+  const [selectedImportSlugs, setSelectedImportSlugs] = useState<Set<string>>(new Set());
+  const [importConflictAction, setImportConflictAction] = useState<"overwrite" | "skip">("skip");
+  const [isImporting, setIsImporting] = useState(false);
+  const [importSearchQuery, setImportSearchQuery] = useState("");
+  const [importResult, setImportResult] = useState<{
+    created: number;
+    updated: number;
+    skipped: number;
+  } | null>(null);
+  const [importError, setImportError] = useState("");
 
   // Fetch data from MySQL database via API routes
   useEffect(() => {
@@ -315,6 +331,276 @@ export default function AdminDashboard() {
     } catch (error) {
       console.error("Save blog error:", error);
       alert("Failed to save blog post. Connection error.");
+    }
+  };
+
+  // Client-Side Export Handlers
+  const exportBlog = (blog: BlogPost) => {
+    try {
+      const jsonString = JSON.stringify(blog, null, 2);
+      const blob = new Blob([jsonString], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `blog-${blog.slug}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Export blog error:", err);
+      alert("Failed to export blog post.");
+    }
+  };
+
+  const exportAllBlogs = () => {
+    if (blogs.length === 0) {
+      alert("No blog posts to export.");
+      return;
+    }
+    try {
+      const jsonString = JSON.stringify(blogs, null, 2);
+      const blob = new Blob([jsonString], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "all-blog-posts.json";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Export all blogs error:", err);
+      alert("Failed to export blog posts.");
+    }
+  };
+
+  const exportProject = (project: Project) => {
+    try {
+      const jsonString = JSON.stringify(project, null, 2);
+      const blob = new Blob([jsonString], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `project-${project.slug}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Export project error:", err);
+      alert("Failed to export project.");
+    }
+  };
+
+  const exportAllProjects = () => {
+    if (projects.length === 0) {
+      alert("No projects to export.");
+      return;
+    }
+    try {
+      const jsonString = JSON.stringify(projects, null, 2);
+      const blob = new Blob([jsonString], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "all-projects.json";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Export all projects error:", err);
+      alert("Failed to export projects.");
+    }
+  };
+
+  // Unified Client-Side Import Handlers
+  const handleImportClick = (type: "blogs" | "projects") => {
+    setImportType(type);
+    document.getElementById("unified-import-input")?.click();
+  };
+
+  const handleImportFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const text = event.target?.result;
+        if (typeof text !== "string") {
+          throw new Error("Invalid file content.");
+        }
+        const data = JSON.parse(text);
+
+        // Normalize single item to an array
+        const itemsArray = Array.isArray(data) ? data : [data];
+
+        // Schema validation
+        const validItems: (BlogPost | Project)[] = [];
+
+        if (importType === "blogs") {
+          for (const item of itemsArray) {
+            if (
+              typeof item === "object" &&
+              item !== null &&
+              typeof item.title === "string" &&
+              typeof item.slug === "string" &&
+              typeof item.content === "string"
+            ) {
+              validItems.push({
+                title: item.title,
+                slug: item.slug,
+                content: item.content,
+                excerpt: typeof item.excerpt === "string" ? item.excerpt : "",
+                publishedAt:
+                  typeof item.publishedAt === "string"
+                    ? item.publishedAt
+                    : new Date().toISOString().split("T")[0],
+                category: typeof item.category === "string" ? item.category : BLOG_CATEGORIES[0],
+                readingTime: typeof item.readingTime === "string" ? item.readingTime : "5 min read",
+                tags: Array.isArray(item.tags) ? item.tags : [],
+              });
+            }
+          }
+        } else {
+          for (const item of itemsArray) {
+            if (
+              typeof item === "object" &&
+              item !== null &&
+              typeof item.title === "string" &&
+              typeof item.slug === "string" &&
+              typeof item.description === "string" &&
+              typeof item.extendedDescription === "string"
+            ) {
+              validItems.push({
+                title: item.title,
+                slug: item.slug,
+                description: item.description,
+                extendedDescription: item.extendedDescription,
+                tags: Array.isArray(item.tags) ? item.tags : [],
+                githubUrl: typeof item.githubUrl === "string" ? item.githubUrl : null,
+                projectUrl: typeof item.projectUrl === "string" ? item.projectUrl : null,
+                customFields: Array.isArray(item.customFields) ? item.customFields : [],
+                publishedAt:
+                  typeof item.publishedAt === "string"
+                    ? item.publishedAt
+                    : new Date().toISOString().split("T")[0],
+                featured: typeof item.featured === "boolean" ? item.featured : false,
+              });
+            }
+          }
+        }
+
+        if (validItems.length === 0) {
+          alert(
+            `No valid ${importType === "blogs" ? "blog posts" : "projects"} found in the uploaded file. Please verify the JSON schema.`
+          );
+          return;
+        }
+
+        // Initialize import state
+        setImportedItems(validItems);
+        setSelectedImportSlugs(new Set(validItems.map((p) => p.slug)));
+        setImportConflictAction("skip");
+        setImportSearchQuery("");
+        setImportError("");
+        setImportResult(null);
+        setIsImportModalOpen(true);
+      } catch (err) {
+        console.error("Parse JSON error:", err);
+        alert("Failed to parse JSON file. Ensure it is a valid JSON document.");
+      } finally {
+        e.target.value = "";
+      }
+    };
+    reader.readAsText(file);
+  };
+
+  const handleToggleSelectImport = (slug: string) => {
+    setSelectedImportSlugs((prev) => {
+      const next = new Set(prev);
+      if (next.has(slug)) {
+        next.delete(slug);
+      } else {
+        next.add(slug);
+      }
+      return next;
+    });
+  };
+
+  const handleToggleSelectAllImport = (filteredSlugs: string[]) => {
+    setSelectedImportSlugs((prev) => {
+      const next = new Set(prev);
+      const allFilteredSelected = filteredSlugs.every((slug) => next.has(slug));
+
+      if (allFilteredSelected) {
+        filteredSlugs.forEach((slug) => next.delete(slug));
+      } else {
+        filteredSlugs.forEach((slug) => next.add(slug));
+      }
+      return next;
+    });
+  };
+
+  const executeImport = async () => {
+    if (selectedImportSlugs.size === 0) {
+      setImportError(
+        `No ${importType === "blogs" ? "blog posts" : "projects"} selected for import.`
+      );
+      return;
+    }
+
+    const itemsToImport = importedItems.filter((p) => selectedImportSlugs.has(p.slug));
+    setIsImporting(true);
+    setImportError("");
+    setImportResult(null);
+
+    const apiUrl =
+      importType === "blogs" ? "/api/admin/blogs/import" : "/api/admin/projects/import";
+
+    try {
+      const res = await fetch(apiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          posts: itemsToImport,
+          overwrite: importConflictAction === "overwrite",
+        }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setImportResult({
+          created: data.created,
+          updated: data.updated,
+          skipped: data.skipped,
+        });
+
+        // Refresh the list
+        if (importType === "blogs") {
+          const blogsRes = await fetch("/api/admin/blogs");
+          if (blogsRes.ok) {
+            const blogsData = await blogsRes.json();
+            setBlogs(blogsData);
+          }
+        } else {
+          const projectsRes = await fetch("/api/admin/projects");
+          if (projectsRes.ok) {
+            const projectsData = await projectsRes.json();
+            setProjects(projectsData);
+          }
+        }
+      } else {
+        const data = await res.json();
+        setImportError(data.error || `Failed to import ${importType}.`);
+      }
+    } catch (err) {
+      console.error("Import error:", err);
+      setImportError("Network error occurred during import.");
+    } finally {
+      setIsImporting(false);
     }
   };
 
@@ -688,25 +974,79 @@ export default function AdminDashboard() {
 
           {/* Create Action Button */}
           {activeTab === "blogs" ? (
-            <button
-              onClick={openBlogCreate}
-              disabled={isDbOffline}
-              className="3xl:gap-3 3xl:px-6 3xl:py-3.5 3xl:text-base 4xl:gap-4 4xl:px-8 4xl:py-4.5 4xl:text-lg 5xl:gap-5 5xl:px-10 5xl:py-6 5xl:text-xl flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-black text-white transition-all hover:bg-zinc-800 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 sm:inline-flex sm:h-auto sm:w-auto sm:items-center sm:gap-2 sm:rounded-xl sm:px-4 sm:py-2.5 sm:text-sm sm:font-bold"
-              aria-label="Create new blog post"
-            >
-              <Plus className="3xl:h-6 3xl:w-6 4xl:h-7.5 4xl:w-7.5 5xl:h-9 5xl:w-9 h-4.5 w-4.5" />
-              <span className="hidden sm:inline">New Post</span>
-            </button>
+            <div className="flex gap-2.5">
+              <input
+                type="file"
+                id="unified-import-input"
+                accept=".json"
+                onChange={handleImportFileSelect}
+                className="hidden"
+              />
+              <button
+                onClick={() => handleImportClick("blogs")}
+                disabled={isDbOffline}
+                className="3xl:gap-3 3xl:px-6 3xl:py-3.5 3xl:text-base 4xl:gap-4 4xl:px-8 4xl:py-4.5 4xl:text-lg 5xl:gap-5 5xl:px-10 5xl:py-6 5xl:text-xl flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-zinc-200 bg-white text-zinc-700 transition-all hover:bg-zinc-50 hover:text-black active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 sm:inline-flex sm:h-auto sm:w-auto sm:items-center sm:gap-2 sm:rounded-xl sm:px-4 sm:py-2.5 sm:text-sm sm:font-bold"
+                aria-label="Import blog posts"
+              >
+                <Upload className="3xl:h-6 3xl:w-6 4xl:h-7.5 4xl:w-7.5 5xl:h-9 5xl:w-9 h-4.5 w-4.5" />
+                <span className="hidden sm:inline">Import</span>
+              </button>
+              <button
+                onClick={exportAllBlogs}
+                disabled={isDbOffline}
+                className="3xl:gap-3 3xl:px-6 3xl:py-3.5 3xl:text-base 4xl:gap-4 4xl:px-8 4xl:py-4.5 4xl:text-lg 5xl:gap-5 5xl:px-10 5xl:py-6 5xl:text-xl flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-zinc-200 bg-white text-zinc-700 transition-all hover:bg-zinc-50 hover:text-black active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 sm:inline-flex sm:h-auto sm:w-auto sm:items-center sm:gap-2 sm:rounded-xl sm:px-4 sm:py-2.5 sm:text-sm sm:font-bold"
+                aria-label="Export all blog posts"
+              >
+                <Download className="3xl:h-6 3xl:w-6 4xl:h-7.5 4xl:w-7.5 5xl:h-9 5xl:w-9 h-4.5 w-4.5" />
+                <span className="hidden sm:inline">Export All</span>
+              </button>
+              <button
+                onClick={openBlogCreate}
+                disabled={isDbOffline}
+                className="3xl:gap-3 3xl:px-6 3xl:py-3.5 3xl:text-base 4xl:gap-4 4xl:px-8 4xl:py-4.5 4xl:text-lg 5xl:gap-5 5xl:px-10 5xl:py-6 5xl:text-xl flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-black text-white transition-all hover:bg-zinc-800 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 sm:inline-flex sm:h-auto sm:w-auto sm:items-center sm:gap-2 sm:rounded-xl sm:px-4 sm:py-2.5 sm:text-sm sm:font-bold"
+                aria-label="Create new blog post"
+              >
+                <Plus className="3xl:h-6 3xl:w-6 4xl:h-7.5 4xl:w-7.5 5xl:h-9 5xl:w-9 h-4.5 w-4.5" />
+                <span className="hidden sm:inline">New Post</span>
+              </button>
+            </div>
           ) : activeTab === "projects" ? (
-            <button
-              onClick={openProjCreate}
-              disabled={isDbOffline}
-              className="3xl:gap-3 3xl:px-6 3xl:py-3.5 3xl:text-base 4xl:gap-4 4xl:px-8 4xl:py-4.5 4xl:text-lg 5xl:gap-5 5xl:px-10 5xl:py-6 5xl:text-xl flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-black text-white transition-all hover:bg-zinc-800 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 sm:inline-flex sm:h-auto sm:w-auto sm:items-center sm:gap-2 sm:rounded-xl sm:px-4 sm:py-2.5 sm:text-sm sm:font-bold"
-              aria-label="Create new project study"
-            >
-              <Plus className="3xl:h-6 3xl:w-6 4xl:h-7.5 4xl:w-7.5 5xl:h-9 5xl:w-9 h-4.5 w-4.5" />
-              <span className="hidden sm:inline">New Project</span>
-            </button>
+            <div className="flex gap-2.5">
+              <input
+                type="file"
+                id="unified-import-input"
+                accept=".json"
+                onChange={handleImportFileSelect}
+                className="hidden"
+              />
+              <button
+                onClick={() => handleImportClick("projects")}
+                disabled={isDbOffline}
+                className="3xl:gap-3 3xl:px-6 3xl:py-3.5 3xl:text-base 4xl:gap-4 4xl:px-8 4xl:py-4.5 4xl:text-lg 5xl:gap-5 5xl:px-10 5xl:py-6 5xl:text-xl flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-zinc-200 bg-white text-zinc-700 transition-all hover:bg-zinc-50 hover:text-black active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 sm:inline-flex sm:h-auto sm:w-auto sm:items-center sm:gap-2 sm:rounded-xl sm:px-4 sm:py-2.5 sm:text-sm sm:font-bold"
+                aria-label="Import project case studies"
+              >
+                <Upload className="3xl:h-6 3xl:w-6 4xl:h-7.5 4xl:w-7.5 5xl:h-9 5xl:w-9 h-4.5 w-4.5" />
+                <span className="hidden sm:inline">Import</span>
+              </button>
+              <button
+                onClick={exportAllProjects}
+                disabled={isDbOffline}
+                className="3xl:gap-3 3xl:px-6 3xl:py-3.5 3xl:text-base 4xl:gap-4 4xl:px-8 4xl:py-4.5 4xl:text-lg 5xl:gap-5 5xl:px-10 5xl:py-6 5xl:text-xl flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-zinc-200 bg-white text-zinc-700 transition-all hover:bg-zinc-50 hover:text-black active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 sm:inline-flex sm:h-auto sm:w-auto sm:items-center sm:gap-2 sm:rounded-xl sm:px-4 sm:py-2.5 sm:text-sm sm:font-bold"
+                aria-label="Export all project case studies"
+              >
+                <Download className="3xl:h-6 3xl:w-6 4xl:h-7.5 4xl:w-7.5 5xl:h-9 5xl:w-9 h-4.5 w-4.5" />
+                <span className="hidden sm:inline">Export All</span>
+              </button>
+              <button
+                onClick={openProjCreate}
+                disabled={isDbOffline}
+                className="3xl:gap-3 3xl:px-6 3xl:py-3.5 3xl:text-base 4xl:gap-4 4xl:px-8 4xl:py-4.5 4xl:text-lg 5xl:gap-5 5xl:px-10 5xl:py-6 5xl:text-xl flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-black text-white transition-all hover:bg-zinc-800 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 sm:inline-flex sm:h-auto sm:w-auto sm:items-center sm:gap-2 sm:rounded-xl sm:px-4 sm:py-2.5 sm:text-sm sm:font-bold"
+                aria-label="Create new project study"
+              >
+                <Plus className="3xl:h-6 3xl:w-6 4xl:h-7.5 4xl:w-7.5 5xl:h-9 5xl:w-9 h-4.5 w-4.5" />
+                <span className="hidden sm:inline">New Project</span>
+              </button>
+            </div>
           ) : activeTab === "images" ? (
             <button
               onClick={() => document.getElementById("image-file-input")?.click()}
@@ -1142,6 +1482,14 @@ export default function AdminDashboard() {
                               <td className="3xl:px-8 3xl:py-6 4xl:px-10 4xl:py-8 5xl:px-12 5xl:py-10 px-6 py-4 text-right">
                                 <div className="3xl:gap-3 4xl:gap-4 5xl:gap-5 flex items-center justify-end gap-2">
                                   <button
+                                    onClick={() => exportBlog(blog)}
+                                    className="3xl:h-11 3xl:w-11 3xl:rounded-xl 4xl:h-14 4xl:w-14 5xl:h-17 5xl:w-17 flex h-8 w-8 items-center justify-center rounded-lg border border-zinc-200 text-zinc-600 transition-all hover:border-black hover:bg-zinc-50 hover:text-black"
+                                    aria-label={`Export ${blog.title}`}
+                                    title="Export post as JSON"
+                                  >
+                                    <Download className="3xl:h-5.5 3xl:w-5.5 4xl:h-7 4xl:w-7 5xl:h-8.5 5xl:w-8.5 h-4 w-4" />
+                                  </button>
+                                  <button
                                     onClick={() => openBlogEdit(blog)}
                                     className="3xl:h-11 3xl:w-11 3xl:rounded-xl 4xl:h-14 4xl:w-14 5xl:h-17 5xl:w-17 flex h-8 w-8 items-center justify-center rounded-lg border border-zinc-200 text-zinc-600 transition-all hover:border-black hover:bg-zinc-50 hover:text-black"
                                     aria-label={`Edit ${blog.title}`}
@@ -1224,6 +1572,14 @@ export default function AdminDashboard() {
                             </td>
                             <td className="3xl:px-8 3xl:py-6 4xl:px-10 4xl:py-8 5xl:px-12 5xl:py-10 px-6 py-4 text-right">
                               <div className="3xl:gap-3 4xl:gap-4 5xl:gap-5 flex items-center justify-end gap-2">
+                                <button
+                                  onClick={() => exportProject(proj)}
+                                  className="3xl:h-11 3xl:w-11 3xl:rounded-xl 4xl:h-14 4xl:w-14 5xl:h-17 5xl:w-17 flex h-8 w-8 items-center justify-center rounded-lg border border-zinc-200 text-zinc-600 transition-all hover:border-black hover:bg-zinc-50 hover:text-black"
+                                  aria-label={`Export ${proj.title}`}
+                                  title="Export project as JSON"
+                                >
+                                  <Download className="3xl:h-5.5 3xl:w-5.5 4xl:h-7 4xl:w-7 5xl:h-8.5 5xl:w-8.5 h-4 w-4" />
+                                </button>
                                 <button
                                   onClick={() => openProjEdit(proj)}
                                   className="3xl:h-11 3xl:w-11 3xl:rounded-xl 4xl:h-14 4xl:w-14 5xl:h-17 5xl:w-17 flex h-8 w-8 items-center justify-center rounded-lg border border-zinc-200 text-zinc-600 transition-all hover:border-black hover:bg-zinc-50 hover:text-black"
@@ -1808,6 +2164,280 @@ export default function AdminDashboard() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Blog/Project Import Confirmation Modal */}
+      {isImportModalOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/55 p-4 backdrop-blur-xs"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="import-modal-title"
+        >
+          <div className="3xl:max-w-4xl 4xl:max-w-5xl 5xl:max-w-6xl 3xl:rounded-3xl flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-xl">
+            {/* Header */}
+            <header className="border-zinc-150 3xl:px-8 3xl:py-6 4xl:px-10 4xl:py-8 5xl:px-12 5xl:py-10 flex items-center justify-between border-b px-6 py-4">
+              <div>
+                <h2
+                  id="import-modal-title"
+                  className="3xl:text-xl 4xl:text-2xl 5xl:text-3xl text-base font-bold text-black"
+                >
+                  Import {importType === "blogs" ? "Blog Posts" : "Projects"}
+                </h2>
+                <p className="3xl:text-sm 4xl:text-base 5xl:text-lg mt-0.5 text-xs text-zinc-500">
+                  Select {importType === "blogs" ? "posts" : "projects"} to import and choose
+                  conflict resolution.
+                </p>
+              </div>
+              <button
+                onClick={() => setIsImportModalOpen(false)}
+                className="3xl:h-11 3xl:w-11 3xl:rounded-xl 4xl:h-14 4xl:w-14 5xl:h-17 5xl:w-17 flex h-8 w-8 items-center justify-center rounded-lg hover:bg-zinc-100"
+                aria-label="Close modal"
+                disabled={isImporting}
+              >
+                <X className="3xl:h-6 3xl:w-6 4xl:h-7.5 4xl:w-7.5 5xl:h-9 5xl:w-9 h-4 w-4" />
+              </button>
+            </header>
+
+            {importResult ? (
+              /* Success / Result View */
+              <div className="3xl:p-8 4xl:p-10 5xl:p-12 space-y-6 overflow-y-auto p-6 text-center">
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-50 text-green-600">
+                  <Check className="h-6 w-6" />
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-lg font-bold text-black">Import Completed Successfully</h3>
+                  <p className="3xl:text-sm 4xl:text-base 5xl:text-lg text-sm text-zinc-500">
+                    The JSON import has been processed.
+                  </p>
+                </div>
+                <div className="mx-auto max-w-xs rounded-xl border border-zinc-200 bg-zinc-50 p-4 text-sm font-semibold text-zinc-700">
+                  <div className="border-zinc-150 flex justify-between border-b py-1">
+                    <span>Created (New):</span>
+                    <span className="font-bold text-green-600">{importResult.created}</span>
+                  </div>
+                  <div className="border-zinc-150 flex justify-between border-b py-1">
+                    <span>Updated (Overwrite):</span>
+                    <span className="font-bold text-blue-600">{importResult.updated}</span>
+                  </div>
+                  <div className="flex justify-between py-1">
+                    <span>Skipped (Conflicting):</span>
+                    <span className="font-bold text-zinc-500">{importResult.skipped}</span>
+                  </div>
+                </div>
+                <button
+                  onClick={() => {
+                    setIsImportModalOpen(false);
+                    setImportResult(null);
+                  }}
+                  className="3xl:px-7 3xl:py-3.5 3xl:text-base 4xl:px-9 4xl:py-4.5 4xl:text-lg 5xl:px-11 5xl:py-6 5xl:text-xl rounded-xl bg-black px-6 py-2.5 text-sm font-bold text-white transition-colors hover:bg-zinc-800"
+                >
+                  Close
+                </button>
+              </div>
+            ) : (
+              /* Configuration and Selection View */
+              <div className="flex flex-1 flex-col overflow-hidden">
+                <div className="3xl:p-8 4xl:p-10 5xl:p-12 flex-1 space-y-6 overflow-y-auto p-6">
+                  {/* Conflict resolution option */}
+                  <div className="space-y-3 rounded-xl border border-zinc-200 bg-zinc-50/50 p-4">
+                    <h3 className="text-xs font-bold tracking-wider text-zinc-700 uppercase">
+                      Conflict Resolution
+                    </h3>
+                    <p className="text-[11px] text-zinc-500">
+                      Specify what to do if an imported item has the same slug as an existing one.
+                    </p>
+                    <div className="flex flex-col gap-2 pt-1 sm:flex-row sm:gap-6">
+                      <label className="flex cursor-pointer items-center gap-2 text-xs font-bold text-zinc-700 select-none">
+                        <input
+                          type="radio"
+                          name="conflict-action"
+                          value="skip"
+                          checked={importConflictAction === "skip"}
+                          onChange={() => setImportConflictAction("skip")}
+                          className="h-4.5 w-4.5 text-black accent-black focus:ring-black"
+                        />
+                        <span>Skip conflicting items</span>
+                      </label>
+                      <label className="flex cursor-pointer items-center gap-2 text-xs font-bold text-zinc-700 select-none">
+                        <input
+                          type="radio"
+                          name="conflict-action"
+                          value="overwrite"
+                          checked={importConflictAction === "overwrite"}
+                          onChange={() => setImportConflictAction("overwrite")}
+                          className="h-4.5 w-4.5 text-black accent-black focus:ring-black"
+                        />
+                        <span>Overwrite existing items</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  {/* Search and Selection Counts */}
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="relative flex-1">
+                      <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-zinc-400" />
+                      <input
+                        type="text"
+                        placeholder={`Search ${importType === "blogs" ? "posts" : "projects"} to import...`}
+                        value={importSearchQuery}
+                        onChange={(e) => setImportSearchQuery(e.target.value)}
+                        className="w-full rounded-xl border border-zinc-200 py-2 pr-4 pl-10 text-xs focus:border-black focus:ring-1 focus:ring-black"
+                      />
+                    </div>
+                    <div className="text-right text-[11px] font-bold text-zinc-500">
+                      Selected: {selectedImportSlugs.size} of {importedItems.length}
+                    </div>
+                  </div>
+
+                  {importError && (
+                    <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-xs font-semibold text-red-800">
+                      {importError}
+                    </div>
+                  )}
+
+                  {/* List of imported items */}
+                  <div className="overflow-hidden rounded-xl border border-zinc-200 bg-white">
+                    <table className="w-full border-collapse text-left text-xs font-medium">
+                      <thead>
+                        <tr className="border-b border-zinc-200 bg-zinc-50 text-[10px] font-bold tracking-wider text-zinc-500 uppercase">
+                          <th className="w-10 px-4 py-3">
+                            <input
+                              type="checkbox"
+                              checked={
+                                importedItems.length > 0 &&
+                                importedItems
+                                  .filter(
+                                    (p) =>
+                                      p.title
+                                        .toLowerCase()
+                                        .includes(importSearchQuery.toLowerCase()) ||
+                                      p.slug.toLowerCase().includes(importSearchQuery.toLowerCase())
+                                  )
+                                  .every((p) => selectedImportSlugs.has(p.slug))
+                              }
+                              onChange={() =>
+                                handleToggleSelectAllImport(
+                                  importedItems
+                                    .filter(
+                                      (p) =>
+                                        p.title
+                                          .toLowerCase()
+                                          .includes(importSearchQuery.toLowerCase()) ||
+                                        p.slug
+                                          .toLowerCase()
+                                          .includes(importSearchQuery.toLowerCase())
+                                    )
+                                    .map((p) => p.slug)
+                                )
+                              }
+                              className="h-4 w-4 cursor-pointer rounded-sm border-zinc-300 text-black accent-black focus:ring-black"
+                            />
+                          </th>
+                          <th className="px-4 py-3">Title / Slug</th>
+                          <th className="px-4 py-3">
+                            {importType === "blogs" ? "Category" : "Description"}
+                          </th>
+                          <th className="px-4 py-3 text-right">Status</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-zinc-150 divide-y">
+                        {importedItems
+                          .filter(
+                            (p) =>
+                              p.title.toLowerCase().includes(importSearchQuery.toLowerCase()) ||
+                              p.slug.toLowerCase().includes(importSearchQuery.toLowerCase())
+                          )
+                          .map((item) => {
+                            const exists =
+                              importType === "blogs"
+                                ? blogs.some((b) => b.slug === item.slug)
+                                : projects.some((pr) => pr.slug === item.slug);
+                            return (
+                              <tr key={item.slug} className="hover:bg-zinc-50/50">
+                                <td className="px-4 py-3">
+                                  <input
+                                    type="checkbox"
+                                    checked={selectedImportSlugs.has(item.slug)}
+                                    onChange={() => handleToggleSelectImport(item.slug)}
+                                    className="h-4 w-4 cursor-pointer rounded-sm border-zinc-300 text-black accent-black focus:ring-black"
+                                  />
+                                </td>
+                                <td className="px-4 py-3">
+                                  <div
+                                    className="max-w-xs truncate font-semibold text-black"
+                                    title={item.title}
+                                  >
+                                    {item.title}
+                                  </div>
+                                  <div
+                                    className="max-w-xs truncate text-[10px] text-zinc-400"
+                                    title={item.slug}
+                                  >
+                                    {item.slug}
+                                  </div>
+                                </td>
+                                <td
+                                  className="max-w-xs truncate px-4 py-3 text-zinc-500"
+                                  title={
+                                    importType === "blogs"
+                                      ? (item as BlogPost).category
+                                      : (item as Project).description
+                                  }
+                                >
+                                  {importType === "blogs"
+                                    ? (item as BlogPost).category
+                                    : (item as Project).description}
+                                </td>
+                                <td className="px-4 py-3 text-right whitespace-nowrap">
+                                  {exists ? (
+                                    <span className="inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-[9px] font-bold text-amber-700 uppercase">
+                                      Conflict
+                                    </span>
+                                  ) : (
+                                    <span className="inline-flex items-center rounded-full border border-green-200 bg-green-50 px-2 py-0.5 text-[9px] font-bold text-green-700 uppercase">
+                                      New
+                                    </span>
+                                  )}
+                                </td>
+                              </tr>
+                            );
+                          })}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                {/* Footer Actions */}
+                <footer className="3xl:gap-4.5 3xl:pt-6 4xl:gap-6 4xl:pt-8 5xl:gap-8 5xl:pt-10 flex justify-end gap-3 border-t border-zinc-100 bg-zinc-50 p-6">
+                  <button
+                    type="button"
+                    onClick={() => setIsImportModalOpen(false)}
+                    className="3xl:px-6 3xl:py-3.5 3xl:text-base 4xl:px-8 4xl:py-4.5 4xl:text-lg 5xl:px-10 5xl:py-6 5xl:text-xl rounded-xl border border-zinc-300 bg-white px-4 py-2 text-xs font-semibold text-zinc-700 transition-colors hover:bg-zinc-50"
+                    disabled={isImporting}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    onClick={executeImport}
+                    disabled={isImporting || selectedImportSlugs.size === 0}
+                    className="3xl:px-7 3xl:py-3.5 3xl:text-base 4xl:px-9 4xl:py-4.5 4xl:text-lg 5xl:px-11 5xl:py-6 5xl:text-xl flex items-center justify-center gap-1.5 rounded-xl bg-black px-5 py-2 text-xs font-bold text-white transition-colors hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {isImporting ? (
+                      <>
+                        <div className="h-3 w-3 animate-spin rounded-full border border-white border-t-transparent" />
+                        <span>Importing...</span>
+                      </>
+                    ) : (
+                      <span>Import {selectedImportSlugs.size} Selected</span>
+                    )}
+                  </button>
+                </footer>
+              </div>
+            )}
           </div>
         </div>
       )}
