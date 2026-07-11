@@ -19,7 +19,7 @@ export async function GET(
     const filePath = path.join(process.cwd(), "public", "uploads", filename);
 
     if (!fs.existsSync(filePath)) {
-      return new NextResponse("File not found", { status: 404 });
+      return NextResponse.redirect(new URL("/not-found", request.url));
     }
 
     const fileBuffer = await fs.promises.readFile(filePath);

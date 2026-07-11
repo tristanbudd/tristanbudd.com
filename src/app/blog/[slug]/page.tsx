@@ -3,7 +3,7 @@
  * @description Dynamic blog post detail page (route: /blog/[slug]).
  */
 
-import { notFound } from "next/navigation";
+import { redirect } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { prisma } from "../../../lib/db";
@@ -103,7 +103,7 @@ export default async function BlogPostPage({ params }: PageProps) {
   }
 
   if (!dbPost) {
-    notFound();
+    redirect("/not-found");
   }
 
   if (dbPost.preview) {
@@ -112,7 +112,7 @@ export default async function BlogPostPage({ params }: PageProps) {
     const ownerAccount = process.env.ADMIN_OWNER_ACCOUNT || "tristanbudd";
     const isAdmin = adminSession === ownerAccount;
     if (!isAdmin) {
-      notFound();
+      redirect("/not-found");
     }
   }
 

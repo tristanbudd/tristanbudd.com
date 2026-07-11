@@ -3,7 +3,7 @@
  * @description Dynamic projects case study page (route: /projects/[slug]).
  */
 
-import { notFound } from "next/navigation";
+import { redirect } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { prisma } from "../../../lib/db";
@@ -102,7 +102,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
   }
 
   if (!dbProject) {
-    notFound();
+    redirect("/not-found");
   }
 
   if (dbProject.preview) {
@@ -111,7 +111,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
     const ownerAccount = process.env.ADMIN_OWNER_ACCOUNT || "tristanbudd";
     const isAdmin = adminSession === ownerAccount;
     if (!isAdmin) {
-      notFound();
+      redirect("/not-found");
     }
   }
 
