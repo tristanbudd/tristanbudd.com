@@ -40,6 +40,7 @@ export async function POST(request: NextRequest) {
         customFields,
         publishedAt,
         featured,
+        preview,
       } = project;
 
       if (!slug || !title || !description || !extendedDescription) {
@@ -62,6 +63,7 @@ export async function POST(request: NextRequest) {
         customFields: customFields || [],
         publishedAt: publishedAt || null,
         featured: !!featured,
+        preview: preview !== undefined ? !!preview : false,
       };
 
       if (existing) {

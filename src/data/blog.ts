@@ -12,6 +12,7 @@ export interface BlogPost {
   category: string;
   readingTime: string;
   tags: string[];
+  preview?: boolean;
 }
 
 export const BLOG_CATEGORIES = [

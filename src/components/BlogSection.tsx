@@ -87,9 +87,16 @@ function BlogRow({
         <div className="3xl:gap-5 flex flex-1 flex-col gap-3">
           {/* Category tag and title */}
           <div className="flex flex-col gap-1">
-            <span className="3xl:text-sm 4xl:text-base 5xl:text-lg text-[0.65rem] font-extrabold tracking-widest text-zinc-500 uppercase sm:text-xs">
-              {post.category}
-            </span>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="3xl:text-sm 4xl:text-base 5xl:text-lg text-[0.65rem] font-extrabold tracking-widest text-zinc-500 uppercase sm:text-xs">
+                {post.category}
+              </span>
+              {post.preview && (
+                <span className="3xl:text-[14px] 3xl:px-3 3xl:py-1 4xl:text-[18px] 4xl:px-4 4xl:py-1.5 5xl:text-[22px] 5xl:px-5 5xl:py-2 shrink-0 rounded-full border border-indigo-200 bg-indigo-50 px-2 py-0.5 text-[10px] font-bold text-indigo-700 select-none">
+                  Preview
+                </span>
+              )}
+            </div>
             <HeadingTag className="font-outfit 3xl:text-3xl 4xl:text-4xl 5xl:text-5xl text-xl leading-tight font-bold tracking-tight text-black transition-colors group-hover/blog:text-zinc-800 sm:text-2xl">
               {post.title}
             </HeadingTag>

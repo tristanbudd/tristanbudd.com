@@ -235,6 +235,7 @@ export default function AdminDashboard() {
       publishedAt: new Date().toISOString().split("T")[0],
       tags: [],
       readingTime: "5 min read",
+      preview: false,
     });
     setBlogFormErrors({});
     setIsBlogModalOpen(true);
@@ -461,6 +462,7 @@ export default function AdminDashboard() {
                 category: typeof item.category === "string" ? item.category : BLOG_CATEGORIES[0],
                 readingTime: typeof item.readingTime === "string" ? item.readingTime : "5 min read",
                 tags: Array.isArray(item.tags) ? item.tags : [],
+                preview: typeof item.preview === "boolean" ? item.preview : false,
               });
             }
           }
@@ -488,6 +490,7 @@ export default function AdminDashboard() {
                     ? item.publishedAt
                     : new Date().toISOString().split("T")[0],
                 featured: typeof item.featured === "boolean" ? item.featured : false,
+                preview: typeof item.preview === "boolean" ? item.preview : false,
               });
             }
           }
@@ -617,6 +620,7 @@ export default function AdminDashboard() {
       customFields: [],
       publishedAt: new Date().toISOString().split("T")[0],
       featured: false,
+      preview: false,
     });
     setProjFormErrors({});
     setIsProjModalOpen(true);
@@ -1469,9 +1473,16 @@ export default function AdminDashboard() {
                           {blogs.map((blog) => (
                             <tr key={blog.slug} className="transition-colors hover:bg-zinc-50/50">
                               <td className="3xl:px-8 3xl:py-6 4xl:px-10 4xl:py-8 5xl:px-12 5xl:py-10 px-6 py-4">
-                                <span className="3xl:max-w-lg 4xl:max-w-xl 5xl:max-w-2xl block max-w-md truncate font-semibold text-black">
-                                  {blog.title}
-                                </span>
+                                <div className="flex items-center gap-2">
+                                  <span className="3xl:max-w-lg 4xl:max-w-xl 5xl:max-w-2xl block max-w-md truncate font-semibold text-black">
+                                    {blog.title}
+                                  </span>
+                                  {blog.preview && (
+                                    <span className="inline-flex items-center rounded-full border border-indigo-200 bg-indigo-50 px-2.5 py-0.5 text-xs font-bold text-indigo-700">
+                                      Preview
+                                    </span>
+                                  )}
+                                </div>
                                 <span className="3xl:text-sm 4xl:text-base 5xl:text-lg block text-xs font-normal text-zinc-400">
                                   {blog.slug}
                                 </span>
@@ -1546,6 +1557,11 @@ export default function AdminDashboard() {
                                 {proj.featured && (
                                   <span className="inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-2.5 py-0.5 text-xs font-bold text-amber-700">
                                     Featured
+                                  </span>
+                                )}
+                                {proj.preview && (
+                                  <span className="inline-flex items-center rounded-full border border-indigo-200 bg-indigo-50 px-2.5 py-0.5 text-xs font-bold text-indigo-700">
+                                    Preview
                                   </span>
                                 )}
                               </div>
@@ -1750,6 +1766,23 @@ export default function AdminDashboard() {
                     className="3xl:px-6 3xl:py-4 3xl:text-base 4xl:px-8 4xl:py-5.5 4xl:text-lg 5xl:px-10 5xl:py-7 5xl:text-xl w-full rounded-xl border border-zinc-300 px-4 py-2.5 text-sm focus:border-black focus:ring-1 focus:ring-black"
                   />
                 </div>
+              </div>
+
+              {/* Preview mode toggle */}
+              <div className="flex items-center gap-3 py-1">
+                <input
+                  type="checkbox"
+                  id="blog-preview"
+                  checked={currentBlog.preview || false}
+                  onChange={(e) => setCurrentBlog({ ...currentBlog, preview: e.target.checked })}
+                  className="h-5 w-5 cursor-pointer rounded-md border-zinc-300 text-black accent-black focus:ring-black"
+                />
+                <label
+                  htmlFor="blog-preview"
+                  className="3xl:text-[14px] 4xl:text-[18px] 5xl:text-[22px] cursor-pointer text-xs font-bold text-zinc-700 uppercase select-none"
+                >
+                  Preview (Draft / Admin-Only)
+                </label>
               </div>
 
               {/* Excerpt */}
@@ -1960,6 +1993,23 @@ export default function AdminDashboard() {
                   className="3xl:text-[14px] 4xl:text-[18px] 5xl:text-[22px] cursor-pointer text-xs font-bold text-zinc-700 uppercase select-none"
                 >
                   Featured Project
+                </label>
+              </div>
+
+              {/* Preview mode toggle */}
+              <div className="flex items-center gap-3 py-1">
+                <input
+                  type="checkbox"
+                  id="proj-preview"
+                  checked={currentProj.preview || false}
+                  onChange={(e) => setCurrentProj({ ...currentProj, preview: e.target.checked })}
+                  className="h-5 w-5 cursor-pointer rounded-md border-zinc-300 text-black accent-black focus:ring-black"
+                />
+                <label
+                  htmlFor="proj-preview"
+                  className="3xl:text-[14px] 4xl:text-[18px] 5xl:text-[22px] cursor-pointer text-xs font-bold text-zinc-700 uppercase select-none"
+                >
+                  Preview (Draft / Admin-Only)
                 </label>
               </div>
 

@@ -21,7 +21,8 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { slug, title, excerpt, content, publishedAt, category, readingTime, tags } = body;
+    const { slug, title, excerpt, content, publishedAt, category, readingTime, tags, preview } =
+      body;
 
     if (!slug || !title || !content) {
       return NextResponse.json({ error: "Missing required fields." }, { status: 400 });
@@ -45,6 +46,7 @@ export async function POST(request: NextRequest) {
         category: category || BLOG_CATEGORIES[0],
         readingTime: readingTime || "5 min read",
         tags: tags || [],
+        preview: preview !== undefined ? !!preview : false,
       },
     });
 
@@ -68,6 +70,7 @@ export async function PUT(request: NextRequest) {
       category,
       readingTime,
       tags,
+      preview,
       _originalSlug,
     } = body;
 
@@ -107,6 +110,7 @@ export async function PUT(request: NextRequest) {
         category,
         readingTime,
         tags,
+        preview: preview !== undefined ? !!preview : false,
       },
     });
 

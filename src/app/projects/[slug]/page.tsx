@@ -15,6 +15,7 @@ import DbOfflineMessage from "../../../components/DbOfflineMessage";
 import { navItems, footerNavGroups, footerSocials } from "../../../data/portfolio";
 import * as Icons from "lucide-react";
 const { ChevronRight, ExternalLink, Github } = Icons;
+import { cookies } from "next/headers";
 import { type Project, type CustomField } from "../../../data/projects";
 
 interface PageProps {
@@ -32,6 +33,19 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         title: "Project Not Found",
       };
     }
+
+    if (project.preview) {
+      const cookieStore = await cookies();
+      const adminSession = cookieStore.get("admin_session")?.value;
+      const ownerAccount = process.env.ADMIN_OWNER_ACCOUNT || "tristanbudd";
+      const isAdmin = adminSession === ownerAccount;
+      if (!isAdmin) {
+        return {
+          title: "Project Not Found",
+        };
+      }
+    }
+
     return {
       title: project.title,
       description: project.description,
@@ -89,6 +103,16 @@ export default async function ProjectDetailPage({ params }: PageProps) {
 
   if (!dbProject) {
     notFound();
+  }
+
+  if (dbProject.preview) {
+    const cookieStore = await cookies();
+    const adminSession = cookieStore.get("admin_session")?.value;
+    const ownerAccount = process.env.ADMIN_OWNER_ACCOUNT || "tristanbudd";
+    const isAdmin = adminSession === ownerAccount;
+    if (!isAdmin) {
+      notFound();
+    }
   }
 
   const project: Project = {

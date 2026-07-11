@@ -30,7 +30,8 @@ export async function POST(request: NextRequest) {
     let skipped = 0;
 
     for (const post of posts) {
-      const { slug, title, excerpt, content, publishedAt, category, readingTime, tags } = post;
+      const { slug, title, excerpt, content, publishedAt, category, readingTime, tags, preview } =
+        post;
 
       if (!slug || !title || !content) {
         skipped++;
@@ -54,6 +55,7 @@ export async function POST(request: NextRequest) {
               category: category || BLOG_CATEGORIES[0],
               readingTime: readingTime || "5 min read",
               tags: tags || [],
+              preview: preview !== undefined ? !!preview : false,
             },
           });
           updated++;
@@ -71,6 +73,7 @@ export async function POST(request: NextRequest) {
             category: category || BLOG_CATEGORIES[0],
             readingTime: readingTime || "5 min read",
             tags: tags || [],
+            preview: preview !== undefined ? !!preview : false,
           },
         });
         created++;

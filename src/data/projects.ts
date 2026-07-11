@@ -20,4 +20,5 @@ export interface Project {
   customFields?: CustomField[];
   publishedAt?: string | null;
   featured?: boolean;
+  preview?: boolean;
 }

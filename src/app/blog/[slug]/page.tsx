@@ -16,6 +16,7 @@ import { navItems, footerNavGroups, footerSocials } from "../../../data/portfoli
 import { parseDate } from "../../../lib/utils";
 import { Calendar, ChevronRight, Clock, Tag } from "lucide-react";
 
+import { cookies } from "next/headers";
 import { type BlogPost } from "../../../data/blog";
 
 interface PageProps {
@@ -33,6 +34,19 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         title: "Article Not Found",
       };
     }
+
+    if (post.preview) {
+      const cookieStore = await cookies();
+      const adminSession = cookieStore.get("admin_session")?.value;
+      const ownerAccount = process.env.ADMIN_OWNER_ACCOUNT || "tristanbudd";
+      const isAdmin = adminSession === ownerAccount;
+      if (!isAdmin) {
+        return {
+          title: "Article Not Found",
+        };
+      }
+    }
+
     return {
       title: post.title,
       description: post.excerpt,
@@ -90,6 +104,16 @@ export default async function BlogPostPage({ params }: PageProps) {
 
   if (!dbPost) {
     notFound();
+  }
+
+  if (dbPost.preview) {
+    const cookieStore = await cookies();
+    const adminSession = cookieStore.get("admin_session")?.value;
+    const ownerAccount = process.env.ADMIN_OWNER_ACCOUNT || "tristanbudd";
+    const isAdmin = adminSession === ownerAccount;
+    if (!isAdmin) {
+      notFound();
+    }
   }
 
   const post: BlogPost = {

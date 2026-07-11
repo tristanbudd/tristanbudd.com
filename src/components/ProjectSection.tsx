@@ -101,11 +101,18 @@ function ProjectCard({
           <HeadingTag className="3xl:text-2xl 4xl:text-3xl 5xl:text-4xl text-lg font-bold text-black transition-colors duration-300 group-hover/card:text-zinc-800 sm:text-xl">
             {project.title}
           </HeadingTag>
-          {project.featured && (
-            <span className="3xl:text-[14px] 3xl:px-3 3xl:py-1 4xl:text-[18px] 4xl:px-4 4xl:py-1.5 5xl:text-[22px] 5xl:px-5 5xl:py-2 shrink-0 rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-[10px] font-bold text-amber-700 select-none">
-              Featured
-            </span>
-          )}
+          <div className="flex shrink-0 gap-1.5">
+            {project.featured && (
+              <span className="3xl:text-[14px] 3xl:px-3 3xl:py-1 4xl:text-[18px] 4xl:px-4 4xl:py-1.5 5xl:text-[22px] 5xl:px-5 5xl:py-2 shrink-0 rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-[10px] font-bold text-amber-700 select-none">
+                Featured
+              </span>
+            )}
+            {project.preview && (
+              <span className="3xl:text-[14px] 3xl:px-3 3xl:py-1 4xl:text-[18px] 4xl:px-4 4xl:py-1.5 5xl:text-[22px] 5xl:px-5 5xl:py-2 shrink-0 rounded-full border border-indigo-200 bg-indigo-50 px-2 py-0.5 text-[10px] font-bold text-indigo-700 select-none">
+                Preview
+              </span>
+            )}
+          </div>
         </div>
         <p className="text-zinc-650 3xl:mt-3 3xl:text-base 4xl:mt-4 4xl:text-lg 5xl:text-xl mt-2 flex-1 text-sm leading-relaxed">
           {project.description}
