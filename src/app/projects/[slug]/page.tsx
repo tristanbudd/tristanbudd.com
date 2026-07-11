@@ -3,20 +3,20 @@
  * @description Dynamic projects case study page (route: /projects/[slug]).
  */
 
-import { redirect } from "next/navigation";
-import Link from "next/link";
-import type { Metadata } from "next";
-import { prisma } from "../../../lib/db";
-import Header from "../../../components/Header";
-import Footer from "../../../components/Footer";
-import BackButton from "../../../components/BackButton";
-import Markdown from "../../../components/Markdown";
-import DbOfflineMessage from "../../../components/DbOfflineMessage";
-import { navItems, footerNavGroups, footerSocials } from "../../../data/portfolio";
 import * as Icons from "lucide-react";
-const { ChevronRight, ExternalLink, Github } = Icons;
+import type { Metadata } from "next";
 import { cookies } from "next/headers";
-import { type Project, type CustomField } from "../../../data/projects";
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import BackButton from "../../../components/BackButton";
+import DbOfflineMessage from "../../../components/DbOfflineMessage";
+import Footer from "../../../components/Footer";
+import Header from "../../../components/Header";
+import Markdown from "../../../components/Markdown";
+import { footerNavGroups, footerSocials, navItems } from "../../../data/portfolio";
+import { type CustomField, type Project } from "../../../data/projects";
+import { prisma } from "../../../lib/db";
+const { ChevronRight, ExternalLink, Github } = Icons;
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -58,6 +58,30 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export const dynamic = "force-dynamic";
+
+function parseGitHubUrl(url: string): { owner: string; repo: string } | null {
+  try {
+    const match = url.match(/github\.com\/([^/]+)\/([^/]+)/);
+    if (match) {
+      return {
+        owner: match[1],
+        repo: match[2].replace(/\.git$/, "").replace(/\/$/, ""),
+      };
+    }
+  } catch (e) {
+    console.error("Error parsing GitHub URL", e);
+  }
+  return null;
+}
+
+interface GitHubStats {
+  stars: number;
+  forks: number;
+  openIssues: number;
+  license: string | null;
+  languages: string[];
+  fullName: string;
+}
 
 export default async function ProjectDetailPage({ params }: PageProps) {
   const { slug } = await params;
@@ -120,6 +144,55 @@ export default async function ProjectDetailPage({ params }: PageProps) {
     tags: Array.isArray(dbProject.tags) ? (dbProject.tags as string[]) : [],
     customFields: (dbProject as unknown as { customFields?: CustomField[] }).customFields,
   };
+
+  let githubStats: GitHubStats | null = null;
+  if (project.githubUrl) {
+    const parsed = parseGitHubUrl(project.githubUrl);
+    if (parsed) {
+      try {
+        const headers: Record<string, string> = {
+          Accept: "application/vnd.github.v3+json",
+          "User-Agent": "tristanbudd-portfolio",
+        };
+        if (process.env.GITHUB_TOKEN) {
+          headers["Authorization"] = `Bearer ${process.env.GITHUB_TOKEN}`;
+        }
+        const res = await fetch(`https://api.github.com/repos/${parsed.owner}/${parsed.repo}`, {
+          headers,
+          next: { revalidate: 3600 },
+        });
+        if (res.ok) {
+          const repoData = await res.json();
+          let languages = {};
+          try {
+            const langRes = await fetch(
+              `https://api.github.com/repos/${parsed.owner}/${parsed.repo}/languages`,
+              {
+                headers,
+                next: { revalidate: 3600 },
+              }
+            );
+            if (langRes.ok) {
+              languages = await langRes.json();
+            }
+          } catch (e) {
+            console.warn("Failed to fetch GitHub languages", e);
+          }
+
+          githubStats = {
+            stars: repoData.stargazers_count,
+            forks: repoData.forks_count,
+            openIssues: repoData.open_issues_count,
+            license: repoData.license?.spdx_id || repoData.license?.name || null,
+            languages: Object.keys(languages).slice(0, 4),
+            fullName: repoData.full_name,
+          };
+        }
+      } catch (error) {
+        console.warn("Failed to fetch GitHub stats:", error);
+      }
+    }
+  }
 
   const content = project.extendedDescription;
 
@@ -292,6 +365,98 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                 </div>
               )}
             </div>
+
+            {/* GitHub Stats Panel */}
+            {githubStats && (
+              <div className="3xl:p-10 4xl:p-12 5xl:p-16 flex flex-col gap-6 rounded-2xl border border-zinc-200/60 bg-white/40 p-4 shadow-xs backdrop-blur-md sm:p-6 md:p-8">
+                <div className="flex flex-col gap-2">
+                  <span className="3xl:text-sm 4xl:text-base 5xl:text-lg flex items-center gap-2 text-xs font-bold tracking-widest text-zinc-500 uppercase">
+                    <Icons.Github className="3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 h-4.5 w-4.5 text-zinc-500" />
+                    GitHub Stats
+                  </span>
+                  <a
+                    href={project.githubUrl || undefined}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-outfit 3xl:text-2xl 4xl:text-3xl 5xl:text-4xl text-lg font-bold tracking-tight break-all text-black hover:underline"
+                  >
+                    {githubStats.fullName}
+                  </a>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 border-t border-zinc-200/50 pt-6">
+                  {/* Stars */}
+                  <div className="flex items-center gap-3">
+                    <Icons.Star className="text-zinc-455 3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 h-4.5 w-4.5 shrink-0" />
+                    <div className="flex flex-col">
+                      <span className="3xl:text-[0.75rem] 4xl:text-[0.85rem] 5xl:text-[0.95rem] mb-1 text-[0.65rem] leading-none font-bold tracking-wider text-zinc-400 uppercase">
+                        Stars
+                      </span>
+                      <span className="3xl:text-lg 4xl:text-xl 5xl:text-2xl font-semibold text-black">
+                        {githubStats.stars.toLocaleString()}
+                      </span>
+                    </div>
+                  </div>
+                  {/* Forks */}
+                  <div className="flex items-center gap-3">
+                    <Icons.GitFork className="text-zinc-455 3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 h-4.5 w-4.5 shrink-0" />
+                    <div className="flex flex-col">
+                      <span className="3xl:text-[0.75rem] 4xl:text-[0.85rem] 5xl:text-[0.95rem] mb-1 text-[0.65rem] leading-none font-bold tracking-wider text-zinc-400 uppercase">
+                        Forks
+                      </span>
+                      <span className="3xl:text-lg 4xl:text-xl 5xl:text-2xl font-semibold text-black">
+                        {githubStats.forks.toLocaleString()}
+                      </span>
+                    </div>
+                  </div>
+                  {/* Open Issues */}
+                  <div className="flex items-center gap-3">
+                    <Icons.AlertCircle className="text-zinc-455 3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 h-4.5 w-4.5 shrink-0" />
+                    <div className="flex flex-col">
+                      <span className="3xl:text-[0.75rem] 4xl:text-[0.85rem] 5xl:text-[0.95rem] mb-1 text-[0.65rem] leading-none font-bold tracking-wider text-zinc-400 uppercase">
+                        Issues
+                      </span>
+                      <span className="3xl:text-lg 4xl:text-xl 5xl:text-2xl font-semibold text-black">
+                        {githubStats.openIssues.toLocaleString()}
+                      </span>
+                    </div>
+                  </div>
+                  {/* License */}
+                  {githubStats.license && (
+                    <div className="flex items-center gap-3">
+                      <Icons.Scale className="text-zinc-455 3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 h-4.5 w-4.5 shrink-0" />
+                      <div className="flex flex-col">
+                        <span className="3xl:text-[0.75rem] 4xl:text-[0.85rem] 5xl:text-[0.95rem] mb-1 text-[0.65rem] leading-none font-bold tracking-wider text-zinc-400 uppercase">
+                          License
+                        </span>
+                        <span className="3xl:text-lg 4xl:text-xl 5xl:text-2xl font-semibold text-black">
+                          {githubStats.license}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Languages */}
+                {githubStats.languages.length > 0 && (
+                  <div className="3xl:mt-10 3xl:pt-10 mt-6 border-t border-zinc-200/50 pt-6">
+                    <span className="3xl:text-[0.75rem] 4xl:text-[0.85rem] 5xl:text-[0.95rem] mb-3 block text-[0.65rem] font-bold tracking-wider text-zinc-400 uppercase">
+                      Languages
+                    </span>
+                    <div className="3xl:gap-2.5 flex flex-wrap gap-1.5">
+                      {githubStats.languages.map((lang) => (
+                        <span
+                          key={lang}
+                          className="3xl:px-3.5 3xl:py-1 3xl:text-sm 4xl:px-4 4xl:py-1.5 4xl:text-base 5xl:px-5 5xl:py-2 5xl:text-lg text-zinc-650 rounded-full border border-zinc-200/50 bg-zinc-100/30 px-2.5 py-0.5 text-xs font-semibold"
+                        >
+                          {lang}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
 
             <div className="hidden lg:block">
               <BackButton
