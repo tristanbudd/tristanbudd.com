@@ -2257,7 +2257,7 @@ export default function AdminDashboard() {
             {importResult ? (
               /* Success / Result View */
               <div className="3xl:p-8 4xl:p-10 5xl:p-12 space-y-6 overflow-y-auto p-6 text-center">
-                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-50 text-green-600">
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-zinc-100 text-black">
                   <Check className="h-6 w-6" />
                 </div>
                 <div className="space-y-2">
@@ -2269,15 +2269,15 @@ export default function AdminDashboard() {
                 <div className="mx-auto max-w-xs rounded-xl border border-zinc-200 bg-zinc-50 p-4 text-sm font-semibold text-zinc-700">
                   <div className="border-zinc-150 flex justify-between border-b py-1">
                     <span>Created (New):</span>
-                    <span className="font-bold text-green-600">{importResult.created}</span>
+                    <span className="font-bold text-black">{importResult.created}</span>
                   </div>
                   <div className="border-zinc-150 flex justify-between border-b py-1">
                     <span>Updated (Overwrite):</span>
-                    <span className="font-bold text-blue-600">{importResult.updated}</span>
+                    <span className="font-bold text-black">{importResult.updated}</span>
                   </div>
                   <div className="flex justify-between py-1">
                     <span>Skipped (Conflicting):</span>
-                    <span className="font-bold text-zinc-500">{importResult.skipped}</span>
+                    <span className="font-bold text-black">{importResult.skipped}</span>
                   </div>
                 </div>
                 <button
@@ -2446,11 +2446,11 @@ export default function AdminDashboard() {
                                 </td>
                                 <td className="px-4 py-3 text-right whitespace-nowrap">
                                   {exists ? (
-                                    <span className="inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-[9px] font-bold text-amber-700 uppercase">
+                                    <span className="inline-flex items-center rounded-full border border-zinc-200 bg-zinc-50 px-2 py-0.5 text-[9px] font-bold text-zinc-700 uppercase select-none">
                                       Conflict
                                     </span>
                                   ) : (
-                                    <span className="inline-flex items-center rounded-full border border-green-200 bg-green-50 px-2 py-0.5 text-[9px] font-bold text-green-700 uppercase">
+                                    <span className="inline-flex items-center rounded-full border border-zinc-200 bg-zinc-50 px-2 py-0.5 text-[9px] font-bold text-zinc-700 uppercase select-none">
                                       New
                                     </span>
                                   )}
