@@ -154,6 +154,12 @@ export default async function BlogPostPage({ params }: PageProps) {
             <span className="text-zinc-650 3xl:px-4 3xl:py-1.5 3xl:text-sm 4xl:px-5 4xl:py-2 4xl:text-base 5xl:px-6 5xl:py-2.5 5xl:text-lg rounded-full border border-zinc-200 bg-white/80 px-3 py-1 text-xs font-bold tracking-wider uppercase shadow-xs">
               {post.category}
             </span>
+            {post.preview && (
+              <span className="3xl:text-[14px] 3xl:px-3 3xl:py-1 3xl:gap-1.5 4xl:text-[18px] 4xl:px-4 4xl:py-1.5 4xl:gap-2 5xl:text-[22px] 5xl:px-5 5xl:py-2 5xl:gap-2.5 inline-flex shrink-0 items-center gap-1 rounded-full border border-indigo-500/20 bg-indigo-500/5 px-2 py-0.5 text-[9px] font-bold tracking-wider text-indigo-700 uppercase select-none">
+                <span className="3xl:h-2 3xl:w-2 4xl:h-2.5 4xl:w-2.5 5xl:h-3 5xl:w-3 h-1 w-1 rounded-full bg-indigo-500" />
+                Preview
+              </span>
+            )}
           </div>
 
           <h1 className="font-outfit 3xl:text-6xl 4xl:text-7xl 5xl:text-8xl text-3xl font-extrabold tracking-tight text-black sm:text-4xl md:text-5xl md:leading-tight">

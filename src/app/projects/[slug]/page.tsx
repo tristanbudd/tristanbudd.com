@@ -154,9 +154,23 @@ export default async function ProjectDetailPage({ params }: PageProps) {
           <aside className="3xl:gap-10 flex flex-col gap-6 lg:sticky lg:top-28 lg:col-span-4">
             <div className="3xl:p-10 4xl:p-12 5xl:p-16 rounded-2xl border border-zinc-200/60 bg-white/40 p-4 shadow-xs backdrop-blur-md sm:p-6 md:p-8">
               <div className="flex flex-col gap-2">
-                <span className="3xl:text-sm 4xl:text-base 5xl:text-lg text-xs font-bold tracking-widest text-zinc-500 uppercase">
-                  Project Case Study
-                </span>
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="3xl:text-sm 4xl:text-base 5xl:text-lg text-xs font-bold tracking-widest text-zinc-500 uppercase">
+                    Project Case Study
+                  </span>
+                  {project.featured && (
+                    <span className="3xl:text-[14px] 3xl:px-3 3xl:py-1 3xl:gap-1.5 4xl:text-[18px] 4xl:px-4 4xl:py-1.5 4xl:gap-2 5xl:text-[22px] 5xl:px-5 5xl:py-2 5xl:gap-2.5 inline-flex shrink-0 items-center gap-1 rounded-full border border-amber-500/20 bg-amber-500/5 px-2 py-0.5 text-[9px] font-bold tracking-wider text-amber-700 uppercase select-none">
+                      <span className="3xl:h-2 3xl:w-2 4xl:h-2.5 4xl:w-2.5 5xl:h-3 5xl:w-3 h-1 w-1 rounded-full bg-amber-500" />
+                      Featured
+                    </span>
+                  )}
+                  {project.preview && (
+                    <span className="3xl:text-[14px] 3xl:px-3 3xl:py-1 3xl:gap-1.5 4xl:text-[18px] 4xl:px-4 4xl:py-1.5 4xl:gap-2 5xl:text-[22px] 5xl:px-5 5xl:py-2 5xl:gap-2.5 inline-flex shrink-0 items-center gap-1 rounded-full border border-indigo-500/20 bg-indigo-500/5 px-2 py-0.5 text-[9px] font-bold tracking-wider text-indigo-700 uppercase select-none">
+                      <span className="3xl:h-2 3xl:w-2 4xl:h-2.5 4xl:w-2.5 5xl:h-3 5xl:w-3 h-1 w-1 rounded-full bg-indigo-500" />
+                      Preview
+                    </span>
+                  )}
+                </div>
                 <h1 className="font-outfit 3xl:text-4xl 4xl:text-5xl 5xl:text-6xl text-2xl font-extrabold tracking-tight text-black sm:text-3xl">
                   {project.title}
                 </h1>

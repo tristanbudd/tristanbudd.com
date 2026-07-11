@@ -92,7 +92,8 @@ function BlogRow({
                 {post.category}
               </span>
               {post.preview && (
-                <span className="3xl:text-[14px] 3xl:px-3 3xl:py-1 4xl:text-[18px] 4xl:px-4 4xl:py-1.5 5xl:text-[22px] 5xl:px-5 5xl:py-2 shrink-0 rounded-full border border-indigo-200 bg-indigo-50 px-2 py-0.5 text-[10px] font-bold text-indigo-700 select-none">
+                <span className="3xl:text-[14px] 3xl:px-3 3xl:py-1 3xl:gap-1.5 4xl:text-[18px] 4xl:px-4 4xl:py-1.5 4xl:gap-2 5xl:text-[22px] 5xl:px-5 5xl:py-2 5xl:gap-2.5 inline-flex shrink-0 items-center gap-1 rounded-full border border-indigo-500/20 bg-indigo-500/5 px-2 py-0.5 text-[9px] font-bold tracking-wider text-indigo-700 uppercase select-none">
+                  <span className="3xl:h-2 3xl:w-2 4xl:h-2.5 4xl:w-2.5 5xl:h-3 5xl:w-3 h-1 w-1 rounded-full bg-indigo-500" />
                   Preview
                 </span>
               )}
