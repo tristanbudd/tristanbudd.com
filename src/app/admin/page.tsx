@@ -1478,8 +1478,8 @@ export default function AdminDashboard() {
                                     {blog.title}
                                   </span>
                                   {blog.preview && (
-                                    <span className="inline-flex items-center gap-1 rounded-full border border-indigo-500/20 bg-indigo-500/5 px-2.5 py-0.5 text-[10px] font-bold tracking-wider text-indigo-700 uppercase">
-                                      <span className="h-1.5 w-1.5 rounded-full bg-indigo-500" />
+                                    <span className="inline-flex items-center gap-1 rounded-full border border-red-500/20 bg-red-500/5 px-2.5 py-0.5 text-[10px] font-bold tracking-wider text-red-700 uppercase">
+                                      <span className="h-1.5 w-1.5 rounded-full bg-red-500" />
                                       Preview
                                     </span>
                                   )}
@@ -1556,14 +1556,14 @@ export default function AdminDashboard() {
                                   {proj.title}
                                 </span>
                                 {proj.featured && (
-                                  <span className="inline-flex items-center gap-1 rounded-full border border-amber-500/20 bg-amber-500/5 px-2 py-0.5 text-[10px] font-bold tracking-wider text-amber-700 uppercase">
-                                    <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+                                  <span className="inline-flex items-center gap-1 rounded-full border border-blue-500/20 bg-blue-500/5 px-2 py-0.5 text-[10px] font-bold tracking-wider text-blue-700 uppercase">
+                                    <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
                                     Featured
                                   </span>
                                 )}
                                 {proj.preview && (
-                                  <span className="inline-flex items-center gap-1 rounded-full border border-indigo-500/20 bg-indigo-500/5 px-2 py-0.5 text-[10px] font-bold tracking-wider text-indigo-700 uppercase">
-                                    <span className="h-1.5 w-1.5 rounded-full bg-indigo-500" />
+                                  <span className="inline-flex items-center gap-1 rounded-full border border-red-500/20 bg-red-500/5 px-2 py-0.5 text-[10px] font-bold tracking-wider text-red-700 uppercase">
+                                    <span className="h-1.5 w-1.5 rounded-full bg-red-500" />
                                     Preview
                                   </span>
                                 )}
