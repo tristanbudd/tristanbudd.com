@@ -5,8 +5,8 @@
  * @description Custom React Markdown parser and renderer. Safely renders markdown content into styled HTML elements.
  */
 
+import { AlertOctagon, AlertTriangle, BookOpen, Check, Copy, Lightbulb, Zap } from "lucide-react";
 import React, { useState } from "react";
-import { Check, Copy, AlertTriangle, AlertOctagon, BookOpen, Lightbulb, Zap } from "lucide-react";
 
 interface MarkdownProps {
   content: string;
@@ -214,7 +214,7 @@ export default function Markdown({ content, className = "" }: MarkdownProps) {
 
   return (
     <div
-      className={`text-zinc-750 font-sans text-base leading-relaxed md:text-[1.05rem] ${className}`}
+      className={`text-zinc-750 font-sans text-base leading-relaxed md:text-[1.05rem] [&>*:first-child]:mt-0! ${className}`}
     >
       {blocks.map((block, index) => {
         switch (block.type) {
