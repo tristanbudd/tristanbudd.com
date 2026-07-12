@@ -250,85 +250,84 @@ export default async function ProjectDetailPage({ params }: PageProps) {
               </div>
 
               {/* Specs Grid */}
-              <div className="text-zinc-650 3xl:mt-10 3xl:pt-10 3xl:gap-6 3xl:text-base 4xl:text-lg 5xl:text-xl mt-6 flex flex-col gap-4 border-t border-zinc-200/50 pt-6 text-sm">
-                {(Array.isArray(project.customFields) && project.customFields.length > 0
-                  ? (project.customFields as unknown as {
+              {Array.isArray(project.customFields) && project.customFields.length > 0 && (
+                <div className="text-zinc-650 3xl:mt-10 3xl:pt-10 3xl:gap-6 3xl:text-base 4xl:text-lg 5xl:text-xl mt-6 flex flex-col gap-4 border-t border-zinc-200/50 pt-6 text-sm">
+                  {(
+                    project.customFields as unknown as {
                       label: string;
                       value: string;
                       icon?: string;
-                    }[])
-                  : [
-                      { label: "Role", value: "Lead Software Engineer", icon: "user" },
-                      { label: "Timeline", value: "Q3 - Q4 2024", icon: "calendar" },
-                      { label: "Platform", value: "Web", icon: "layers" },
-                    ]
-                ).map((field, idx) => {
-                  let IconComponent: React.ComponentType<{ className?: string }> = Icons.Layers;
+                    }[]
+                  ).map((field, idx) => {
+                    let IconComponent: React.ComponentType<{ className?: string }> = Icons.Layers;
 
-                  if (field.icon) {
-                    const pascalName = field.icon
-                      .split(/[-_ ]+/)
-                      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-                      .join("");
-                    const component = (
-                      Icons as unknown as Record<
-                        string,
-                        React.ComponentType<{ className?: string }>
-                      >
-                    )[pascalName];
-                    if (component) {
-                      IconComponent = component;
+                    if (field.icon) {
+                      const pascalName = field.icon
+                        .split(/[-_ ]+/)
+                        .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+                        .join("");
+                      const component = (
+                        Icons as unknown as Record<
+                          string,
+                          React.ComponentType<{ className?: string }>
+                        >
+                      )[pascalName];
+                      if (component) {
+                        IconComponent = component;
+                      }
+                    } else {
+                      const labelLower = field.label.toLowerCase();
+                      if (
+                        labelLower.includes("role") ||
+                        labelLower.includes("client") ||
+                        labelLower.includes("team")
+                      ) {
+                        IconComponent = Icons.User;
+                      } else if (
+                        labelLower.includes("time") ||
+                        labelLower.includes("date") ||
+                        labelLower.includes("duration") ||
+                        labelLower.includes("year")
+                      ) {
+                        IconComponent = Icons.Calendar;
+                      }
                     }
-                  } else {
-                    const labelLower = field.label.toLowerCase();
-                    if (
-                      labelLower.includes("role") ||
-                      labelLower.includes("client") ||
-                      labelLower.includes("team")
-                    ) {
-                      IconComponent = Icons.User;
-                    } else if (
-                      labelLower.includes("time") ||
-                      labelLower.includes("date") ||
-                      labelLower.includes("duration") ||
-                      labelLower.includes("year")
-                    ) {
-                      IconComponent = Icons.Calendar;
-                    }
-                  }
 
-                  return (
-                    <div key={idx} className="flex items-center gap-3">
-                      <IconComponent className="text-zinc-455 3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 h-4.5 w-4.5 shrink-0" />
-                      <div className="flex flex-col">
-                        <span className="3xl:text-[0.75rem] 4xl:text-[0.85rem] 5xl:text-[0.95rem] mb-1 text-[0.65rem] leading-none font-bold tracking-wider text-zinc-400 uppercase">
-                          {field.label}
-                        </span>
-                        <span className="3xl:text-lg 4xl:text-xl 5xl:text-2xl font-semibold text-black">
-                          {field.value}
-                        </span>
+                    return (
+                      <div key={idx} className="flex items-center gap-3">
+                        <IconComponent className="text-zinc-455 3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 h-4.5 w-4.5 shrink-0" />
+                        <div className="flex flex-col">
+                          <span className="3xl:text-[0.75rem] 4xl:text-[0.85rem] 5xl:text-[0.95rem] mb-1 text-[0.65rem] leading-none font-bold tracking-wider text-zinc-400 uppercase">
+                            {field.label}
+                          </span>
+                          <span className="3xl:text-lg 4xl:text-xl 5xl:text-2xl font-semibold text-black">
+                            {field.value}
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
-              </div>
+                    );
+                  })}
+                </div>
+              )}
 
               {/* Technologies pill grid */}
-              <div className="3xl:mt-10 3xl:pt-10 mt-6 border-t border-zinc-200/50 pt-6">
-                <span className="3xl:text-[0.75rem] 4xl:text-[0.85rem] 5xl:text-[0.95rem] mb-3 block text-[0.65rem] font-bold tracking-wider text-zinc-400 uppercase">
-                  Technologies
-                </span>
-                <div className="3xl:gap-2.5 flex flex-wrap gap-1.5">
-                  {project.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="3xl:px-3.5 3xl:py-1 3xl:text-sm 4xl:px-4 4xl:py-1.5 4xl:text-base 5xl:px-5 5xl:py-2 5xl:text-lg rounded-full border border-zinc-200/50 bg-zinc-100/30 px-2.5 py-0.5 text-xs font-semibold text-zinc-600"
-                    >
-                      {tag}
-                    </span>
-                  ))}
+              {project.tags.length > 0 && (
+                <div className="3xl:mt-10 3xl:pt-10 mt-6 border-t border-zinc-200/50 pt-6">
+                  <span className="3xl:text-[0.75rem] 4xl:text-[0.85rem] 5xl:text-[0.95rem] mb-3 block text-[0.65rem] font-bold tracking-wider text-zinc-400 uppercase">
+                    Technologies
+                  </span>
+                  <div className="3xl:gap-2.5 flex flex-wrap gap-1.5">
+                    {project.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="3xl:px-3.5 3xl:py-1 3xl:text-sm 4xl:px-4 4xl:py-1.5 4xl:text-base 5xl:px-5 5xl:py-2 5xl:text-lg rounded-full border border-zinc-200/50 bg-zinc-100/30 px-2.5 py-0.5 text-xs font-semibold text-zinc-600"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Quick Links */}
               {(project.githubUrl || project.projectUrl) && (
