@@ -469,8 +469,6 @@ export default async function ProjectDetailPage({ params }: PageProps) {
           {/* Main Case Study Column (8 cols on lg screens) */}
           <section className="lg:col-span-8">
             <div className="3xl:p-10 4xl:p-12 5xl:p-16 rounded-2xl border border-zinc-200/60 bg-white/40 p-4 shadow-xs backdrop-blur-md sm:p-6 md:p-8">
-              {/* Spacer to align right column markdown heading with left column heading on desktop */}
-              <div className="3xl:h-8 4xl:h-10 5xl:h-12 hidden lg:block lg:h-6" />
               <Markdown content={content} className="3xl:text-lg 4xl:text-xl 5xl:text-2xl" />
             </div>
 
