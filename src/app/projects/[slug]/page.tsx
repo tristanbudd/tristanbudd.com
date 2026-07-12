@@ -367,7 +367,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
 
             {/* GitHub Stats Panel */}
             {githubStats && (
-              <div className="3xl:p-10 4xl:p-12 5xl:p-16 flex flex-col gap-6 rounded-2xl border border-zinc-200/60 bg-white/40 p-4 shadow-xs backdrop-blur-md sm:p-6 md:p-8">
+              <div className="3xl:p-10 4xl:p-12 5xl:p-16 rounded-2xl border border-zinc-200/60 bg-white/40 p-4 shadow-xs backdrop-blur-md sm:p-6 md:p-8">
                 <div className="flex flex-col gap-2">
                   <span className="3xl:text-sm 4xl:text-base 5xl:text-lg flex items-center gap-2 text-xs font-bold tracking-widest text-zinc-500 uppercase">
                     <Icons.Github className="3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 h-4.5 w-4.5 text-zinc-500" />
@@ -383,7 +383,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                   </a>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 border-t border-zinc-200/50 pt-6">
+                <div className="3xl:mt-10 3xl:pt-10 mt-6 grid grid-cols-2 gap-4 border-t border-zinc-200/50 pt-6">
                   {/* Stars */}
                   <div className="flex items-center gap-3">
                     <Icons.Star className="text-zinc-455 3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 h-4.5 w-4.5 shrink-0" />
@@ -413,7 +413,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                     <Icons.AlertCircle className="text-zinc-455 3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 h-4.5 w-4.5 shrink-0" />
                     <div className="flex flex-col">
                       <span className="3xl:text-[0.75rem] 4xl:text-[0.85rem] 5xl:text-[0.95rem] mb-1 text-[0.65rem] leading-none font-bold tracking-wider text-zinc-400 uppercase">
-                        Issues
+                        Issues / PRs
                       </span>
                       <span className="3xl:text-lg 4xl:text-xl 5xl:text-2xl font-semibold text-black">
                         {githubStats.openIssues.toLocaleString()}
