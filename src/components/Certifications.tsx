@@ -5,8 +5,19 @@
  * @description Glassmorphic certifications showcase component. All data received as props.
  */
 
+import React from "react";
 import { Calendar, ExternalLink } from "lucide-react";
+import { SiDatacamp, SiGithub, SiGoogle } from "react-icons/si";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
+
+const certIconMap: Record<
+  string,
+  React.ComponentType<{ className?: string; style?: React.CSSProperties }>
+> = {
+  datacamp: SiDatacamp,
+  github: SiGithub,
+  google: SiGoogle,
+};
 
 export interface Certificate {
   title: string;
@@ -32,8 +43,6 @@ function CertificateCard({
   visible: boolean;
   delay: number;
 }) {
-  const logoUrl = `https://cdn.simpleicons.org/${cert.logoSlug}`;
-
   return (
     <div
       className="group 3xl:p-10 4xl:p-12 5xl:p-16 relative flex flex-col gap-4 overflow-hidden rounded-2xl border border-zinc-200/60 bg-white/40 p-8 shadow-xs backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-zinc-300 hover:bg-white/80 hover:shadow-md"
@@ -44,26 +53,20 @@ function CertificateCard({
       }}
     >
       {/* Sliding Accent Border */}
-      <div className="absolute top-0 left-0 h-[3px] w-full origin-left scale-x-0 bg-linear-to-r from-zinc-700 via-black to-zinc-800 transition-transform duration-300 group-hover:scale-x-100" />
+      <div className="absolute top-0 left-0 h-0.75 w-full origin-left scale-x-0 bg-linear-to-r from-zinc-700 via-black to-zinc-800 transition-transform duration-300 group-hover:scale-x-100" />
 
       {/* Header: Icon & Organization */}
       <div className="flex items-center justify-between">
         <div className="3xl:h-16 3xl:w-16 3xl:rounded-2xl 4xl:h-20 4xl:w-20 5xl:h-24 5xl:w-24 flex h-12 w-12 items-center justify-center rounded-xl border border-zinc-200 bg-white/70 text-zinc-700 transition-all duration-300 group-hover:border-zinc-300 group-hover:bg-white">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={logoUrl}
-            alt={cert.issuer}
-            width={24}
-            height={24}
-            loading="lazy"
-            className="3xl:h-8 3xl:w-8 4xl:h-10 4xl:w-10 5xl:h-12 5xl:w-12 h-6 w-6 transition-all duration-300 group-hover:scale-110"
-            style={{
-              filter: "grayscale(1) brightness(0) opacity(0.75)",
-            }}
-            onError={(e) => {
-              e.currentTarget.style.display = "none";
-            }}
-          />
+          {(() => {
+            const Icon = certIconMap[cert.logoSlug?.toLowerCase() ?? ""];
+            return Icon ? (
+              <Icon
+                className="3xl:h-8 3xl:w-8 4xl:h-10 4xl:w-10 5xl:h-12 5xl:w-12 h-6 w-6 transition-all duration-300 group-hover:scale-110"
+                style={{ filter: "grayscale(1) brightness(0) opacity(0.75)" }}
+              />
+            ) : null;
+          })()}
         </div>
         {cert.credentialUrl ? (
           <a
@@ -71,7 +74,7 @@ function CertificateCard({
             target="_blank"
             rel="noopener noreferrer"
             aria-label={`Verify ${cert.title} credential by ${cert.issuer}`}
-            className="group/link 3xl:text-sm 4xl:text-base 5xl:text-lg inline-flex items-center gap-1.5 text-xs font-bold tracking-widest text-zinc-500 uppercase transition-colors duration-300 hover:text-black"
+            className="group/link 3xl:text-sm 4xl:text-base 5xl:text-lg inline-flex items-center gap-1.5 rounded-sm text-xs font-bold tracking-widest text-zinc-500 uppercase transition-colors duration-300 hover:text-black focus:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
           >
             <span>{cert.issuer}</span>
             <ExternalLink className="3xl:h-4.5 3xl:w-4.5 4xl:h-5 4xl:w-5 5xl:h-6 5xl:w-6 h-3.5 w-3.5 text-zinc-400 transition-colors duration-300 group-hover/link:text-black" />

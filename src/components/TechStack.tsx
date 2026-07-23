@@ -2,10 +2,61 @@
 
 /**
  * @file TechStack.tsx
- * @description Two side-by-side panels of square icon tiles (icon + name). Icons loaded from Simple Icons CDN, rendered monochrome.
+ * @description Two side-by-side panels of square icon tiles (icon + name). Icons bundled via react-icons/si, rendered monochrome.
  */
 
+import React from "react";
+import {
+  SiPhp,
+  SiTypescript,
+  SiJavascript,
+  SiPython,
+  SiSqlite,
+  SiHtml5,
+  SiCss,
+  SiDart,
+  SiRust,
+  SiR,
+  SiLaravel,
+  SiReact,
+  SiNextdotjs,
+  SiNodedotjs,
+  SiTailwindcss,
+  SiDocker,
+  SiGit,
+  SiPostgresql,
+  SiMysql,
+  SiLinux,
+  SiFigma,
+} from "react-icons/si";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
+
+const techIconMap: Record<
+  string,
+  React.ComponentType<{ className?: string; style?: React.CSSProperties }>
+> = {
+  php: SiPhp,
+  typescript: SiTypescript,
+  javascript: SiJavascript,
+  python: SiPython,
+  sqlite: SiSqlite,
+  html5: SiHtml5,
+  css: SiCss,
+  dart: SiDart,
+  rust: SiRust,
+  r: SiR,
+  laravel: SiLaravel,
+  react: SiReact,
+  nextdotjs: SiNextdotjs,
+  nodedotjs: SiNodedotjs,
+  tailwindcss: SiTailwindcss,
+  docker: SiDocker,
+  git: SiGit,
+  postgresql: SiPostgresql,
+  mysql: SiMysql,
+  linux: SiLinux,
+  figma: SiFigma,
+};
 
 export interface TechItem {
   name: string;
@@ -21,8 +72,7 @@ export interface TechStackProps {
 }
 
 function IconTile({ item, visible, delay }: { item: TechItem; visible: boolean; delay: number }) {
-  const src = `https://cdn.simpleicons.org/${item.slug}`;
-
+  const Icon = techIconMap[item.slug.toLowerCase()];
   return (
     <div
       className="group/tile flex flex-col items-center gap-0 overflow-hidden rounded-xl border border-zinc-200/70 bg-white/50 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-zinc-400 hover:bg-white hover:shadow-md"
@@ -33,23 +83,16 @@ function IconTile({ item, visible, delay }: { item: TechItem; visible: boolean; 
       }}
     >
       {/* Top accent bar */}
-      <div className="h-[2px] w-full origin-left scale-x-0 bg-linear-to-r from-zinc-700 via-black to-zinc-800 transition-transform duration-300 group-hover/tile:scale-x-100" />
+      <div className="h-0.5 w-full origin-left scale-x-0 bg-linear-to-r from-zinc-700 via-black to-zinc-800 transition-transform duration-300 group-hover/tile:scale-x-100" />
 
       {/* Icon */}
       <div className="3xl:p-8 3xl:pb-4 4xl:p-10 4xl:pb-5 5xl:p-12 5xl:pb-6 flex flex-1 items-center justify-center p-6 pb-3">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={src}
-          alt={item.name}
-          width={40}
-          height={40}
-          loading="lazy"
-          className="3xl:h-12 3xl:w-12 4xl:h-14 4xl:w-14 5xl:h-16 5xl:w-16 h-10 w-10 transition-all duration-300 group-hover/tile:scale-110"
-          style={{ filter: "grayscale(1) brightness(0) opacity(0.75)" }}
-          onError={(e) => {
-            (e.currentTarget as HTMLImageElement).style.display = "none";
-          }}
-        />
+        {Icon && (
+          <Icon
+            className="3xl:h-12 3xl:w-12 4xl:h-14 4xl:w-14 5xl:h-16 5xl:w-16 h-10 w-10 transition-all duration-300 group-hover/tile:scale-110"
+            style={{ filter: "grayscale(1) brightness(0) opacity(0.75)" }}
+          />
+        )}
       </div>
 
       {/* Name */}
@@ -66,7 +109,7 @@ function Panel({ label, heading, items }: { label: string; heading: string; item
   return (
     <div className="group 3xl:rounded-3xl 3xl:p-10 3xl:gap-8 4xl:p-12 4xl:gap-10 5xl:p-16 5xl:gap-12 relative flex flex-col gap-6 overflow-hidden rounded-2xl border border-zinc-200/60 bg-white/40 p-8 shadow-xs backdrop-blur-md transition-all duration-300 hover:border-zinc-300 hover:bg-white/60 hover:shadow-md">
       {/* Top accent bar */}
-      <div className="absolute top-0 left-0 h-[3px] w-full origin-left scale-x-0 bg-linear-to-r from-zinc-700 via-black to-zinc-800 transition-transform duration-300 group-hover:scale-x-100" />
+      <div className="absolute top-0 left-0 h-0.75 w-full origin-left scale-x-0 bg-linear-to-r from-zinc-700 via-black to-zinc-800 transition-transform duration-300 group-hover:scale-x-100" />
 
       <div className="flex flex-col gap-1">
         <span className="3xl:text-sm 4xl:text-base 5xl:text-lg text-xs font-bold tracking-widest text-zinc-500 uppercase">
