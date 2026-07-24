@@ -364,6 +364,8 @@ export default function BlogSection({
               <div className="relative self-end md:self-auto">
                 <button
                   onClick={() => setSortDropdownOpen(!sortDropdownOpen)}
+                  aria-haspopup="listbox"
+                  aria-expanded={sortDropdownOpen}
                   className="flex items-center gap-2 rounded-full border border-zinc-200/60 bg-white/40 px-5 py-2.5 text-sm font-semibold text-zinc-700 shadow-2xs transition-all duration-300 select-none hover:border-zinc-300 hover:bg-white/85 focus:outline-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
                 >
                   <span>
@@ -393,9 +395,14 @@ export default function BlogSection({
                       className="fixed inset-0 z-20"
                       onClick={() => setSortDropdownOpen(false)}
                     />
-                    <div className="animate-in fade-in slide-in-from-top-2 absolute right-0 z-30 mt-2 w-56 rounded-2xl border border-zinc-200/80 bg-white/95 py-1.5 shadow-lg backdrop-blur-md duration-200">
+                    <div
+                      role="listbox"
+                      className="animate-in fade-in slide-in-from-top-2 absolute right-0 z-30 mt-2 w-56 rounded-2xl border border-zinc-200/80 bg-white/95 py-1.5 shadow-lg backdrop-blur-md duration-200"
+                    >
                       {searchQuery && (
                         <button
+                          role="option"
+                          aria-selected={sortBy === "relevance"}
                           onClick={() => {
                             setSortBy("relevance");
                             setVisibleCount(5);
@@ -408,6 +415,8 @@ export default function BlogSection({
                         </button>
                       )}
                       <button
+                        role="option"
+                        aria-selected={sortBy === "newest"}
                         onClick={() => {
                           setSortBy("newest");
                           setVisibleCount(5);
@@ -419,6 +428,8 @@ export default function BlogSection({
                         {sortBy === "newest" && <Check className="h-4 w-4 text-black" />}
                       </button>
                       <button
+                        role="option"
+                        aria-selected={sortBy === "oldest"}
                         onClick={() => {
                           setSortBy("oldest");
                           setVisibleCount(5);
@@ -430,6 +441,8 @@ export default function BlogSection({
                         {sortBy === "oldest" && <Check className="h-4 w-4 text-black" />}
                       </button>
                       <button
+                        role="option"
+                        aria-selected={sortBy === "alphabetical-asc"}
                         onClick={() => {
                           setSortBy("alphabetical-asc");
                           setVisibleCount(5);
@@ -441,6 +454,8 @@ export default function BlogSection({
                         {sortBy === "alphabetical-asc" && <Check className="h-4 w-4 text-black" />}
                       </button>
                       <button
+                        role="option"
+                        aria-selected={sortBy === "alphabetical-desc"}
                         onClick={() => {
                           setSortBy("alphabetical-desc");
                           setVisibleCount(5);
@@ -452,6 +467,8 @@ export default function BlogSection({
                         {sortBy === "alphabetical-desc" && <Check className="h-4 w-4 text-black" />}
                       </button>
                       <button
+                        role="option"
+                        aria-selected={sortBy === "reading-time-asc"}
                         onClick={() => {
                           setSortBy("reading-time-asc");
                           setVisibleCount(5);
@@ -463,6 +480,8 @@ export default function BlogSection({
                         {sortBy === "reading-time-asc" && <Check className="h-4 w-4 text-black" />}
                       </button>
                       <button
+                        role="option"
+                        aria-selected={sortBy === "reading-time-desc"}
                         onClick={() => {
                           setSortBy("reading-time-desc");
                           setVisibleCount(5);
@@ -480,12 +499,17 @@ export default function BlogSection({
             </div>
 
             {/* Category Filter pills */}
-            <div className="no-scrollbar flex flex-wrap items-center gap-2 overflow-x-auto py-1">
+            <div
+              role="group"
+              aria-label="Filter by category"
+              className="no-scrollbar flex flex-wrap items-center gap-2 overflow-x-auto py-1"
+            >
               <button
                 onClick={() => {
                   setSelectedCategory(null);
                   setVisibleCount(5);
                 }}
+                aria-pressed={selectedCategory === null}
                 className={`rounded-full border px-4 py-2 text-xs font-bold tracking-wider uppercase transition-all duration-300 focus:outline-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black ${
                   selectedCategory === null
                     ? "border-black bg-black text-white"
@@ -501,6 +525,7 @@ export default function BlogSection({
                     setSelectedCategory(category);
                     setVisibleCount(5);
                   }}
+                  aria-pressed={selectedCategory === category}
                   className={`rounded-full border px-4 py-2 text-xs font-bold tracking-wider whitespace-nowrap uppercase transition-all duration-300 focus:outline-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black ${
                     selectedCategory === category
                       ? "border-black bg-black text-white"

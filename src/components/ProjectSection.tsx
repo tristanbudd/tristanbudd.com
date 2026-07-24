@@ -394,11 +394,12 @@ export default function ProjectSection({
                 </button>
               )}
             </div>
-
             {/* Sort Dropdown */}
             <div className="relative self-end sm:self-auto">
               <button
                 onClick={() => setSortDropdownOpen(!sortDropdownOpen)}
+                aria-haspopup="listbox"
+                aria-expanded={sortDropdownOpen}
                 className="flex items-center gap-2 rounded-full border border-zinc-200/60 bg-white/40 px-5 py-2.5 text-sm font-semibold text-zinc-700 shadow-2xs transition-all duration-300 select-none hover:border-zinc-300 hover:bg-white/85 focus:outline-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
               >
                 <span>
@@ -414,7 +415,7 @@ export default function ProjectSection({
                           : "Z-A"}
                 </span>
                 <ChevronDown
-                  className={`text-zinc-550 h-4 w-4 transition-transform duration-300 ${sortDropdownOpen ? "rotate-180" : ""}`}
+                  className={`text-zinc-555 h-4 w-4 transition-transform duration-300 ${sortDropdownOpen ? "rotate-180" : ""}`}
                 />
               </button>
 
@@ -422,9 +423,14 @@ export default function ProjectSection({
                 <>
                   {/* Backdrop overlay to close when clicking outside */}
                   <div className="fixed inset-0 z-20" onClick={() => setSortDropdownOpen(false)} />
-                  <div className="animate-in fade-in slide-in-from-top-2 absolute right-0 z-30 mt-2 w-48 rounded-2xl border border-zinc-200/80 bg-white/95 py-1.5 shadow-lg backdrop-blur-md duration-200">
+                  <div
+                    role="listbox"
+                    className="animate-in fade-in slide-in-from-top-2 absolute right-0 z-30 mt-2 w-48 rounded-2xl border border-zinc-200/80 bg-white/95 py-1.5 shadow-lg backdrop-blur-md duration-200"
+                  >
                     {searchQuery && (
                       <button
+                        role="option"
+                        aria-selected={sortBy === "relevance"}
                         onClick={() => {
                           setSortBy("relevance");
                           setCurrentPage(1);
@@ -437,6 +443,8 @@ export default function ProjectSection({
                       </button>
                     )}
                     <button
+                      role="option"
+                      aria-selected={sortBy === "newest"}
                       onClick={() => {
                         setSortBy("newest");
                         setCurrentPage(1);
@@ -448,6 +456,8 @@ export default function ProjectSection({
                       {sortBy === "newest" && <Check className="h-4 w-4 text-black" />}
                     </button>
                     <button
+                      role="option"
+                      aria-selected={sortBy === "oldest"}
                       onClick={() => {
                         setSortBy("oldest");
                         setCurrentPage(1);
@@ -459,6 +469,8 @@ export default function ProjectSection({
                       {sortBy === "oldest" && <Check className="h-4 w-4 text-black" />}
                     </button>
                     <button
+                      role="option"
+                      aria-selected={sortBy === "alphabetical-asc"}
                       onClick={() => {
                         setSortBy("alphabetical-asc");
                         setCurrentPage(1);
@@ -470,6 +482,8 @@ export default function ProjectSection({
                       {sortBy === "alphabetical-asc" && <Check className="h-4 w-4 text-black" />}
                     </button>
                     <button
+                      role="option"
+                      aria-selected={sortBy === "alphabetical-desc"}
                       onClick={() => {
                         setSortBy("alphabetical-desc");
                         setCurrentPage(1);
