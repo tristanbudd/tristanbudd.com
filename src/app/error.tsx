@@ -48,6 +48,7 @@ export default function ErrorPage({ error, reset }: ErrorProps) {
 
   return (
     <main
+      id="main-content"
       role="main"
       className="font-outfit bg-background text-foreground relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden px-6 text-center select-none"
     >

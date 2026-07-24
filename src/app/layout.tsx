@@ -6,10 +6,10 @@
 import type { Metadata, Viewport } from "next";
 import { Cinzel, Geist, Geist_Mono, Outfit, Syne } from "next/font/google";
 
+import GoogleTagManager from "@/components/GoogleTagManager";
 import PageLoader from "@/components/PageLoader";
 import ScreenSizeNotice from "@/components/ScreenSizeNotice";
 import ScrollInit from "@/components/ScrollInit";
-import GoogleTagManager from "@/components/GoogleTagManager";
 import "./globals.css";
 import { Providers } from "./providers";
 
@@ -113,7 +113,27 @@ export default function RootLayout({
     >
       <body className="flex min-h-full flex-col" suppressHydrationWarning>
         <GoogleTagManager gtmId={gtmId} />
+        <noscript>
+          <div className="fixed inset-x-0 top-0 z-100 bg-red-700 px-4 py-3 text-center text-xs font-bold tracking-wide text-white uppercase shadow-md sm:text-sm">
+            JavaScript is disabled in your browser. Some features of this site may not function
+            correctly.{" "}
+            <a
+              href="https://www.enable-javascript.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-xs underline hover:text-zinc-200 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2"
+            >
+              Learn how to enable JavaScript
+            </a>
+          </div>
+        </noscript>
         <Providers>
+          <a
+            href="#main-content"
+            className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-90 focus:rounded-full focus:border-2 focus:border-black focus:bg-white focus:px-5 focus:py-3 focus:font-bold focus:text-black focus:shadow-lg focus:ring-2 focus:ring-black focus:ring-offset-2 focus:outline-hidden"
+          >
+            Skip to Content
+          </a>
           <ScrollInit />
           <PageLoader />
           <ScreenSizeNotice />

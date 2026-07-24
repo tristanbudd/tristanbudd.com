@@ -48,8 +48,9 @@ export default function BlogPageClient() {
 
       {/* Main Content Area */}
       <main
+        id="main-content"
         role="main"
-        className="3xl:max-w-440 4xl:max-w-560 5xl:max-w-720 3xl:pt-36 4xl:pt-40 5xl:pt-44 mx-auto flex w-full flex-col px-4 pt-20 pb-8 font-sans transition-all duration-500 ease-in-out sm:max-w-screen-sm sm:pt-24 md:max-w-3xl md:pt-28 md:pb-16 lg:max-w-5xl xl:max-w-6xl 2xl:max-w-7xl"
+        className="3xl:max-w-440 4xl:max-w-560 5xl:max-w-720 3xl:pt-36 4xl:pt-40 5xl:pt-44 mx-auto flex w-full flex-col px-4 pt-20 pb-8 font-sans transition-colors duration-500 ease-in-out sm:max-w-screen-sm sm:pt-24 md:max-w-3xl md:pt-28 md:pb-16 lg:max-w-5xl xl:max-w-6xl 2xl:max-w-7xl"
       >
         {/* Page Header block including Back Button */}
         <div className="mt-4 flex flex-wrap items-end justify-between gap-x-4 gap-y-3 border-b border-zinc-200/50 pb-6">
