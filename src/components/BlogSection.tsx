@@ -295,6 +295,8 @@ export default function BlogSection({
   // Show top 3 in preview, otherwise render up to visibleCount
   const displayedPosts = isPreview ? sortedPosts.slice(0, 3) : sortedPosts.slice(0, visibleCount);
 
+  const EmptyHeadingTag = showHeader ? "h3" : "h2";
+
   return (
     <section
       id="blog"
@@ -550,15 +552,16 @@ export default function BlogSection({
           <DbOfflineMessage
             title="Articles Unavailable"
             description="We could not load the blog articles because the database is unavailable."
+            headingLevel={showHeader ? "h3" : "h2"}
           />
         ) : posts.length === 0 ? (
           <div className="3xl:p-16 3xl:rounded-3xl 3xl:border-2 4xl:p-20 4xl:rounded-4xl 5xl:p-28 5xl:rounded-[3rem] flex flex-col items-center justify-center rounded-2xl border border-zinc-200/60 bg-white/40 p-8 text-center shadow-xs backdrop-blur-md transition-all duration-300 md:p-12">
             <div className="text-zinc-650 3xl:h-20 3xl:w-20 3xl:mb-6 4xl:h-24 4xl:w-24 4xl:mb-8 5xl:h-32 5xl:w-32 5xl:mb-12 relative mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-zinc-100">
               <Search className="3xl:h-9 3xl:w-9 4xl:h-11 4xl:w-11 5xl:h-16 5xl:w-16 h-6 w-6" />
             </div>
-            <h3 className="font-outfit 3xl:text-2xl 4xl:text-3xl 5xl:text-4xl text-lg font-bold text-black sm:text-xl">
+            <EmptyHeadingTag className="font-outfit 3xl:text-2xl 4xl:text-3xl 5xl:text-4xl text-lg font-bold text-black sm:text-xl">
               No Articles Found
-            </h3>
+            </EmptyHeadingTag>
             <p className="text-zinc-550 3xl:mt-4 3xl:text-lg 3xl:max-w-xl 4xl:mt-5 4xl:text-xl 4xl:max-w-2xl 5xl:mt-6 5xl:text-2xl 5xl:max-w-4xl mt-2 max-w-md text-sm leading-relaxed sm:text-base">
               There are currently no articles published. Please check back later.
             </p>
@@ -568,9 +571,9 @@ export default function BlogSection({
             <div className="text-zinc-650 3xl:h-20 3xl:w-20 3xl:mb-6 4xl:h-24 4xl:w-24 4xl:mb-8 5xl:h-32 5xl:w-32 5xl:mb-12 relative mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-zinc-100">
               <Search className="3xl:h-9 3xl:w-9 4xl:h-11 4xl:w-11 5xl:h-16 5xl:w-16 h-6 w-6" />
             </div>
-            <h3 className="font-outfit 3xl:text-2xl 4xl:text-3xl 5xl:text-4xl text-lg font-bold text-black sm:text-xl">
+            <EmptyHeadingTag className="font-outfit 3xl:text-2xl 4xl:text-3xl 5xl:text-4xl text-lg font-bold text-black sm:text-xl">
               No Articles Found
-            </h3>
+            </EmptyHeadingTag>
             <p className="text-zinc-550 3xl:mt-4 3xl:text-lg 3xl:max-w-xl 4xl:mt-5 4xl:text-xl 4xl:max-w-2xl 5xl:mt-6 5xl:text-2xl 5xl:max-w-4xl mt-2 max-w-md text-sm leading-relaxed sm:text-base">
               We couldn&apos;t find any articles matching your search criteria. Try modifying your
               search or filters.
