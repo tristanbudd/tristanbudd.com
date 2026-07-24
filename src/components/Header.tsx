@@ -406,7 +406,7 @@ export default function Header({
                           }
                           aria-haspopup="true"
                           aria-expanded={openDropdown === item.label}
-                          className="relative flex cursor-pointer items-center gap-1 rounded-xs whitespace-nowrap transition-colors after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:origin-center after:scale-x-0 after:bg-black after:transition-transform after:duration-300 hover:text-black hover:after:scale-x-100 focus:outline-hidden focus-visible:text-black focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black focus-visible:after:scale-x-100 active:text-black active:after:scale-x-100"
+                          className="relative -mx-1 flex cursor-pointer items-center gap-1 rounded-sm px-1 py-1 whitespace-nowrap transition-colors after:absolute after:bottom-0 after:left-1 after:h-0.5 after:w-[calc(100%-8px)] after:origin-center after:scale-x-0 after:bg-black after:transition-transform after:duration-300 hover:text-black hover:after:scale-x-100 focus:outline-hidden focus-visible:text-black focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-4 focus-visible:after:scale-x-100 active:text-black active:after:scale-x-100"
                         >
                           <span>{item.label}</span>
                           <ChevronDown
@@ -467,10 +467,10 @@ export default function Header({
                             handleNavigation(e, item.href, item.label);
                           }
                         }}
-                        className={`relative rounded-xs py-2 whitespace-nowrap transition-colors after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:origin-center after:bg-black after:transition-transform after:duration-300 focus:outline-hidden focus-visible:text-black focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black focus-visible:after:scale-x-100 ${
+                        className={`relative -mx-1 rounded-sm px-1 py-1 whitespace-nowrap transition-colors after:absolute after:bottom-0 after:left-1 after:h-0.5 after:w-[calc(100%-8px)] after:origin-center after:bg-black after:transition-transform after:duration-300 focus:outline-hidden focus-visible:text-black focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-4 focus-visible:after:scale-x-100 ${
                           isActive
-                            ? "pointer-events-none text-black after:scale-x-100"
-                            : "after:scale-x-0 hover:text-black hover:after:scale-x-100 active:text-black active:after:scale-x-100"
+                            ? "text-black after:scale-x-100"
+                            : "text-zinc-900 after:scale-x-0 hover:text-black hover:after:scale-x-100 active:text-black active:after:scale-x-100"
                         }`}
                       >
                         {item.label}
