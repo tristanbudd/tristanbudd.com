@@ -13,6 +13,7 @@ interface DbOfflineMessageProps {
   description?: string;
   className?: string;
   onRetry?: () => void;
+  headingLevel?: "h1" | "h2" | "h3";
 }
 
 export default function DbOfflineMessage({
@@ -20,6 +21,7 @@ export default function DbOfflineMessage({
   description = "We are temporarily unable to load this content because the database is unreachable. Please try again later.",
   className = "",
   onRetry,
+  headingLevel = "h3",
 }: DbOfflineMessageProps) {
   const [isRetrying, setIsRetrying] = React.useState(false);
 
@@ -34,6 +36,8 @@ export default function DbOfflineMessage({
     }
   };
 
+  const HeadingTag = headingLevel;
+
   return (
     <div
       className={`3xl:p-16 3xl:rounded-3xl 3xl:border-2 4xl:p-20 4xl:rounded-4xl 5xl:p-28 5xl:rounded-[3rem] flex flex-col items-center justify-center rounded-2xl border border-zinc-200/60 bg-white/40 p-8 text-center shadow-xs backdrop-blur-md transition-all duration-300 md:p-12 ${className}`}
@@ -45,9 +49,9 @@ export default function DbOfflineMessage({
           <span className="3xl:h-5 3xl:w-5 4xl:h-6 4xl:w-6 5xl:h-8 5xl:w-8 relative inline-flex h-3.5 w-3.5 rounded-full border-2 border-white bg-red-500"></span>
         </span>
       </div>
-      <h3 className="font-outfit 3xl:text-2xl 4xl:text-3xl 5xl:text-4xl text-lg font-bold text-black sm:text-xl">
+      <HeadingTag className="font-outfit 3xl:text-2xl 4xl:text-3xl 5xl:text-4xl text-lg font-bold text-black sm:text-xl">
         {title}
-      </h3>
+      </HeadingTag>
       <p className="text-zinc-550 3xl:mt-4 3xl:text-lg 3xl:max-w-xl 4xl:mt-5 4xl:text-xl 4xl:max-w-2xl 5xl:mt-6 5xl:text-2xl 5xl:max-w-4xl mt-2 max-w-md text-sm leading-relaxed sm:text-base">
         {description}
       </p>
