@@ -136,7 +136,10 @@ export default async function BlogPostPage({ params }: PageProps) {
         className="3xl:max-w-6xl 4xl:max-w-7xl 5xl:max-w-8xl 3xl:pt-40 4xl:pt-44 5xl:pt-48 3xl:pb-10 4xl:pb-12 5xl:pb-16 mx-auto flex w-full max-w-4xl flex-col px-4 pt-24 pb-6 font-sans transition-all duration-500 ease-in-out sm:pt-28 md:pt-32 md:pb-8 lg:max-w-5xl lg:pt-36"
       >
         {/* Breadcrumbs */}
-        <nav className="3xl:mb-12 4xl:mb-14 5xl:mb-16 3xl:text-sm 4xl:text-base 5xl:text-lg mb-6 flex flex-wrap items-center gap-1.5 text-xs leading-normal font-semibold tracking-wide text-zinc-500 uppercase sm:mb-8 md:mb-8 lg:mb-10">
+        <nav
+          aria-label="Breadcrumb"
+          className="3xl:mb-12 4xl:mb-14 5xl:mb-16 3xl:text-sm 4xl:text-base 5xl:text-lg mb-6 flex flex-wrap items-center gap-1.5 text-xs leading-normal font-semibold tracking-wide text-zinc-500 uppercase sm:mb-8 md:mb-8 lg:mb-10"
+        >
           <Link
             href="/"
             className="rounded-sm transition-colors hover:text-black focus:outline-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
