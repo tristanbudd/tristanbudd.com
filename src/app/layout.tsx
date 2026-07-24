@@ -111,6 +111,10 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${syne.variable} ${cinzel.variable} ${outfit.variable} h-full scroll-smooth antialiased`}
       suppressHydrationWarning
     >
+      <head>
+        <link rel="preconnect" href="https://www.googletagmanager.com" />
+        <link rel="preconnect" href="https://www.google-analytics.com" crossOrigin="anonymous" />
+      </head>
       <body className="flex min-h-full flex-col" suppressHydrationWarning>
         <GoogleTagManager gtmId={gtmId} />
         <noscript>
