@@ -184,9 +184,6 @@ export default function Header({
       } else {
         document.documentElement.classList.remove("is-scrolled");
       }
-      if (headerRef.current) {
-        setHeaderHeight(headerRef.current.offsetHeight);
-      }
     };
 
     const handleResize = () => {
@@ -243,6 +240,13 @@ export default function Header({
       window.removeEventListener("resize", handleResize);
     };
   }, [navItems]);
+
+  // Adjust header height state only when scrolled state transitions
+  useEffect(() => {
+    if (headerRef.current) {
+      setHeaderHeight(headerRef.current.offsetHeight);
+    }
+  }, [scrolled]);
 
   useEffect(() => {
     if (mobileMenuOpen && isMobile === true) {
