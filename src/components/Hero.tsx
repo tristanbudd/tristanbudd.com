@@ -46,14 +46,6 @@ export default function Hero({
   ctaText = "Placeholder CTA",
   ctaHref = "#",
 }: HeroProps) {
-  const handleScrollDown = (e: React.MouseEvent) => {
-    e.preventDefault();
-    const target = document.getElementById("stats");
-    if (target) {
-      target.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
   // Combine actual key skills dynamically from shared portfolio data
   const featuredSkills = [...languages, ...tools].map((skill) => skill.name);
 
@@ -64,14 +56,14 @@ export default function Hero({
     <section
       id="hero"
       aria-label="Introduction Hero"
-      className="font-outfit 3xl:max-h-[1080px] 4xl:max-h-[1200px] 5xl:max-h-[1440px] relative max-h-[950px] w-full overflow-hidden pt-36 pb-24 transition-all duration-500 ease-in-out lg:flex lg:min-h-screen lg:flex-col lg:items-center lg:justify-center lg:pt-40 lg:pb-32"
+      className="font-outfit 3xl:max-h-270 4xl:max-h-300 5xl:max-h-360 relative max-h-237.5 w-full overflow-hidden pt-36 pb-24 transition-colors duration-500 ease-in-out lg:flex lg:min-h-screen lg:flex-col lg:items-center lg:justify-center lg:pt-40 lg:pb-32"
     >
       {/* 3 Scattered High-Transparency Watermarks rotated and placed out of the header's way */}
-      <WatermarkLogo className="3xl:h-[150px] 3xl:w-[150px] 4xl:h-[180px] 4xl:w-[180px] 5xl:h-[220px] 5xl:w-[220px] pointer-events-none absolute top-[28%] left-[6%] z-0 hidden h-[90px] w-[90px] rotate-[-15deg] text-zinc-950 opacity-[0.018] select-none sm:block lg:h-[110px] lg:w-[110px]" />
-      <WatermarkLogo className="3xl:h-[180px] 3xl:w-[180px] 4xl:h-[220px] 4xl:w-[220px] 5xl:h-[280px] 5xl:w-[280px] pointer-events-none absolute right-[8%] bottom-[20%] z-0 h-[75px] w-[75px] rotate-20 text-zinc-950 opacity-[0.012] select-none sm:h-[120px] sm:w-[120px] sm:opacity-[0.022] lg:h-[130px] lg:w-[130px]" />
-      <WatermarkLogo className="3xl:h-[160px] 3xl:w-[160px] 4xl:h-[190px] 4xl:w-[190px] 5xl:h-[240px] 5xl:w-[240px] pointer-events-none absolute bottom-[8%] left-[40%] z-0 hidden h-[95px] w-[95px] rotate-[-30deg] text-zinc-950 opacity-[0.015] select-none sm:block lg:h-[115px] lg:w-[115px]" />
+      <WatermarkLogo className="3xl:h-37.5 3xl:w-37.5 4xl:h-45 4xl:w-45 5xl:h-55 5xl:w-55 pointer-events-none absolute top-[28%] left-[6%] z-0 hidden h-22.5 w-22.5 rotate-[-15deg] text-zinc-950 opacity-[0.018] select-none sm:block lg:h-27.5 lg:w-27.5" />
+      <WatermarkLogo className="3xl:h-45 3xl:w-45 4xl:h-55 4xl:w-55 5xl:h-70 5xl:w-70 pointer-events-none absolute right-[8%] bottom-[20%] z-0 h-18.75 w-18.75 rotate-20 text-zinc-950 opacity-[0.012] select-none sm:h-30 sm:w-30 sm:opacity-[0.022] lg:h-32.5 lg:w-32.5" />
+      <WatermarkLogo className="3xl:h-40 3xl:w-40 4xl:h-47.5 4xl:w-47.5 5xl:h-60 5xl:w-60 pointer-events-none absolute bottom-[8%] left-[40%] z-0 hidden h-23.75 w-23.75 rotate-[-30deg] text-zinc-950 opacity-[0.015] select-none sm:block lg:h-28.75 lg:w-28.75" />
 
-      <div className="3xl:max-w-[1360px] 4xl:max-w-[1600px] 5xl:max-w-[2000px] relative z-10 mx-auto w-full max-w-6xl px-4 lg:flex lg:flex-1 lg:items-center lg:justify-center 2xl:max-w-7xl">
+      <div className="3xl:max-w-340 4xl:max-w-400 5xl:max-w-500 relative z-10 mx-auto w-full max-w-6xl px-4 lg:flex lg:flex-1 lg:items-center lg:justify-center 2xl:max-w-7xl">
         <div className="grid w-full grid-cols-1 items-center gap-8 lg:grid-cols-12 lg:gap-24">
           {/* Left Column: Heading and CTA */}
           <div className="relative z-20 order-2 flex flex-col items-center text-center lg:order-1 lg:col-span-6 lg:items-start lg:text-left">
@@ -86,11 +78,7 @@ export default function Hero({
               <CTAButton text={ctaText} href={ctaHref} />
               <a
                 href="#experience"
-                onClick={(e) => {
-                  e.preventDefault();
-                  document.getElementById("experience")?.scrollIntoView({ behavior: "smooth" });
-                }}
-                className="px-4 py-2 text-sm font-bold text-zinc-600 transition-colors duration-300 hover:text-black"
+                className="rounded-full px-4 py-2 text-sm font-bold text-zinc-600 transition-colors duration-300 hover:text-black focus:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
               >
                 View Experience
               </a>
@@ -100,7 +88,7 @@ export default function Hero({
           {/* Right Column: Circular Astrolabe Radar Photo (Isolates Grid Track constraints to prevent 1126px overflow) */}
           <div className="hide-on-short-mobile group relative order-1 flex w-full items-center justify-center select-none lg:order-2 lg:col-span-6 lg:justify-end">
             {/* Responsive outer container: Aspect-Square Locked to prevent distortion */}
-            <div className="3xl:max-w-[700px] 4xl:max-w-[800px] 5xl:max-w-[950px] relative flex aspect-square w-full max-w-[340px] items-center justify-center sm:max-w-[480px] lg:mr-20 lg:-ml-20 lg:max-w-[620px] xl:mr-0 xl:ml-0">
+            <div className="3xl:max-w-175 4xl:max-w-200 5xl:max-w-237.5 relative flex aspect-square w-full max-w-85 items-center justify-center sm:max-w-120 lg:mr-20 lg:-ml-20 lg:max-w-155 xl:mr-0 xl:ml-0">
               {/* Ambient decorative glow */}
               <div className="pointer-events-none absolute h-[80%] w-[80%] rounded-full bg-zinc-100/50 blur-3xl" />
 
@@ -149,9 +137,9 @@ export default function Hero({
 
       {/* Sleek Chevron Double Scroll Down Prompt (Hidden on Mobile/Tablet to prevent layout overlaps) */}
       <div className="3xl:bottom-10 4xl:bottom-14 5xl:bottom-20 absolute bottom-6 left-1/2 z-20 hidden -translate-x-1/2 flex-col items-center lg:flex">
-        <button
-          onClick={handleScrollDown}
-          className="group 3xl:text-xs 3xl:gap-2 4xl:text-sm 4xl:gap-2.5 5xl:text-base 5xl:gap-3 flex cursor-pointer flex-col items-center gap-1.5 text-[10px] font-bold tracking-[0.25em] text-zinc-400 uppercase transition-colors duration-300 hover:text-black"
+        <a
+          href="#stats"
+          className="group 3xl:text-xs 3xl:gap-2 4xl:text-sm 4xl:gap-2.5 5xl:text-base 5xl:gap-3 flex cursor-pointer flex-col items-center gap-1.5 rounded-lg text-[10px] font-bold tracking-[0.25em] text-zinc-400 uppercase transition-colors duration-300 hover:text-black focus:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
           aria-label="Scroll down to content"
         >
           <span>Scroll for more</span>
@@ -183,7 +171,7 @@ export default function Hero({
               animation: orbit 35s linear infinite;
             }
           `}</style>
-        </button>
+        </a>
       </div>
     </section>
   );
