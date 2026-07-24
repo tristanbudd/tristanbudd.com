@@ -179,7 +179,7 @@ export default function Footer({
                     href={link.href}
                     onClick={(e) => handleLinkClick(e, link.href, link.label)}
                     id={`footer-link-${group.title.toLowerCase().replace(/\s+/g, "-")}-${link.label.toLowerCase().replace(/\s+/g, "-")}`}
-                    className="3xl:text-lg 4xl:text-xl 5xl:text-2xl relative block rounded-xs py-1 text-sm font-semibold text-zinc-500 transition-colors duration-200 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:origin-center after:scale-x-0 after:bg-black after:transition-transform after:duration-300 hover:text-black hover:after:scale-x-100 focus:outline-hidden focus-visible:text-black focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black xl:text-base"
+                    className="3xl:text-lg 4xl:text-xl 5xl:text-2xl relative -mx-1 -my-0.5 block rounded-sm px-1 py-0.5 text-sm font-semibold text-zinc-500 transition-colors duration-200 after:absolute after:bottom-0.5 after:left-1 after:h-0.5 after:w-[calc(100%-8px)] after:origin-center after:scale-x-0 after:bg-black after:transition-transform after:duration-300 hover:text-black hover:after:scale-x-100 focus:outline-hidden focus-visible:text-black focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus-visible:after:scale-x-100 xl:text-base"
                   >
                     {link.label}
                   </Link>
@@ -206,7 +206,7 @@ export default function Footer({
           onClick={handleScrollToTop}
           aria-label="Scroll to top of page"
           id="footer-back-to-top"
-          className="group/top text-zinc-650 3xl:h-14 3xl:w-14 4xl:h-16 4xl:w-16 5xl:h-20 5xl:w-20 flex h-10 w-10 items-center justify-center self-start rounded-full border border-zinc-200/80 bg-white/40 backdrop-blur-xs transition-all duration-300 hover:scale-105 hover:border-black hover:bg-black hover:text-white focus:outline-hidden focus-visible:bg-black focus-visible:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black sm:self-auto xl:h-12 xl:w-12"
+          className="group/top text-zinc-650 3xl:h-14 3xl:w-14 4xl:h-16 4xl:w-16 5xl:h-20 5xl:w-20 flex h-10 w-10 items-center justify-center self-start rounded-full border border-zinc-200/80 bg-white/40 backdrop-blur-xs transition-all duration-300 hover:scale-105 hover:border-black hover:bg-black hover:text-white focus:outline-hidden focus-visible:bg-black focus-visible:text-white focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 sm:self-auto xl:h-12 xl:w-12"
         >
           <ArrowUp className="3xl:h-6.5 3xl:w-6.5 4xl:h-7.5 4xl:w-7.5 5xl:h-9 5xl:w-9 h-4.5 w-4.5 transition-transform duration-300 group-hover/top:-translate-y-0.5 xl:h-5.5 xl:w-5.5" />
         </button>
