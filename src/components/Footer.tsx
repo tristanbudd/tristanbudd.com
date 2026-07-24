@@ -91,7 +91,7 @@ export default function Footer({
             href="/"
             onClick={() => trackNavigation("Footer Logo", "/")}
             aria-label="Tristan Budd Home"
-            className="group 3xl:gap-4 4xl:gap-5 5xl:gap-6 flex cursor-pointer items-center gap-2 rounded-xs text-current select-none focus:outline-hidden focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black sm:gap-3"
+            className="group 3xl:gap-4 4xl:gap-5 5xl:gap-6 -m-1 flex cursor-pointer items-center gap-2 rounded-lg p-1 text-current select-none focus:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 sm:gap-3"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -139,7 +139,7 @@ export default function Footer({
                     onClick={() => trackCTA(`Footer Social: ${social.platform}`, social.href)}
                     aria-label={social.ariaLabel}
                     id={`footer-social-${social.platform}`}
-                    className="group/social text-zinc-650 3xl:h-14 3xl:w-14 4xl:h-16 4xl:w-16 5xl:h-20 5xl:w-20 flex h-10 w-10 items-center justify-center rounded-full border border-zinc-200/80 bg-white/40 backdrop-blur-xs transition-all duration-300 hover:scale-105 hover:border-black hover:bg-black hover:text-white focus:outline-hidden focus-visible:bg-black focus-visible:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black xl:h-12 xl:w-12"
+                    className="group/social text-zinc-650 3xl:h-14 3xl:w-14 4xl:h-16 4xl:w-16 5xl:h-20 5xl:w-20 flex h-10 w-10 items-center justify-center rounded-full border border-zinc-200/80 bg-white/40 backdrop-blur-xs transition-all duration-300 hover:scale-105 hover:border-black hover:bg-black hover:text-white focus:outline-hidden focus-visible:bg-black focus-visible:text-white focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 xl:h-12 xl:w-12"
                   >
                     {IconComponent ? (
                       <IconComponent className="3xl:h-6.5 3xl:w-6.5 4xl:h-7.5 4xl:w-7.5 5xl:h-9 5xl:w-9 h-4.5 w-4.5 transition-transform duration-300 group-hover/social:scale-110 xl:h-5.5 xl:w-5.5" />

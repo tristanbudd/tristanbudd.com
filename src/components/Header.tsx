@@ -322,7 +322,7 @@ export default function Header({
               href="/"
               onClick={handleLogoClick}
               aria-label="Tristan Budd Home"
-              className="group flex cursor-pointer items-center gap-2 rounded-xs text-current select-none focus:outline-hidden focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black sm:gap-3"
+              className="group -m-1 flex cursor-pointer items-center gap-2 rounded-lg p-1 text-current select-none focus:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 sm:gap-3"
             >
               {transitionTarget !== null ? (
                 <div className="3xl:h-13 3xl:w-13 4xl:h-16 4xl:w-16 5xl:h-20 5xl:w-20 flex h-8 w-8 shrink-0 items-center justify-center sm:h-10 sm:w-10">
