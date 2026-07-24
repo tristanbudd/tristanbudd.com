@@ -54,7 +54,7 @@ function BlogRow({
   return (
     <div className="group/blog relative w-full pt-1 pb-1">
       <div
-        className="3xl:p-10 4xl:p-12 5xl:p-16 3xl:gap-10 relative flex flex-col gap-6 overflow-hidden rounded-2xl border border-zinc-200/60 bg-white/40 p-8 shadow-xs backdrop-blur-md transition-all duration-500 group-hover/blog:-translate-y-1 group-hover/blog:border-zinc-300 group-hover/blog:bg-white/80 group-hover/blog:shadow-md md:flex-row md:items-start md:gap-8"
+        className="3xl:p-10 4xl:p-12 5xl:p-16 3xl:gap-10 relative flex flex-col gap-6 overflow-hidden rounded-2xl border border-zinc-200/60 bg-white/40 p-8 shadow-xs backdrop-blur-md transition-all duration-500 group-hover/blog:-translate-y-1 group-hover/blog:border-zinc-300 group-hover/blog:bg-white/80 group-hover/blog:shadow-md focus-within:ring-2 focus-within:ring-black focus-within:ring-offset-2 md:flex-row md:items-start md:gap-8"
         style={{
           opacity: isCardVisible ? 1 : 0,
           transform: isCardVisible ? "translateY(0)" : "translateY(24px)",
@@ -62,7 +62,7 @@ function BlogRow({
         }}
       >
         {/* Top slide-in border line */}
-        <div className="absolute top-0 left-0 h-[3px] w-full origin-left scale-x-0 bg-linear-to-r from-zinc-700 via-black to-zinc-800 transition-transform duration-300 group-hover/blog:scale-x-100" />
+        <div className="absolute top-0 left-0 h-0.75 w-full origin-left scale-x-0 bg-linear-to-r from-zinc-700 via-black to-zinc-800 transition-transform duration-300 group-hover/blog:scale-x-100" />
 
         {/* Date stamp sidebar */}
         <div className="border-zinc-150 3xl:w-48 4xl:w-56 5xl:w-64 3xl:pr-10 4xl:pr-12 5xl:pr-16 flex flex-row items-center justify-between border-b pb-4 md:w-36 md:shrink-0 md:flex-col md:items-start md:gap-1 md:border-r md:border-b-0 md:border-zinc-200/60 md:pr-6 md:pb-0">
@@ -75,7 +75,7 @@ function BlogRow({
             </span>
           </div>
 
-          <div className="3xl:w-12 4xl:w-16 5xl:w-20 mt-2 hidden h-[2px] w-8 bg-zinc-200 md:block" />
+          <div className="3xl:w-12 4xl:w-16 5xl:w-20 mt-2 hidden h-0.5 w-8 bg-zinc-200 md:block" />
 
           <div className="3xl:text-xs 4xl:text-sm 5xl:text-base mt-1 flex items-center gap-1.5 text-[0.65rem] font-bold tracking-wider text-zinc-500 uppercase sm:text-[0.7rem]">
             <Clock className="3xl:h-4.5 3xl:w-4.5 4xl:h-5 4xl:w-5 5xl:h-6 5xl:w-6 h-3.5 w-3.5 text-zinc-400" />
@@ -128,7 +128,7 @@ function BlogRow({
                 href={`/blog/${post.slug}`}
                 onClick={(e) => handleNavigation(e, `/blog/${post.slug}`)}
                 aria-label={`Read article: ${post.title}`}
-                className="group/link 3xl:text-base 4xl:text-lg 5xl:text-xl inline-flex items-center gap-1.5 text-sm font-bold text-black transition-colors after:absolute after:inset-0 after:z-10 hover:text-zinc-700"
+                className="group/link 3xl:text-base 4xl:text-lg 5xl:text-xl inline-flex items-center gap-1.5 rounded-sm text-sm font-bold text-black transition-colors after:absolute after:inset-0 after:z-10 hover:text-zinc-700 focus:outline-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
               >
                 <span>Read Article</span>
                 <span className="sr-only">: {post.title}</span>
@@ -152,7 +152,7 @@ function BlogRowSkeleton() {
             <div className="h-10 w-12 rounded-lg bg-zinc-200/60" />
             <div className="h-3 w-16 rounded-md bg-zinc-200/60" />
           </div>
-          <div className="mt-2 hidden h-[2px] w-8 bg-zinc-100 md:block" />
+          <div className="mt-2 hidden h-0.5 w-8 bg-zinc-100 md:block" />
           <div className="h-3 w-16 rounded-md bg-zinc-200/60" />
         </div>
 
@@ -341,7 +341,7 @@ export default function BlogSection({
                     }
                   }}
                   placeholder="Search articles..."
-                  className="w-full rounded-full border border-zinc-200/60 bg-white/40 py-2.5 pr-10 pl-10 text-sm font-medium shadow-2xs transition-all duration-300 placeholder:text-zinc-400 focus:border-zinc-400 focus:bg-white/80 focus:outline-hidden"
+                  className="w-full rounded-full border border-zinc-200/60 bg-white/40 py-2.5 pr-10 pl-10 text-sm font-medium shadow-2xs transition-all duration-300 placeholder:text-zinc-400 focus:border-zinc-400 focus:bg-white/80 focus:ring-2 focus:ring-black focus:outline-hidden"
                 />
                 {searchQuery && (
                   <button
@@ -352,7 +352,7 @@ export default function BlogSection({
                         setSortBy("newest");
                       }
                     }}
-                    className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-zinc-400 transition-colors hover:text-black"
+                    className="absolute inset-y-0 right-0 flex items-center rounded-full pr-3.5 text-zinc-400 transition-colors hover:text-black focus:outline-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
                     aria-label="Clear Search"
                   >
                     <X className="h-4 w-4" />
@@ -364,7 +364,7 @@ export default function BlogSection({
               <div className="relative self-end md:self-auto">
                 <button
                   onClick={() => setSortDropdownOpen(!sortDropdownOpen)}
-                  className="flex items-center gap-2 rounded-full border border-zinc-200/60 bg-white/40 px-5 py-2.5 text-sm font-semibold text-zinc-700 shadow-2xs transition-all duration-300 select-none hover:border-zinc-300 hover:bg-white/85"
+                  className="flex items-center gap-2 rounded-full border border-zinc-200/60 bg-white/40 px-5 py-2.5 text-sm font-semibold text-zinc-700 shadow-2xs transition-all duration-300 select-none hover:border-zinc-300 hover:bg-white/85 focus:outline-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
                 >
                   <span>
                     Sort by:{" "}
@@ -401,7 +401,7 @@ export default function BlogSection({
                             setVisibleCount(5);
                             setSortDropdownOpen(false);
                           }}
-                          className="text-zinc-750 flex w-full items-center justify-between rounded-t-xl px-4 py-2.5 text-left text-sm font-medium transition-colors hover:bg-black/5"
+                          className="text-zinc-750 flex w-full items-center justify-between rounded-t-xl px-4 py-2.5 text-left text-sm font-medium transition-colors hover:bg-black/5 focus:outline-hidden focus-visible:bg-black/5 focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-inset"
                         >
                           <span>Relevance</span>
                           {sortBy === "relevance" && <Check className="h-4 w-4 text-black" />}
@@ -413,7 +413,7 @@ export default function BlogSection({
                           setVisibleCount(5);
                           setSortDropdownOpen(false);
                         }}
-                        className={`text-zinc-750 flex w-full items-center justify-between px-4 py-2.5 text-left text-sm font-medium transition-colors hover:bg-black/5 ${!searchQuery ? "rounded-t-xl" : ""}`}
+                        className={`text-zinc-750 flex w-full items-center justify-between px-4 py-2.5 text-left text-sm font-medium transition-colors hover:bg-black/5 focus:outline-hidden focus-visible:bg-black/5 focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-inset ${!searchQuery ? "rounded-t-xl" : ""}`}
                       >
                         <span>Newest First</span>
                         {sortBy === "newest" && <Check className="h-4 w-4 text-black" />}
@@ -424,7 +424,7 @@ export default function BlogSection({
                           setVisibleCount(5);
                           setSortDropdownOpen(false);
                         }}
-                        className="text-zinc-750 flex w-full items-center justify-between px-4 py-2.5 text-left text-sm font-medium transition-colors hover:bg-black/5"
+                        className="text-zinc-750 flex w-full items-center justify-between px-4 py-2.5 text-left text-sm font-medium transition-colors hover:bg-black/5 focus:outline-hidden focus-visible:bg-black/5 focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-inset"
                       >
                         <span>Oldest First</span>
                         {sortBy === "oldest" && <Check className="h-4 w-4 text-black" />}
@@ -435,7 +435,7 @@ export default function BlogSection({
                           setVisibleCount(5);
                           setSortDropdownOpen(false);
                         }}
-                        className="text-zinc-750 flex w-full items-center justify-between px-4 py-2.5 text-left text-sm font-medium transition-colors hover:bg-black/5"
+                        className="text-zinc-750 flex w-full items-center justify-between px-4 py-2.5 text-left text-sm font-medium transition-colors hover:bg-black/5 focus:outline-hidden focus-visible:bg-black/5 focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-inset"
                       >
                         <span>A-Z</span>
                         {sortBy === "alphabetical-asc" && <Check className="h-4 w-4 text-black" />}
@@ -446,7 +446,7 @@ export default function BlogSection({
                           setVisibleCount(5);
                           setSortDropdownOpen(false);
                         }}
-                        className="text-zinc-750 flex w-full items-center justify-between px-4 py-2.5 text-left text-sm font-medium transition-colors hover:bg-black/5"
+                        className="text-zinc-750 flex w-full items-center justify-between px-4 py-2.5 text-left text-sm font-medium transition-colors hover:bg-black/5 focus:outline-hidden focus-visible:bg-black/5 focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-inset"
                       >
                         <span>Z-A</span>
                         {sortBy === "alphabetical-desc" && <Check className="h-4 w-4 text-black" />}
@@ -457,7 +457,7 @@ export default function BlogSection({
                           setVisibleCount(5);
                           setSortDropdownOpen(false);
                         }}
-                        className="text-zinc-750 flex w-full items-center justify-between px-4 py-2.5 text-left text-sm font-medium transition-colors hover:bg-black/5"
+                        className="text-zinc-750 flex w-full items-center justify-between px-4 py-2.5 text-left text-sm font-medium transition-colors hover:bg-black/5 focus:outline-hidden focus-visible:bg-black/5 focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-inset"
                       >
                         <span>Reading Time (Short)</span>
                         {sortBy === "reading-time-asc" && <Check className="h-4 w-4 text-black" />}
@@ -468,7 +468,7 @@ export default function BlogSection({
                           setVisibleCount(5);
                           setSortDropdownOpen(false);
                         }}
-                        className="text-zinc-750 flex w-full items-center justify-between rounded-b-xl px-4 py-2.5 text-left text-sm font-medium transition-colors hover:bg-black/5"
+                        className="text-zinc-750 flex w-full items-center justify-between rounded-b-xl px-4 py-2.5 text-left text-sm font-medium transition-colors hover:bg-black/5 focus:outline-hidden focus-visible:bg-black/5 focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-inset"
                       >
                         <span>Reading Time (Long)</span>
                         {sortBy === "reading-time-desc" && <Check className="h-4 w-4 text-black" />}
@@ -486,7 +486,7 @@ export default function BlogSection({
                   setSelectedCategory(null);
                   setVisibleCount(5);
                 }}
-                className={`rounded-full border px-4 py-2 text-xs font-bold tracking-wider uppercase transition-all duration-300 ${
+                className={`rounded-full border px-4 py-2 text-xs font-bold tracking-wider uppercase transition-all duration-300 focus:outline-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black ${
                   selectedCategory === null
                     ? "border-black bg-black text-white"
                     : "text-zinc-550 border-zinc-200 bg-white/40 hover:border-zinc-300 hover:bg-white/85 hover:text-black"
@@ -501,7 +501,7 @@ export default function BlogSection({
                     setSelectedCategory(category);
                     setVisibleCount(5);
                   }}
-                  className={`rounded-full border px-4 py-2 text-xs font-bold tracking-wider whitespace-nowrap uppercase transition-all duration-300 ${
+                  className={`rounded-full border px-4 py-2 text-xs font-bold tracking-wider whitespace-nowrap uppercase transition-all duration-300 focus:outline-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black ${
                     selectedCategory === category
                       ? "border-black bg-black text-white"
                       : "text-zinc-555 border-zinc-200 bg-white/40 hover:border-zinc-300 hover:bg-white/85 hover:text-black"
@@ -529,7 +529,7 @@ export default function BlogSection({
         ) : posts.length === 0 ? (
           <div className="3xl:p-16 3xl:rounded-3xl 3xl:border-2 4xl:p-20 4xl:rounded-4xl 5xl:p-28 5xl:rounded-[3rem] flex flex-col items-center justify-center rounded-2xl border border-zinc-200/60 bg-white/40 p-8 text-center shadow-xs backdrop-blur-md transition-all duration-300 md:p-12">
             <div className="text-zinc-650 3xl:h-20 3xl:w-20 3xl:mb-6 4xl:h-24 4xl:w-24 4xl:mb-8 5xl:h-32 5xl:w-32 5xl:mb-12 relative mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-zinc-100">
-              <Search className="3xl:h-[36px] 3xl:w-[36px] 4xl:h-[44px] 4xl:w-[44px] 5xl:h-[64px] 5xl:w-[64px] h-6 w-6" />
+              <Search className="3xl:h-9 3xl:w-9 4xl:h-11 4xl:w-11 5xl:h-16 5xl:w-16 h-6 w-6" />
             </div>
             <h3 className="font-outfit 3xl:text-2xl 4xl:text-3xl 5xl:text-4xl text-lg font-bold text-black sm:text-xl">
               No Articles Found
@@ -541,7 +541,7 @@ export default function BlogSection({
         ) : sortedPosts.length === 0 ? (
           <div className="3xl:p-16 3xl:rounded-3xl 3xl:border-2 4xl:p-20 4xl:rounded-4xl 5xl:p-28 5xl:rounded-[3rem] flex flex-col items-center justify-center rounded-2xl border border-zinc-200/60 bg-white/40 p-8 text-center shadow-xs backdrop-blur-md transition-all duration-300 md:p-12">
             <div className="text-zinc-650 3xl:h-20 3xl:w-20 3xl:mb-6 4xl:h-24 4xl:w-24 4xl:mb-8 5xl:h-32 5xl:w-32 5xl:mb-12 relative mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-zinc-100">
-              <Search className="3xl:h-[36px] 3xl:w-[36px] 4xl:h-[44px] 4xl:w-[44px] 5xl:h-[64px] 5xl:w-[64px] h-6 w-6" />
+              <Search className="3xl:h-9 3xl:w-9 4xl:h-11 4xl:w-11 5xl:h-16 5xl:w-16 h-6 w-6" />
             </div>
             <h3 className="font-outfit 3xl:text-2xl 4xl:text-3xl 5xl:text-4xl text-lg font-bold text-black sm:text-xl">
               No Articles Found
@@ -557,7 +557,7 @@ export default function BlogSection({
                 setSortBy("newest");
                 setVisibleCount(5);
               }}
-              className="3xl:mt-8 3xl:px-8 3xl:py-3.5 3xl:text-sm 3xl:gap-3 4xl:mt-10 4xl:px-10 4xl:py-4.5 4xl:text-base 4xl:gap-3.5 5xl:mt-14 5xl:px-14 5xl:py-6 5xl:text-lg 5xl:gap-4 mt-6 inline-flex items-center gap-2 rounded-full border border-black bg-black px-6 py-2.5 text-xs font-bold tracking-wider text-white uppercase transition-all duration-300 hover:bg-zinc-900"
+              className="3xl:mt-8 3xl:px-8 3xl:py-3.5 3xl:text-sm 3xl:gap-3 4xl:mt-10 4xl:px-10 4xl:py-4.5 4xl:text-base 4xl:gap-3.5 5xl:mt-14 5xl:px-14 5xl:py-6 5xl:text-lg 5xl:gap-4 mt-6 inline-flex items-center gap-2 rounded-full border border-black bg-black px-6 py-2.5 text-xs font-bold tracking-wider text-white uppercase transition-all duration-300 hover:bg-zinc-900 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-[3px]"
             >
               Reset Filters
             </button>

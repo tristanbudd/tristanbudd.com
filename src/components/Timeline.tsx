@@ -103,7 +103,7 @@ function TimelineItemRow({
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`Visit ${item.subtitle} website`}
-              className="group/link text-zinc-550 3xl:text-xl 4xl:text-2xl 5xl:text-3xl inline-flex flex-col gap-0.5 text-sm font-semibold transition-colors duration-300 hover:text-black sm:flex-row sm:items-center sm:gap-1.5 sm:text-base lg:text-lg"
+              className="group/link text-zinc-550 3xl:text-xl 4xl:text-2xl 5xl:text-3xl inline-flex flex-col gap-0.5 rounded-sm text-sm font-semibold transition-colors duration-300 hover:text-black focus:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 sm:flex-row sm:items-center sm:gap-1.5 sm:text-base lg:text-lg"
             >
               <span className="inline-flex items-center gap-1.5">
                 <span>{item.subtitle}</span>

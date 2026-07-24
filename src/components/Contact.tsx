@@ -42,8 +42,8 @@ function Field({ id, label, error, required, children }: FieldProps) {
 }
 
 const inputBase =
-  "w-full rounded-xl border border-zinc-200/70 bg-white/60 px-4 py-3 text-sm font-medium text-zinc-900 placeholder-zinc-400 backdrop-blur-sm transition-all duration-200 outline-none focus:border-black focus:bg-white focus:ring-2 focus:ring-black/5 3xl:px-5 3xl:py-4 3xl:text-base 4xl:text-lg 5xl:text-xl";
-const inputError = "border-red-300 focus:border-red-500 focus:ring-red-500/10";
+  "w-full rounded-xl border border-zinc-200/70 bg-white/60 px-4 py-3 text-sm font-medium text-zinc-900 placeholder-zinc-400 backdrop-blur-sm transition-all duration-200 outline-none focus:border-black focus:bg-white focus:ring-2 focus:ring-black 3xl:px-5 3xl:py-4 3xl:text-base 4xl:text-lg 5xl:text-xl";
+const inputError = "border-red-300 focus:border-red-500 focus:ring-2 focus:ring-red-500";
 
 export interface ContactProps {
   linkedInUrl?: string;
@@ -182,7 +182,7 @@ export default function Contact({
         >
           <div className="group 3xl:rounded-3xl 3xl:p-10 4xl:p-12 5xl:p-16 relative overflow-hidden rounded-2xl border border-zinc-200/60 bg-white/40 p-8 shadow-xs backdrop-blur-md transition-all duration-300 hover:border-zinc-300 hover:bg-white/60 hover:shadow-md">
             {/* Top accent bar */}
-            <div className="absolute top-0 left-0 h-[3px] w-full origin-left scale-x-0 bg-linear-to-r from-zinc-700 via-black to-zinc-800 transition-transform duration-300 group-hover:scale-x-100" />
+            <div className="absolute top-0 left-0 h-0.75 w-full origin-left scale-x-0 bg-linear-to-r from-zinc-700 via-black to-zinc-800 transition-transform duration-300 group-hover:scale-x-100" />
 
             {/* Success state */}
             {status === "success" && (
@@ -314,20 +314,20 @@ export default function Contact({
                     type="submit"
                     disabled={status === "loading"}
                     aria-label="Send contact message"
-                    className="group/btn 3xl:py-2 3xl:pr-2 3xl:pl-8 3xl:text-base 4xl:py-2.5 4xl:pr-2.5 4xl:pl-10 4xl:text-lg 5xl:py-3 5xl:pr-3 5xl:pl-12 5xl:text-xl relative flex w-full items-center justify-between gap-4 overflow-hidden rounded-full border-2 border-black bg-black py-1.5 pr-1.5 pl-6 text-sm font-semibold text-white shadow-xs transition-colors duration-300 hover:text-black focus:outline-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+                    className="group/btn 3xl:py-2 3xl:pr-2 3xl:pl-8 3xl:text-base 4xl:py-2.5 4xl:pr-2.5 4xl:pl-10 4xl:text-lg 5xl:py-3 5xl:pr-3 5xl:pl-12 5xl:text-xl relative flex w-full items-center justify-between gap-4 overflow-hidden rounded-full border-2 border-black bg-black py-1.5 pr-1.5 pl-6 text-sm font-semibold text-white shadow-xs transition-colors duration-300 hover:text-black focus:text-black focus:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-[3px] disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
                   >
                     {/* Sliding background */}
-                    <span className="absolute inset-0 origin-left scale-x-0 rounded-full bg-white transition-transform duration-300 ease-out group-hover/btn:scale-x-100 group-focus-visible/btn:scale-x-100" />
+                    <span className="absolute inset-0 origin-left scale-x-0 rounded-full bg-white transition-transform duration-300 ease-out group-hover/btn:scale-x-100 group-focus/btn:scale-x-100" />
 
-                    <span className="relative z-10 whitespace-nowrap transition-colors duration-300">
+                    <span className="relative z-10 whitespace-nowrap text-white transition-colors duration-300 group-hover/btn:text-black group-focus/btn:text-black">
                       {status === "loading" ? "Sending…" : "Send Message"}
                     </span>
 
-                    <div className="3xl:h-10 3xl:w-10 4xl:h-12 4xl:w-12 5xl:h-14 5xl:w-14 relative z-10 flex h-8 w-8 items-center justify-center rounded-full bg-zinc-800 text-white transition-colors duration-300 group-hover/btn:bg-black group-focus-visible/btn:bg-black">
+                    <div className="3xl:h-10 3xl:w-10 4xl:h-12 4xl:w-12 5xl:h-14 5xl:w-14 relative z-10 flex h-8 w-8 items-center justify-center rounded-full bg-zinc-800 text-white transition-colors duration-300 group-hover/btn:bg-black group-focus/btn:bg-black">
                       {status === "loading" ? (
                         <Loader2 className="3xl:h-5 3xl:w-5 4xl:h-6 4xl:w-6 5xl:h-7 5xl:w-7 h-4 w-4 animate-spin" />
                       ) : (
-                        <Send className="3xl:h-5 3xl:w-5 4xl:h-6 4xl:w-6 5xl:h-7 5xl:w-7 h-4 w-4 transition-all duration-300 group-hover/btn:-rotate-12 group-focus-visible/btn:-rotate-12" />
+                        <Send className="3xl:h-5 3xl:w-5 4xl:h-6 4xl:w-6 5xl:h-7 5xl:w-7 h-4 w-4 transition-all duration-300 group-hover/btn:-rotate-12 group-focus/btn:-rotate-12" />
                       )}
                     </div>
                   </button>
@@ -351,7 +351,7 @@ export default function Contact({
               rel="noopener noreferrer"
               onClick={() => trackCTA("LinkedIn Profile", linkedInUrl)}
               aria-label={`View LinkedIn profile of ${linkedInHandle}`}
-              className="group 3xl:px-6 3xl:py-5 flex w-full items-center gap-3 rounded-xl border border-zinc-200/70 bg-white/40 px-5 py-4 backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-zinc-400 hover:bg-white hover:shadow-md"
+              className="group 3xl:px-6 3xl:py-5 flex w-full items-center gap-3 rounded-xl border border-zinc-200/70 bg-white/40 px-5 py-4 backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-zinc-400 hover:bg-white hover:shadow-md focus:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
             >
               <svg
                 viewBox="0 0 24 24"
@@ -376,7 +376,7 @@ export default function Contact({
               href={`mailto:${emailAddress}`}
               onClick={() => trackCTA("Email Address", `mailto:${emailAddress}`)}
               aria-label={`Send email to ${emailAddress}`}
-              className="group 3xl:px-6 3xl:py-5 flex w-full items-center gap-3 rounded-xl border border-zinc-200/70 bg-white/40 px-5 py-4 backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-zinc-400 hover:bg-white hover:shadow-md"
+              className="group 3xl:px-6 3xl:py-5 flex w-full items-center gap-3 rounded-xl border border-zinc-200/70 bg-white/40 px-5 py-4 backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-zinc-400 hover:bg-white hover:shadow-md focus:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
             >
               <Mail className="3xl:h-6 3xl:w-6 4xl:h-7 4xl:w-7 5xl:h-8 5xl:w-8 h-5 w-5 shrink-0 text-zinc-800 transition-colors duration-300 group-hover:text-black" />
               <div className="flex flex-col">

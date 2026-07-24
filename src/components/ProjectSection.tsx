@@ -87,7 +87,7 @@ function ProjectCard({
 
   return (
     <div
-      className="group/card 3xl:rounded-3xl relative flex flex-col overflow-hidden rounded-2xl border border-zinc-200/60 bg-white/40 shadow-xs backdrop-blur-md transition-all duration-500 hover:border-zinc-300 hover:bg-white/60 hover:shadow-md"
+      className="group/card 3xl:rounded-3xl relative flex flex-col overflow-hidden rounded-2xl border border-zinc-200/60 bg-white/40 shadow-xs backdrop-blur-md transition-all duration-500 focus-within:ring-2 focus-within:ring-black focus-within:ring-offset-2 hover:border-zinc-300 hover:bg-white/60 hover:shadow-md"
       style={{
         opacity: isCardVisible ? 1 : 0,
         transform: isCardVisible ? "translateY(0)" : "translateY(24px)",
@@ -140,7 +140,7 @@ function ProjectCard({
             href={`/projects/${project.slug}`}
             onClick={(e) => handleNavigation(e, `/projects/${project.slug}`)}
             aria-label={`Learn more about project ${project.title}`}
-            className="group/link 3xl:text-base 4xl:text-lg 5xl:text-xl inline-flex items-center gap-1 text-sm font-bold text-black transition-colors after:absolute after:inset-0 after:z-10 hover:text-zinc-700"
+            className="group/link 3xl:text-base 4xl:text-lg 5xl:text-xl inline-flex items-center gap-1 rounded-sm text-sm font-bold text-black transition-colors after:absolute after:inset-0 after:z-10 hover:text-zinc-700 focus:outline-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
           >
             <span>Learn More</span>
             <span className="sr-only"> about {project.title}</span>
@@ -154,7 +154,7 @@ function ProjectCard({
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => trackProjectClick(project.title, "repository")}
-                className="text-zinc-400 transition-colors duration-300 hover:text-black"
+                className="rounded-sm text-zinc-400 transition-colors duration-300 hover:text-black focus:outline-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
                 aria-label={`${project.title} GitHub Repository`}
               >
                 <Github className="3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 h-4.5 w-4.5" />
@@ -166,7 +166,7 @@ function ProjectCard({
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => trackProjectClick(project.title, "demo")}
-                className="text-zinc-400 transition-colors duration-300 hover:text-black"
+                className="rounded-sm text-zinc-400 transition-colors duration-300 hover:text-black focus:outline-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
                 aria-label={`${project.title} Project Website`}
               >
                 <ExternalLink className="3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 h-4.5 w-4.5" />
@@ -376,7 +376,7 @@ export default function ProjectSection({
                   }
                 }}
                 placeholder="Search projects..."
-                className="w-full rounded-full border border-zinc-200/60 bg-white/40 py-2.5 pr-10 pl-10 text-sm font-medium shadow-2xs transition-all duration-300 placeholder:text-zinc-400 focus:border-zinc-400 focus:bg-white/80 focus:outline-hidden"
+                className="w-full rounded-full border border-zinc-200/60 bg-white/40 py-2.5 pr-10 pl-10 text-sm font-medium shadow-2xs transition-all duration-300 placeholder:text-zinc-400 focus:border-zinc-400 focus:bg-white/80 focus:ring-2 focus:ring-black focus:outline-hidden"
               />
               {searchQuery && (
                 <button
@@ -387,7 +387,7 @@ export default function ProjectSection({
                       setSortBy("newest");
                     }
                   }}
-                  className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-zinc-400 transition-colors hover:text-black"
+                  className="absolute inset-y-0 right-0 flex items-center rounded-full pr-3.5 text-zinc-400 transition-colors hover:text-black focus:outline-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
                   aria-label="Clear Search"
                 >
                   <X className="h-4 w-4" />
@@ -399,7 +399,7 @@ export default function ProjectSection({
             <div className="relative self-end sm:self-auto">
               <button
                 onClick={() => setSortDropdownOpen(!sortDropdownOpen)}
-                className="flex items-center gap-2 rounded-full border border-zinc-200/60 bg-white/40 px-5 py-2.5 text-sm font-semibold text-zinc-700 shadow-2xs transition-all duration-300 select-none hover:border-zinc-300 hover:bg-white/85"
+                className="flex items-center gap-2 rounded-full border border-zinc-200/60 bg-white/40 px-5 py-2.5 text-sm font-semibold text-zinc-700 shadow-2xs transition-all duration-300 select-none hover:border-zinc-300 hover:bg-white/85 focus:outline-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
               >
                 <span>
                   Sort by:{" "}
@@ -430,7 +430,7 @@ export default function ProjectSection({
                           setCurrentPage(1);
                           setSortDropdownOpen(false);
                         }}
-                        className="text-zinc-750 flex w-full items-center justify-between rounded-t-xl px-4 py-2.5 text-left text-sm font-medium transition-colors hover:bg-black/5"
+                        className="text-zinc-750 flex w-full items-center justify-between rounded-t-xl px-4 py-2.5 text-left text-sm font-medium transition-colors hover:bg-black/5 focus:outline-hidden focus-visible:bg-black/5 focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-inset"
                       >
                         <span>Relevance</span>
                         {sortBy === "relevance" && <Check className="h-4 w-4 text-black" />}
@@ -442,7 +442,7 @@ export default function ProjectSection({
                         setCurrentPage(1);
                         setSortDropdownOpen(false);
                       }}
-                      className={`text-zinc-750 flex w-full items-center justify-between px-4 py-2.5 text-left text-sm font-medium transition-colors hover:bg-black/5 ${!searchQuery ? "rounded-t-xl" : ""}`}
+                      className={`text-zinc-750 flex w-full items-center justify-between px-4 py-2.5 text-left text-sm font-medium transition-colors hover:bg-black/5 focus:outline-hidden focus-visible:bg-black/5 focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-inset ${!searchQuery ? "rounded-t-xl" : ""}`}
                     >
                       <span>Newest First</span>
                       {sortBy === "newest" && <Check className="h-4 w-4 text-black" />}
@@ -453,7 +453,7 @@ export default function ProjectSection({
                         setCurrentPage(1);
                         setSortDropdownOpen(false);
                       }}
-                      className="text-zinc-750 flex w-full items-center justify-between px-4 py-2.5 text-left text-sm font-medium transition-colors hover:bg-black/5"
+                      className="text-zinc-750 flex w-full items-center justify-between px-4 py-2.5 text-left text-sm font-medium transition-colors hover:bg-black/5 focus:outline-hidden focus-visible:bg-black/5 focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-inset"
                     >
                       <span>Oldest First</span>
                       {sortBy === "oldest" && <Check className="h-4 w-4 text-black" />}
@@ -464,7 +464,7 @@ export default function ProjectSection({
                         setCurrentPage(1);
                         setSortDropdownOpen(false);
                       }}
-                      className="text-zinc-750 flex w-full items-center justify-between px-4 py-2.5 text-left text-sm font-medium transition-colors hover:bg-black/5"
+                      className="text-zinc-750 flex w-full items-center justify-between px-4 py-2.5 text-left text-sm font-medium transition-colors hover:bg-black/5 focus:outline-hidden focus-visible:bg-black/5 focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-inset"
                     >
                       <span>A-Z</span>
                       {sortBy === "alphabetical-asc" && <Check className="h-4 w-4 text-black" />}
@@ -475,7 +475,7 @@ export default function ProjectSection({
                         setCurrentPage(1);
                         setSortDropdownOpen(false);
                       }}
-                      className="text-zinc-750 flex w-full items-center justify-between rounded-b-xl px-4 py-2.5 text-left text-sm font-medium transition-colors hover:bg-black/5"
+                      className="text-zinc-750 flex w-full items-center justify-between rounded-b-xl px-4 py-2.5 text-left text-sm font-medium transition-colors hover:bg-black/5 focus:outline-hidden focus-visible:bg-black/5 focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-inset"
                     >
                       <span>Z-A</span>
                       {sortBy === "alphabetical-desc" && <Check className="h-4 w-4 text-black" />}
@@ -502,7 +502,7 @@ export default function ProjectSection({
         ) : projects.length === 0 ? (
           <div className="3xl:p-16 3xl:rounded-3xl 3xl:border-2 4xl:p-20 4xl:rounded-4xl 5xl:p-28 5xl:rounded-[3rem] flex flex-col items-center justify-center rounded-2xl border border-zinc-200/60 bg-white/40 p-8 text-center shadow-xs backdrop-blur-md transition-all duration-300 md:p-12">
             <div className="text-zinc-650 3xl:h-20 3xl:w-20 3xl:mb-6 4xl:h-24 4xl:w-24 4xl:mb-8 5xl:h-32 5xl:w-32 5xl:mb-12 relative mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-zinc-100">
-              <Search className="3xl:h-[36px] 3xl:w-[36px] 4xl:h-[44px] 4xl:w-[44px] 5xl:h-[64px] 5xl:w-[64px] h-6 w-6" />
+              <Search className="3xl:h-9 3xl:w-9 4xl:h-11 4xl:w-11 5xl:h-16 5xl:w-16 h-6 w-6" />
             </div>
             <h3 className="font-outfit 3xl:text-2xl 4xl:text-3xl 5xl:text-4xl text-lg font-bold text-black sm:text-xl">
               No Projects Found
@@ -514,7 +514,7 @@ export default function ProjectSection({
         ) : sortedProjects.length === 0 ? (
           <div className="3xl:p-16 3xl:rounded-3xl 3xl:border-2 4xl:p-20 4xl:rounded-4xl 5xl:p-28 5xl:rounded-[3rem] flex flex-col items-center justify-center rounded-2xl border border-zinc-200/60 bg-white/40 p-8 text-center shadow-xs backdrop-blur-md transition-all duration-300 md:p-12">
             <div className="text-zinc-650 3xl:h-20 3xl:w-20 3xl:mb-6 4xl:h-24 4xl:w-24 4xl:mb-8 5xl:h-32 5xl:w-32 5xl:mb-12 relative mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-zinc-100">
-              <Search className="3xl:h-[36px] 3xl:w-[36px] 4xl:h-[44px] 4xl:w-[44px] 5xl:h-[64px] 5xl:w-[64px] h-6 w-6" />
+              <Search className="3xl:h-9 3xl:w-9 4xl:h-11 4xl:w-11 5xl:h-16 5xl:w-16 h-6 w-6" />
             </div>
             <h3 className="font-outfit 3xl:text-2xl 4xl:text-3xl 5xl:text-4xl text-lg font-bold text-black sm:text-xl">
               No Projects Found
@@ -529,7 +529,7 @@ export default function ProjectSection({
                 setSortBy("newest");
                 setCurrentPage(1);
               }}
-              className="3xl:mt-8 3xl:px-8 3xl:py-3.5 3xl:text-sm 3xl:gap-3 4xl:mt-10 4xl:px-10 4xl:py-4.5 4xl:text-base 4xl:gap-3.5 5xl:mt-14 5xl:px-14 5xl:py-6 5xl:text-lg 5xl:gap-4 mt-6 inline-flex items-center gap-2 rounded-full border border-black bg-black px-6 py-2.5 text-xs font-bold tracking-wider text-white uppercase transition-all duration-300 hover:bg-zinc-900"
+              className="3xl:mt-8 3xl:px-8 3xl:py-3.5 3xl:text-sm 3xl:gap-3 4xl:mt-10 4xl:px-10 4xl:py-4.5 4xl:text-base 4xl:gap-3.5 5xl:mt-14 5xl:px-14 5xl:py-6 5xl:text-lg 5xl:gap-4 mt-6 inline-flex items-center gap-2 rounded-full border border-black bg-black px-6 py-2.5 text-xs font-bold tracking-wider text-white uppercase transition-all duration-300 hover:bg-zinc-900 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-[3px]"
             >
               Reset Filters
             </button>
@@ -555,7 +555,7 @@ export default function ProjectSection({
                 <button
                   onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                   disabled={currentPage === 1}
-                  className="group flex h-10 w-10 items-center justify-center rounded-full border border-zinc-200 bg-white/40 shadow-xs backdrop-blur-md transition-all duration-300 hover:border-zinc-300 hover:bg-white/80 disabled:opacity-40 disabled:hover:border-zinc-200 disabled:hover:bg-white/40"
+                  className="group flex h-10 w-10 items-center justify-center rounded-full border border-zinc-200 bg-white/40 shadow-xs backdrop-blur-md transition-all duration-300 hover:border-zinc-300 hover:bg-white/80 focus:outline-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black disabled:opacity-40 disabled:hover:border-zinc-200 disabled:hover:bg-white/40"
                   aria-label="Previous Page"
                 >
                   <ChevronLeft className="h-4 w-4 text-black" />
@@ -565,7 +565,7 @@ export default function ProjectSection({
                   <button
                     key={page}
                     onClick={() => setCurrentPage(page)}
-                    className={`flex h-10 w-10 items-center justify-center rounded-full border text-sm font-semibold transition-all duration-300 ${
+                    className={`flex h-10 w-10 items-center justify-center rounded-full border text-sm font-semibold transition-all duration-300 focus:outline-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black ${
                       currentPage === page
                         ? "border-black bg-black text-white"
                         : "text-zinc-550 border-zinc-200 bg-white/40 hover:border-zinc-300 hover:bg-white/80"
@@ -580,7 +580,7 @@ export default function ProjectSection({
                 <button
                   onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                   disabled={currentPage === totalPages}
-                  className="group flex h-10 w-10 items-center justify-center rounded-full border border-zinc-200 bg-white/40 shadow-xs backdrop-blur-md transition-all duration-300 hover:border-zinc-300 hover:bg-white/80 disabled:opacity-40 disabled:hover:border-zinc-200 disabled:hover:bg-white/40"
+                  className="group flex h-10 w-10 items-center justify-center rounded-full border border-zinc-200 bg-white/40 shadow-xs backdrop-blur-md transition-all duration-300 hover:border-zinc-300 hover:bg-white/80 focus:outline-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black disabled:opacity-40 disabled:hover:border-zinc-200 disabled:hover:bg-white/40"
                   aria-label="Next Page"
                 >
                   <ChevronRight className="h-4 w-4 text-black" />

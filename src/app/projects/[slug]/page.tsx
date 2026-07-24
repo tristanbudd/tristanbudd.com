@@ -105,6 +105,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
 
         {/* Main Content Area */}
         <main
+          id="main-content"
           role="main"
           className="3xl:max-w-440 4xl:max-w-560 5xl:max-w-720 3xl:pt-40 4xl:pt-44 5xl:pt-48 3xl:pb-10 4xl:pb-12 5xl:pb-16 mx-auto flex w-full flex-col px-4 pt-24 pb-6 font-sans transition-all duration-500 ease-in-out sm:max-w-screen-sm sm:pt-28 md:max-w-3xl md:pt-32 md:pb-8 lg:max-w-5xl lg:pt-36 xl:max-w-6xl 2xl:max-w-7xl"
         >
@@ -203,20 +204,27 @@ export default async function ProjectDetailPage({ params }: PageProps) {
 
       {/* Main Content Area */}
       <main
+        id="main-content"
         role="main"
         className="3xl:max-w-440 4xl:max-w-560 5xl:max-w-720 3xl:pt-40 4xl:pt-44 5xl:pt-48 3xl:pb-10 4xl:pb-12 5xl:pb-16 mx-auto flex w-full flex-col px-4 pt-24 pb-6 font-sans transition-all duration-500 ease-in-out sm:max-w-screen-sm sm:pt-28 md:max-w-3xl md:pt-32 md:pb-8 lg:max-w-5xl lg:pt-36 xl:max-w-6xl 2xl:max-w-7xl"
       >
         {/* Breadcrumbs */}
         <nav className="3xl:mb-12 4xl:mb-14 5xl:mb-16 3xl:text-sm 4xl:text-base 5xl:text-lg mb-6 flex flex-wrap items-center gap-1.5 text-xs leading-normal font-semibold tracking-wide text-zinc-500 uppercase sm:mb-8 md:mb-8 lg:mb-10">
-          <Link href="/" className="transition-colors hover:text-black">
+          <Link
+            href="/"
+            className="rounded-sm transition-colors hover:text-black focus:outline-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+          >
             Home
           </Link>
           <ChevronRight className="h-3 w-3 text-zinc-400" />
-          <Link href="/projects" className="transition-colors hover:text-black">
+          <Link
+            href="/projects"
+            className="rounded-sm transition-colors hover:text-black focus:outline-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+          >
             Projects
           </Link>
           <ChevronRight className="h-3 w-3 text-zinc-400" />
-          <span className="max-w-[150px] truncate text-zinc-400 sm:max-w-xs md:max-w-md lg:max-w-lg">
+          <span className="max-w-37.5 truncate text-zinc-400 sm:max-w-xs md:max-w-md lg:max-w-lg">
             {project.title}
           </span>
         </nav>
@@ -337,7 +345,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                       href={project.githubUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="3xl:px-6 3xl:py-3.5 3xl:text-base 4xl:px-8 4xl:py-4 4xl:text-lg 5xl:px-10 5xl:py-5 5xl:text-xl flex items-center justify-between rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm font-semibold text-black shadow-xs transition-all hover:border-zinc-400 hover:bg-zinc-50"
+                      className="3xl:px-6 3xl:py-3.5 3xl:text-base 4xl:px-8 4xl:py-4 4xl:text-lg 5xl:px-10 5xl:py-5 5xl:text-xl flex items-center justify-between rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm font-semibold text-black shadow-xs transition-all hover:border-zinc-400 hover:bg-zinc-50 focus:outline-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
                     >
                       <span className="flex items-center gap-2">
                         <Github className="3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 h-4.5 w-4.5 text-zinc-500" />
@@ -352,7 +360,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                       href={project.projectUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="3xl:px-6 3xl:py-3.5 3xl:text-base 4xl:px-8 4xl:py-4 4xl:text-lg 5xl:px-10 5xl:py-5 5xl:text-xl flex items-center justify-between rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm font-semibold text-black shadow-xs transition-all hover:border-zinc-400 hover:bg-zinc-50"
+                      className="3xl:px-6 3xl:py-3.5 3xl:text-base 4xl:px-8 4xl:py-4 4xl:text-lg 5xl:px-10 5xl:py-5 5xl:text-xl flex items-center justify-between rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm font-semibold text-black shadow-xs transition-all hover:border-zinc-400 hover:bg-zinc-50 focus:outline-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
                     >
                       <span className="flex items-center gap-2">
                         <ExternalLink className="3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 h-4.5 w-4.5 text-zinc-500" />
@@ -377,7 +385,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                     href={project.githubUrl || undefined}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="font-outfit 3xl:text-2xl 4xl:text-3xl 5xl:text-4xl text-lg font-bold tracking-tight break-all text-black hover:underline"
+                    className="font-outfit 3xl:text-2xl 4xl:text-3xl 5xl:text-4xl rounded-sm text-lg font-bold tracking-tight break-all text-black hover:underline focus:outline-hidden focus-visible:underline focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
                   >
                     {githubStats.fullName}
                   </a>
