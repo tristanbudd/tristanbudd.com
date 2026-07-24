@@ -142,12 +142,18 @@ export default function Footer({
                     className="group/social text-zinc-650 3xl:h-14 3xl:w-14 4xl:h-16 4xl:w-16 5xl:h-20 5xl:w-20 flex h-10 w-10 items-center justify-center rounded-full border border-zinc-200/80 bg-white/40 backdrop-blur-xs transition-all duration-300 hover:scale-105 hover:border-black hover:bg-black hover:text-white focus:outline-hidden focus-visible:bg-black focus-visible:text-white focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 xl:h-12 xl:w-12"
                   >
                     {IconComponent ? (
-                      <IconComponent className="3xl:h-6.5 3xl:w-6.5 4xl:h-7.5 4xl:w-7.5 5xl:h-9 5xl:w-9 h-4.5 w-4.5 transition-transform duration-300 group-hover/social:scale-110 xl:h-5.5 xl:w-5.5" />
+                      <IconComponent
+                        className="3xl:h-6.5 3xl:w-6.5 4xl:h-7.5 4xl:w-7.5 5xl:h-9 5xl:w-9 h-4.5 w-4.5 transition-transform duration-300 group-hover/social:scale-110 xl:h-5.5 xl:w-5.5"
+                        aria-hidden="true"
+                      />
                     ) : social.iconSlug ? (
                       (() => {
                         const SlugIcon = footerSlugIconMap[social.iconSlug.toLowerCase()];
                         return SlugIcon ? (
-                          <SlugIcon className="footer-social-icon 3xl:h-6.5 3xl:w-6.5 4xl:h-7.5 4xl:w-7.5 5xl:h-9 5xl:w-9 h-4.5 w-4.5 transition-all duration-350 group-hover/social:scale-110 group-hover/social:brightness-0 group-hover/social:invert group-focus-visible/social:brightness-0 group-focus-visible/social:invert xl:h-5.5 xl:w-5.5" />
+                          <SlugIcon
+                            className="footer-social-icon 3xl:h-6.5 3xl:w-6.5 4xl:h-7.5 4xl:w-7.5 5xl:h-9 5xl:w-9 h-4.5 w-4.5 transition-all duration-350 group-hover/social:scale-110 group-hover/social:brightness-0 group-hover/social:invert group-focus-visible/social:brightness-0 group-focus-visible/social:invert xl:h-5.5 xl:w-5.5"
+                            aria-hidden="true"
+                          />
                         ) : null;
                       })()
                     ) : null}
