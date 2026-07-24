@@ -32,7 +32,11 @@ function Field({ id, label, error, required, children }: FieldProps) {
       </label>
       {children}
       {error && (
-        <p className="flex items-center gap-1 text-xs font-semibold text-red-500" role="alert">
+        <p
+          id={`${id}-error`}
+          className="flex items-center gap-1 text-xs font-semibold text-red-500"
+          role="alert"
+        >
           <XCircle className="h-3.5 w-3.5 shrink-0" />
           {error}
         </p>
