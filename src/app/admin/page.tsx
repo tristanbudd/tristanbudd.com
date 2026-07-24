@@ -1070,6 +1070,7 @@ export default function AdminDashboard() {
             <DbOfflineMessage
               title="Database Connection Offline"
               description="We are unable to connect to the database. You will not be able to view, create, edit, or delete items. Please ensure database services are running."
+              headingLevel="h2"
             />
           ) : (
             <>

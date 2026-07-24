@@ -125,6 +125,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
             <DbOfflineMessage
               title="Project Unavailable"
               description="This case study could not be loaded because the database is currently offline. Please try again later."
+              headingLevel="h1"
             />
             <div className="mt-8">
               <BackButton href="/projects" label="Back to Projects" />
