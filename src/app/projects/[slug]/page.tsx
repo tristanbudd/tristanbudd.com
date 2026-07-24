@@ -215,14 +215,14 @@ export default async function ProjectDetailPage({ params }: PageProps) {
         >
           <Link
             href="/"
-            className="rounded-sm transition-colors hover:text-black focus:outline-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+            className="rounded-sm transition-colors hover:text-black focus:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
           >
             Home
           </Link>
           <ChevronRight className="h-3 w-3 text-zinc-400" />
           <Link
             href="/projects"
-            className="rounded-sm transition-colors hover:text-black focus:outline-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+            className="rounded-sm transition-colors hover:text-black focus:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
           >
             Projects
           </Link>
@@ -348,7 +348,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                       href={project.githubUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="3xl:px-6 3xl:py-3.5 3xl:text-base 4xl:px-8 4xl:py-4 4xl:text-lg 5xl:px-10 5xl:py-5 5xl:text-xl flex items-center justify-between rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm font-semibold text-black shadow-xs transition-all hover:border-zinc-400 hover:bg-zinc-50 focus:outline-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+                      className="3xl:px-6 3xl:py-3.5 3xl:text-base 4xl:px-8 4xl:py-4 4xl:text-lg 5xl:px-10 5xl:py-5 5xl:text-xl flex items-center justify-between rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm font-semibold text-black shadow-xs transition-all hover:border-zinc-400 hover:bg-zinc-50 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
                     >
                       <span className="flex items-center gap-2">
                         <Github className="3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 h-4.5 w-4.5 text-zinc-500" />
@@ -363,7 +363,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                       href={project.projectUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="3xl:px-6 3xl:py-3.5 3xl:text-base 4xl:px-8 4xl:py-4 4xl:text-lg 5xl:px-10 5xl:py-5 5xl:text-xl flex items-center justify-between rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm font-semibold text-black shadow-xs transition-all hover:border-zinc-400 hover:bg-zinc-50 focus:outline-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+                      className="3xl:px-6 3xl:py-3.5 3xl:text-base 4xl:px-8 4xl:py-4 4xl:text-lg 5xl:px-10 5xl:py-5 5xl:text-xl flex items-center justify-between rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm font-semibold text-black shadow-xs transition-all hover:border-zinc-400 hover:bg-zinc-50 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
                     >
                       <span className="flex items-center gap-2">
                         <ExternalLink className="3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 h-4.5 w-4.5 text-zinc-500" />

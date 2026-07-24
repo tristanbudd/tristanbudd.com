@@ -142,14 +142,14 @@ export default async function BlogPostPage({ params }: PageProps) {
         >
           <Link
             href="/"
-            className="rounded-sm transition-colors hover:text-black focus:outline-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+            className="rounded-sm transition-colors hover:text-black focus:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
           >
             Home
           </Link>
           <ChevronRight className="h-3 w-3 text-zinc-400" />
           <Link
             href="/blog"
-            className="rounded-sm transition-colors hover:text-black focus:outline-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+            className="rounded-sm transition-colors hover:text-black focus:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
           >
             Blog
           </Link>

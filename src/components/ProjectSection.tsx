@@ -140,7 +140,7 @@ function ProjectCard({
             href={`/projects/${project.slug}`}
             onClick={(e) => handleNavigation(e, `/projects/${project.slug}`)}
             aria-label={`Learn more about project ${project.title}`}
-            className="group/link 3xl:text-base 4xl:text-lg 5xl:text-xl inline-flex items-center gap-1 rounded-sm text-sm font-bold text-black transition-colors after:absolute after:inset-0 after:z-10 hover:text-zinc-700 focus:outline-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+            className="group/link 3xl:text-base 4xl:text-lg 5xl:text-xl inline-flex items-center gap-1 rounded-sm text-sm font-bold text-black transition-colors after:absolute after:inset-0 after:z-10 hover:text-zinc-700 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
           >
             <span>Learn More</span>
             <span className="sr-only"> about {project.title}</span>
@@ -154,7 +154,7 @@ function ProjectCard({
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => trackProjectClick(project.title, "repository")}
-                className="rounded-sm text-zinc-400 transition-colors duration-300 hover:text-black focus:outline-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+                className="rounded-sm text-zinc-400 transition-colors duration-300 hover:text-black focus:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
                 aria-label={`${project.title} GitHub Repository`}
               >
                 <Github className="3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 h-4.5 w-4.5" />
@@ -166,7 +166,7 @@ function ProjectCard({
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => trackProjectClick(project.title, "demo")}
-                className="rounded-sm text-zinc-400 transition-colors duration-300 hover:text-black focus:outline-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+                className="rounded-sm text-zinc-400 transition-colors duration-300 hover:text-black focus:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
                 aria-label={`${project.title} Project Website`}
               >
                 <ExternalLink className="3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 h-4.5 w-4.5" />
@@ -387,7 +387,7 @@ export default function ProjectSection({
                       setSortBy("newest");
                     }
                   }}
-                  className="absolute inset-y-0 right-0 flex items-center rounded-full pr-3.5 text-zinc-400 transition-colors hover:text-black focus:outline-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+                  className="absolute inset-y-0 right-0 flex items-center rounded-full pr-3.5 text-zinc-400 transition-colors hover:text-black focus:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
                   aria-label="Clear Search"
                 >
                   <X className="h-4 w-4" />
@@ -400,7 +400,7 @@ export default function ProjectSection({
                 onClick={() => setSortDropdownOpen(!sortDropdownOpen)}
                 aria-haspopup="listbox"
                 aria-expanded={sortDropdownOpen}
-                className="flex items-center gap-2 rounded-full border border-zinc-200/60 bg-white/40 px-5 py-2.5 text-sm font-semibold text-zinc-700 shadow-2xs transition-all duration-300 select-none hover:border-zinc-300 hover:bg-white/85 focus:outline-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+                className="flex items-center gap-2 rounded-full border border-zinc-200/60 bg-white/40 px-5 py-2.5 text-sm font-semibold text-zinc-700 shadow-2xs transition-all duration-300 select-none hover:border-zinc-300 hover:bg-white/85 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
               >
                 <span>
                   Sort by:{" "}
@@ -569,7 +569,7 @@ export default function ProjectSection({
                 <button
                   onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                   disabled={currentPage === 1}
-                  className="group flex h-10 w-10 items-center justify-center rounded-full border border-zinc-200 bg-white/40 shadow-xs backdrop-blur-md transition-all duration-300 hover:border-zinc-300 hover:bg-white/80 focus:outline-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black disabled:opacity-40 disabled:hover:border-zinc-200 disabled:hover:bg-white/40"
+                  className="group flex h-10 w-10 items-center justify-center rounded-full border border-zinc-200 bg-white/40 shadow-xs backdrop-blur-md transition-all duration-300 hover:border-zinc-300 hover:bg-white/80 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:opacity-40 disabled:hover:border-zinc-200 disabled:hover:bg-white/40"
                   aria-label="Previous Page"
                 >
                   <ChevronLeft className="h-4 w-4 text-black" />
@@ -579,7 +579,7 @@ export default function ProjectSection({
                   <button
                     key={page}
                     onClick={() => setCurrentPage(page)}
-                    className={`flex h-10 w-10 items-center justify-center rounded-full border text-sm font-semibold transition-all duration-300 focus:outline-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black ${
+                    className={`flex h-10 w-10 items-center justify-center rounded-full border text-sm font-semibold transition-all duration-300 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 ${
                       currentPage === page
                         ? "border-black bg-black text-white"
                         : "text-zinc-550 border-zinc-200 bg-white/40 hover:border-zinc-300 hover:bg-white/80"
@@ -594,7 +594,7 @@ export default function ProjectSection({
                 <button
                   onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                   disabled={currentPage === totalPages}
-                  className="group flex h-10 w-10 items-center justify-center rounded-full border border-zinc-200 bg-white/40 shadow-xs backdrop-blur-md transition-all duration-300 hover:border-zinc-300 hover:bg-white/80 focus:outline-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black disabled:opacity-40 disabled:hover:border-zinc-200 disabled:hover:bg-white/40"
+                  className="group flex h-10 w-10 items-center justify-center rounded-full border border-zinc-200 bg-white/40 shadow-xs backdrop-blur-md transition-all duration-300 hover:border-zinc-300 hover:bg-white/80 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:opacity-40 disabled:hover:border-zinc-200 disabled:hover:bg-white/40"
                   aria-label="Next Page"
                 >
                   <ChevronRight className="h-4 w-4 text-black" />

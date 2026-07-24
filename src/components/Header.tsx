@@ -373,7 +373,7 @@ export default function Header({
             aria-label={mobileMenuOpen ? "Close main navigation menu" : "Open main navigation menu"}
             aria-expanded={mobileMenuOpen}
             aria-controls="mobile-navigation"
-            className={`h-12 w-12 cursor-pointer items-center justify-center rounded-md text-current transition-colors focus:outline-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current ${
+            className={`h-12 w-12 cursor-pointer items-center justify-center rounded-md text-current transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-current focus-visible:ring-offset-2 ${
               isMobile === null ? "flex xl:hidden" : isMobile ? "flex" : "hidden"
             }`}
           >

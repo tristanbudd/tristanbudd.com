@@ -128,7 +128,7 @@ function BlogRow({
                 href={`/blog/${post.slug}`}
                 onClick={(e) => handleNavigation(e, `/blog/${post.slug}`)}
                 aria-label={`Read article: ${post.title}`}
-                className="group/link 3xl:text-base 4xl:text-lg 5xl:text-xl inline-flex items-center gap-1.5 rounded-sm text-sm font-bold text-black transition-colors after:absolute after:inset-0 after:z-10 hover:text-zinc-700 focus:outline-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+                className="group/link 3xl:text-base 4xl:text-lg 5xl:text-xl inline-flex items-center gap-1.5 rounded-sm text-sm font-bold text-black transition-colors after:absolute after:inset-0 after:z-10 hover:text-zinc-700 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
               >
                 <span>Read Article</span>
                 <span className="sr-only">: {post.title}</span>
@@ -352,7 +352,7 @@ export default function BlogSection({
                         setSortBy("newest");
                       }
                     }}
-                    className="absolute inset-y-0 right-0 flex items-center rounded-full pr-3.5 text-zinc-400 transition-colors hover:text-black focus:outline-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+                    className="absolute inset-y-0 right-0 flex items-center rounded-full pr-3.5 text-zinc-400 transition-colors hover:text-black focus:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
                     aria-label="Clear Search"
                   >
                     <X className="h-4 w-4" />
@@ -510,7 +510,7 @@ export default function BlogSection({
                   setVisibleCount(5);
                 }}
                 aria-pressed={selectedCategory === null}
-                className={`rounded-full border px-4 py-2 text-xs font-bold tracking-wider uppercase transition-all duration-300 focus:outline-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black ${
+                className={`rounded-full border px-4 py-2 text-xs font-bold tracking-wider uppercase transition-all duration-300 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 ${
                   selectedCategory === null
                     ? "border-black bg-black text-white"
                     : "text-zinc-550 border-zinc-200 bg-white/40 hover:border-zinc-300 hover:bg-white/85 hover:text-black"
@@ -526,7 +526,7 @@ export default function BlogSection({
                     setVisibleCount(5);
                   }}
                   aria-pressed={selectedCategory === category}
-                  className={`rounded-full border px-4 py-2 text-xs font-bold tracking-wider whitespace-nowrap uppercase transition-all duration-300 focus:outline-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black ${
+                  className={`rounded-full border px-4 py-2 text-xs font-bold tracking-wider whitespace-nowrap uppercase transition-all duration-300 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 ${
                     selectedCategory === category
                       ? "border-black bg-black text-white"
                       : "text-zinc-555 border-zinc-200 bg-white/40 hover:border-zinc-300 hover:bg-white/85 hover:text-black"
