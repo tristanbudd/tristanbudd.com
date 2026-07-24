@@ -31,6 +31,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     if (!project) {
       return {
         title: "Project Not Found",
+        alternates: {
+          canonical: `https://tristanbudd.com/projects/${slug}`,
+        },
       };
     }
 
@@ -42,6 +45,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       if (!isAdmin) {
         return {
           title: "Project Not Found",
+          alternates: {
+            canonical: `https://tristanbudd.com/projects/${slug}`,
+          },
         };
       }
     }
@@ -49,10 +55,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     return {
       title: project.title,
       description: project.description,
+      alternates: {
+        canonical: `https://tristanbudd.com/projects/${slug}`,
+      },
     };
   } catch {
     return {
       title: "Project Showcase",
+      alternates: {
+        canonical: `https://tristanbudd.com/projects/${slug}`,
+      },
     };
   }
 }

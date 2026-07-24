@@ -32,6 +32,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     if (!post) {
       return {
         title: "Article Not Found",
+        alternates: {
+          canonical: `https://tristanbudd.com/blog/${slug}`,
+        },
       };
     }
 
@@ -43,6 +46,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       if (!isAdmin) {
         return {
           title: "Article Not Found",
+          alternates: {
+            canonical: `https://tristanbudd.com/blog/${slug}`,
+          },
         };
       }
     }
@@ -50,10 +56,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     return {
       title: post.title,
       description: post.excerpt,
+      alternates: {
+        canonical: `https://tristanbudd.com/blog/${slug}`,
+      },
     };
   } catch {
     return {
       title: "Blog",
+      alternates: {
+        canonical: `https://tristanbudd.com/blog/${slug}`,
+      },
     };
   }
 }
