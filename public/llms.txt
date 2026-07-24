@@ -1,0 +1,12 @@
+# Tristan Budd
+
+> Software engineer portfolio, projects showcase, blog posts, professional experience, and contact information.
+
+## Primary Sections
+- [Home Page](https://tristanbudd.com/): Overview of tech stack, software engineering experience, timeline, and certifications.
+- [Projects Directory](https://tristanbudd.com/projects): Full listing of software development projects, case studies, and technical showcases.
+- [Blog Posts](https://tristanbudd.com/blog): Technical articles, tutorials, and insights regarding modern web development and software engineering.
+
+## Feeds & Meta
+- [RSS Feed](https://tristanbudd.com/feed.xml): RSS 2.0 XML feed of all blog articles.
+- [Sitemap](https://tristanbudd.com/sitemap.xml): The XML sitemap listing crawled URLs for indexing.
