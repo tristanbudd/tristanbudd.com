@@ -322,7 +322,7 @@ export default function Header({
               href="/"
               onClick={handleLogoClick}
               aria-label="Tristan Budd Home"
-              className="group flex cursor-pointer items-center gap-2 text-current select-none sm:gap-3"
+              className="group flex cursor-pointer items-center gap-2 rounded-xs text-current select-none focus:outline-hidden focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black sm:gap-3"
             >
               {transitionTarget !== null ? (
                 <div className="3xl:h-13 3xl:w-13 4xl:h-16 4xl:w-16 5xl:h-20 5xl:w-20 flex h-8 w-8 shrink-0 items-center justify-center sm:h-10 sm:w-10">
@@ -406,7 +406,7 @@ export default function Header({
                           }
                           aria-haspopup="true"
                           aria-expanded={openDropdown === item.label}
-                          className="relative flex cursor-pointer items-center gap-1 rounded-xs whitespace-nowrap transition-colors after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-center after:scale-x-0 after:bg-black after:transition-transform after:duration-300 hover:text-black hover:after:scale-x-100 focus:outline-hidden focus-visible:text-black focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black focus-visible:after:scale-x-100 active:text-black active:after:scale-x-100"
+                          className="relative flex cursor-pointer items-center gap-1 rounded-xs whitespace-nowrap transition-colors after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:origin-center after:scale-x-0 after:bg-black after:transition-transform after:duration-300 hover:text-black hover:after:scale-x-100 focus:outline-hidden focus-visible:text-black focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black focus-visible:after:scale-x-100 active:text-black active:after:scale-x-100"
                         >
                           <span>{item.label}</span>
                           <ChevronDown
@@ -442,7 +442,7 @@ export default function Header({
                                   }
                                   onClick={() => trackNavigation(subItem.label, subItem.href)}
                                   role="menuitem"
-                                  className="group/item 3xl:text-base 4xl:text-lg 5xl:text-xl relative flex items-center gap-3 px-5 py-2.5 text-[14px] font-semibold whitespace-nowrap text-zinc-700 transition-all duration-200 hover:bg-zinc-50 hover:text-black focus:outline-hidden focus-visible:bg-zinc-50 focus-visible:text-black"
+                                  className="group/item 3xl:text-base 4xl:text-lg 5xl:text-xl relative flex items-center gap-3 px-5 py-2.5 text-[14px] font-semibold whitespace-nowrap text-zinc-700 transition-all duration-200 hover:bg-zinc-50 hover:text-black focus:outline-hidden focus-visible:bg-zinc-50 focus-visible:text-black focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-inset"
                                 >
                                   {SocialIcon}
                                   <span className="transition-transform duration-200 group-hover/item:translate-x-1">
@@ -467,10 +467,10 @@ export default function Header({
                             handleNavigation(e, item.href, item.label);
                           }
                         }}
-                        className={`relative rounded-xs py-2 whitespace-nowrap transition-colors after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-center after:bg-black after:transition-transform after:duration-300 focus:outline-hidden ${
+                        className={`relative rounded-xs py-2 whitespace-nowrap transition-colors after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:origin-center after:bg-black after:transition-transform after:duration-300 focus:outline-hidden focus-visible:text-black focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black focus-visible:after:scale-x-100 ${
                           isActive
                             ? "pointer-events-none text-black after:scale-x-100"
-                            : "after:scale-x-0 hover:text-black hover:after:scale-x-100 focus-visible:text-black focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black focus-visible:after:scale-x-100 active:text-black active:after:scale-x-100"
+                            : "after:scale-x-0 hover:text-black hover:after:scale-x-100 active:text-black active:after:scale-x-100"
                         }`}
                       >
                         {item.label}
@@ -514,7 +514,7 @@ export default function Header({
                         onClick={() => toggleMobileDropdown(item.label)}
                         aria-expanded={openMobileDropdown === item.label}
                         aria-controls={`mobile-submenu-${item.label}`}
-                        className="group/item flex w-full cursor-pointer items-center justify-between rounded-md px-4 py-2.5 text-base font-bold tracking-wider text-zinc-900 transition-all duration-200 hover:bg-zinc-50 hover:text-black focus:outline-hidden focus-visible:bg-zinc-50"
+                        className="group/item flex w-full cursor-pointer items-center justify-between rounded-md px-4 py-2.5 text-base font-bold tracking-wider text-zinc-900 transition-all duration-200 hover:bg-zinc-50 hover:text-black focus:outline-hidden focus-visible:bg-zinc-50 focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-inset"
                       >
                         <span>{item.label}</span>
                         <ChevronDown
@@ -527,7 +527,7 @@ export default function Header({
                         id={`mobile-submenu-${item.label}`}
                         className={`mt-2 ml-4 flex flex-col gap-1 overflow-hidden transition-all duration-300 ease-in-out ${
                           openMobileDropdown === item.label
-                            ? "max-h-[250px] py-1 opacity-100"
+                            ? "max-h-62.5 py-1 opacity-100"
                             : "pointer-events-none max-h-0 opacity-0"
                         }`}
                       >
@@ -553,7 +553,7 @@ export default function Header({
                                 setMobileMenuOpen(false);
                                 trackNavigation(subItem.label, subItem.href);
                               }}
-                              className="group/subitem flex items-center gap-3 rounded-md py-2.5 pr-2 pl-4 text-sm font-semibold whitespace-nowrap text-zinc-700 transition-all duration-200 hover:bg-zinc-50 hover:text-black focus:outline-hidden focus-visible:bg-zinc-50 focus-visible:text-black"
+                              className="group/subitem flex items-center gap-3 rounded-md py-2.5 pr-2 pl-4 text-sm font-semibold whitespace-nowrap text-zinc-700 transition-all duration-200 hover:bg-zinc-50 hover:text-black focus:outline-hidden focus-visible:bg-zinc-50 focus-visible:text-black focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-inset"
                             >
                               {SocialIcon}
                               <span className="transition-transform duration-200 group-hover/subitem:translate-x-1">
@@ -578,10 +578,10 @@ export default function Header({
                           handleNavigation(e, item.href, item.label);
                         }
                       }}
-                      className={`group/item flex w-full items-center justify-between rounded-md px-4 py-2.5 text-base font-bold tracking-wider transition-all duration-200 focus:outline-hidden ${
+                      className={`group/item flex w-full items-center justify-between rounded-md px-4 py-2.5 text-base font-bold tracking-wider transition-all duration-200 focus:outline-hidden focus-visible:bg-zinc-50 focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-inset ${
                         isActive
                           ? "pointer-events-none border-l-2 border-black bg-zinc-50 text-black"
-                          : "text-zinc-900 hover:bg-zinc-50 hover:text-black focus-visible:bg-zinc-50"
+                          : "text-zinc-900 hover:bg-zinc-50 hover:text-black"
                       }`}
                     >
                       <span>{item.label}</span>

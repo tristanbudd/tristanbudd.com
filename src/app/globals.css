@@ -156,6 +156,7 @@ html.is-scrolled header[role="banner"] > div {
   transition: filter 0.3s ease;
 }
 
-.group\/social:hover .footer-social-icon {
+.group\/social:hover .footer-social-icon,
+.group\/social:focus-visible .footer-social-icon {
   filter: grayscale(1) brightness(0) invert(1) opacity(1) !important;
 }

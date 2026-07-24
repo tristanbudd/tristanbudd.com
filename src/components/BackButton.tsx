@@ -51,7 +51,7 @@ export default function BackButton({
       target={isRss ? "_blank" : undefined}
       rel={isRss ? "noopener noreferrer" : undefined}
       aria-label={label}
-      className={`group 3xl:gap-3 3xl:px-7 3xl:py-3.5 3xl:text-base 4xl:px-9 4xl:py-4.5 4xl:text-lg 5xl:px-11 5xl:py-5.5 5xl:text-xl 3xl:border-2 4xl:border-[2.5px] 5xl:border-[3px] inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold shadow-xs backdrop-blur-xs transition-all duration-300 hover:shadow-sm ${styleClass} ${className}`}
+      className={`group 3xl:gap-3 3xl:px-7 3xl:py-3.5 3xl:text-base 4xl:px-9 4xl:py-4.5 4xl:text-lg 5xl:px-11 5xl:py-5.5 5xl:text-xl 3xl:border-2 4xl:border-[2.5px] 5xl:border-[3px] inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold shadow-xs backdrop-blur-xs transition-all duration-300 hover:shadow-sm focus:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 ${styleClass} ${className}`}
     >
       {icon}
       <span>{label}</span>
