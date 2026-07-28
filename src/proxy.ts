@@ -5,6 +5,7 @@ interface NextRequestWithGeo extends NextRequest {
   geo?: {
     country?: string;
   };
+  ip?: string;
 }
 
 export default async function proxy(request: NextRequest) {
@@ -31,20 +32,76 @@ export default async function proxy(request: NextRequest) {
   const isAdminAuthenticated = adminSession === ownerAccount;
 
   // Geographic Region Lock
+  const geoipApiKey = process.env.GEOIP_API_KEY;
   const bypassRegionLock =
+    !geoipApiKey ||
     process.env.BYPASS_REGION_LOCK === "true" ||
     (process.env.NODE_ENV === "development" && process.env.TEST_REGION_LOCK !== "true") ||
     isAdminAuthenticated;
 
   if (!bypassRegionLock) {
-    const country = (
-      (request as NextRequestWithGeo).geo?.country ||
-      request.headers.get("x-vercel-ip-country") ||
-      request.headers.get("cf-ipcountry") ||
-      request.headers.get("x-country-code") ||
-      request.headers.get("cloudfront-viewer-country") ||
-      request.headers.get("x-viewer-country")
-    )?.toUpperCase();
+    let country: string | undefined;
+
+    // Get client IP address
+    const clientIp =
+      (request as NextRequestWithGeo).ip ||
+      request.headers.get("x-forwarded-for")?.split(",")[0].trim() ||
+      request.headers.get("x-real-ip") ||
+      "";
+
+    // Check if the IP is not a local/loopback/private IP
+    const isPrivateIp = (ip: string) => {
+      if (!ip) return true;
+      if (ip === "127.0.0.1" || ip === "::1") return true;
+      if (ip.startsWith("10.") || ip.startsWith("192.168.")) return true;
+      if (ip.startsWith("172.")) {
+        const parts = ip.split(".");
+        const second = parseInt(parts[1], 10);
+        return second >= 16 && second <= 31;
+      }
+      return false;
+    };
+
+    if (clientIp && !isPrivateIp(clientIp)) {
+      const geoipApiUrl = process.env.GEOIP_API_URL || "http://127.0.0.1:6099";
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3000); // 3-second timeout
+
+        const res = await fetch(geoipApiUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": geoipApiKey,
+          },
+          body: JSON.stringify({ ip: clientIp }),
+          signal: controller.signal,
+        });
+
+        clearTimeout(timeoutId);
+
+        if (res.ok) {
+          const data = await res.json();
+          country = data.country_code?.toUpperCase();
+        } else {
+          console.error(`GeoIP API returned error status: ${res.status}`);
+        }
+      } catch (error) {
+        console.error("GeoIP API call failed:", error);
+      }
+    }
+
+    // Fall back to headers if GeoIP API call did not return a country (e.g. timeout, local dev, or API offline)
+    if (!country) {
+      country = (
+        (request as NextRequestWithGeo).geo?.country ||
+        request.headers.get("x-vercel-ip-country") ||
+        request.headers.get("cf-ipcountry") ||
+        request.headers.get("x-country-code") ||
+        request.headers.get("cloudfront-viewer-country") ||
+        request.headers.get("x-viewer-country")
+      )?.toUpperCase();
+    }
 
     const allowedCountriesEnv = process.env.ALLOWED_COUNTRIES || "GB";
     const allowedCountries = allowedCountriesEnv.split(",").map((c) => c.trim().toUpperCase());
