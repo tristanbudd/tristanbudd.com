@@ -42,20 +42,32 @@ export default async function proxy(request: NextRequest) {
   if (!bypassRegionLock) {
     let country: string | undefined;
 
-    // Get client IP address
-    const clientIp =
-      (request as NextRequestWithGeo).ip ||
+    // Get client IP address (checking headers first to get the client IP behind reverse proxies)
+    let clientIp =
       request.headers.get("x-forwarded-for")?.split(",")[0].trim() ||
       request.headers.get("x-real-ip") ||
+      (request as NextRequestWithGeo).ip ||
       "";
+
+    // Strip port numbers from the IP address if present (handles IPv4 with port and IPv6 bracket notation)
+    if (clientIp) {
+      if (clientIp.includes("]:")) {
+        clientIp = clientIp.split("]:")[0].replace("[", "");
+      } else if (clientIp.includes(":") && !clientIp.includes("::")) {
+        clientIp = clientIp.split(":")[0];
+      }
+    }
 
     // Check if the IP is not a local/loopback/private IP
     const isPrivateIp = (ip: string) => {
       if (!ip) return true;
-      if (ip === "127.0.0.1" || ip === "::1") return true;
-      if (ip.startsWith("10.") || ip.startsWith("192.168.")) return true;
-      if (ip.startsWith("172.")) {
-        const parts = ip.split(".");
+      const lowerIp = ip.toLowerCase();
+      if (lowerIp === "127.0.0.1" || lowerIp === "::1") return true;
+      if (lowerIp.startsWith("10.") || lowerIp.startsWith("192.168.")) return true;
+      if (lowerIp.startsWith("fe80:") || lowerIp.startsWith("fc00:") || lowerIp.startsWith("fd00:"))
+        return true;
+      if (lowerIp.startsWith("172.")) {
+        const parts = lowerIp.split(".");
         const second = parseInt(parts[1], 10);
         return second >= 16 && second <= 31;
       }
