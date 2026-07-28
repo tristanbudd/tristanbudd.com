@@ -1,6 +1,12 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
+interface NextRequestWithGeo extends NextRequest {
+  geo?: {
+    country?: string;
+  };
+}
+
 export default async function proxy(request: NextRequest) {
   const path = request.nextUrl.pathname;
 
@@ -12,6 +18,44 @@ export default async function proxy(request: NextRequest) {
     path.includes(".")
   ) {
     return NextResponse.next();
+  }
+
+  // Prevent redirect loops on the geo-restriction page
+  if (path === "/unavailable") {
+    return NextResponse.next();
+  }
+
+  // Admin session authentication check (used for admin pages and region bypass)
+  const adminSession = request.cookies.get("admin_session")?.value;
+  const ownerAccount = process.env.ADMIN_OWNER_ACCOUNT || "tristanbudd";
+  const isAdminAuthenticated = adminSession === ownerAccount;
+
+  // Geographic Region Lock
+  const bypassRegionLock =
+    process.env.BYPASS_REGION_LOCK === "true" ||
+    (process.env.NODE_ENV === "development" && process.env.TEST_REGION_LOCK !== "true") ||
+    isAdminAuthenticated;
+
+  if (!bypassRegionLock) {
+    const country = (
+      (request as NextRequestWithGeo).geo?.country ||
+      request.headers.get("x-vercel-ip-country") ||
+      request.headers.get("cf-ipcountry") ||
+      request.headers.get("x-country-code") ||
+      request.headers.get("cloudfront-viewer-country") ||
+      request.headers.get("x-viewer-country")
+    )?.toUpperCase();
+
+    const allowedCountriesEnv = process.env.ALLOWED_COUNTRIES || "GB";
+    const allowedCountries = allowedCountriesEnv.split(",").map((c) => c.trim().toUpperCase());
+
+    const blockUndetected = process.env.BLOCK_UNDETECTED_REGIONS === "true";
+    const isAllowed = country ? allowedCountries.includes(country) : !blockUndetected;
+
+    if (!isAllowed) {
+      const url = new URL("/unavailable", request.url);
+      return NextResponse.redirect(url);
+    }
   }
 
   // Fetch database-backed maintenance settings
@@ -52,11 +96,6 @@ export default async function proxy(request: NextRequest) {
   if (!bypassKey) {
     bypassKey = process.env.MAINTENANCE_BYPASS_KEY || "";
   }
-
-  // Admin route protection check (Both HTML views and API endpoints)
-  const adminSession = request.cookies.get("admin_session")?.value;
-  const ownerAccount = process.env.ADMIN_OWNER_ACCOUNT || "tristanbudd";
-  const isAdminAuthenticated = adminSession === ownerAccount;
 
   if (path.startsWith("/admin") || path.startsWith("/api/admin")) {
     if (
