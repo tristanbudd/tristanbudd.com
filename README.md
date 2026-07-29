@@ -70,6 +70,30 @@ And much more!
 
 ## </div>
 
+## Regional Access Control (Geo-restriction)
+
+Region locking is integrated using my own **[simple-geoip-api](https://github.com/tristanbudd/simple-geoip-api)** service. (Unsupported/Archived)
+
+### How it works:
+
+- **Middleware Interception**: The Next.js middleware (`src/proxy.ts`) reads the client's public IP (prioritising `x-forwarded-for`/`x-real-ip`) and skips local/private subnets.
+- **GeoIP Lookup**: Sends a POST request with the IP and a shared API key header. If the resolved country code is not allowed, they are redirected to `/unavailable`.
+- **Resilient Fallback**: If the lookup fails or times out (3s), it falls back to checking CDN headers (e.g., `cf-ipcountry`).
+
+### Configuration:
+
+To disable the lock, leave `GEOIP_API_KEY` blank or undefined.
+
+| Variable                   | Description                                            | Example                 |
+| -------------------------- | ------------------------------------------------------ | ----------------------- |
+| `GEOIP_API_KEY`            | Authentication key matching the GeoIP API credentials. | `secret_key`            |
+| `GEOIP_API_URL`            | Endpoint of the GeoIP API.                             | `http://localhost:6099` |
+| `ALLOWED_COUNTRIES`        | Comma-separated list of allowed 2-letter ISO codes.    | `GB`                    |
+| `BYPASS_REGION_LOCK`       | Set to `true` to bypass the lock entirely.             | `false`                 |
+| `BLOCK_UNDETECTED_REGIONS` | Block users whose country cannot be resolved.          | `false`                 |
+
+---
+
 ## Tech Stack
 
 - **Framework:** Next.js 16 (React 19, TypeScript)
