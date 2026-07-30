@@ -71,6 +71,26 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export const dynamic = "force-dynamic";
 
+function formatRelativeTime(dateStr: string): string {
+  const date = new Date(dateStr);
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMins / 60);
+  const diffDays = Math.floor(diffHours / 24);
+
+  if (diffMins < 1) return "just now";
+  if (diffMins < 60) return `${diffMins} minute${diffMins !== 1 ? "s" : ""} ago`;
+  if (diffHours < 24) return `${diffHours} hour${diffHours !== 1 ? "s" : ""} ago`;
+  if (diffDays < 30) return `${diffDays} day${diffDays !== 1 ? "s" : ""} ago`;
+
+  return date.toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+}
+
 function parseGitHubUrl(url: string): { owner: string; repo: string } | null {
   try {
     const match = url.match(/github\.com\/([^/]+)\/([^/]+)/);
@@ -93,6 +113,7 @@ interface GitHubStats {
   license: string | null;
   languages: string[];
   fullName: string;
+  pushedAt: string;
 }
 
 export default async function ProjectDetailPage({ params }: PageProps) {
@@ -200,6 +221,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
             license: repoData.license?.spdx_id || repoData.license?.name || null,
             languages: Object.keys(languages).slice(0, 4),
             fullName: repoData.full_name,
+            pushedAt: repoData.pushed_at,
           };
         }
       } catch (error) {
@@ -441,6 +463,18 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                       </span>
                       <span className="3xl:text-lg 4xl:text-xl 5xl:text-2xl font-semibold text-black">
                         {githubStats.openIssues.toLocaleString()}
+                      </span>
+                    </div>
+                  </div>
+                  {/* Last Updated */}
+                  <div className="flex items-center gap-3">
+                    <Icons.Clock className="text-zinc-455 3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 h-4.5 w-4.5 shrink-0" />
+                    <div className="flex flex-col">
+                      <span className="3xl:text-[0.75rem] 4xl:text-[0.85rem] 5xl:text-[0.95rem] mb-1 text-[0.65rem] leading-none font-bold tracking-wider text-zinc-400 uppercase">
+                        Last Updated
+                      </span>
+                      <span className="3xl:text-lg 4xl:text-xl 5xl:text-2xl font-semibold text-black">
+                        {formatRelativeTime(githubStats.pushedAt)}
                       </span>
                     </div>
                   </div>
