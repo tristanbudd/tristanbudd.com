@@ -1635,6 +1635,7 @@ export default function AdminDashboard() {
           role="dialog"
           aria-modal="true"
           aria-labelledby="blog-modal-title"
+          data-lenis-prevent
         >
           <div className="3xl:max-w-4xl 4xl:max-w-5xl 5xl:max-w-6xl 3xl:rounded-3xl flex max-h-[90vh] w-full max-w-2xl flex-col overflow-y-auto rounded-2xl border border-zinc-200 bg-white shadow-xl">
             <header className="border-zinc-150 3xl:px-8 3xl:py-6 4xl:px-10 4xl:py-8 5xl:px-12 5xl:py-10 flex items-center justify-between border-b px-6 py-4">
@@ -1874,6 +1875,7 @@ export default function AdminDashboard() {
           role="dialog"
           aria-modal="true"
           aria-labelledby="proj-modal-title"
+          data-lenis-prevent
         >
           <div className="3xl:max-w-4xl 4xl:max-w-5xl 5xl:max-w-6xl 3xl:rounded-3xl flex max-h-[90vh] w-full max-w-2xl flex-col overflow-y-auto rounded-2xl border border-zinc-200 bg-white shadow-xl">
             <header className="border-zinc-150 3xl:px-8 3xl:py-6 4xl:px-10 4xl:py-8 5xl:px-12 5xl:py-10 flex items-center justify-between border-b px-6 py-4">
@@ -2229,6 +2231,7 @@ export default function AdminDashboard() {
           role="dialog"
           aria-modal="true"
           aria-labelledby="import-modal-title"
+          data-lenis-prevent
         >
           <div className="3xl:max-w-4xl 4xl:max-w-5xl 5xl:max-w-6xl 3xl:rounded-3xl flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-xl">
             {/* Header */}
