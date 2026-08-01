@@ -107,6 +107,134 @@ function highlightCode(code: string, lang?: string): React.ReactNode {
   return result;
 }
 
+interface SimpleTimelineItem {
+  date: string;
+  title: string;
+  points?: string[];
+}
+
+function SimpleTimeline({
+  title,
+  subtitle,
+  items,
+}: {
+  title?: string;
+  subtitle?: string;
+  items: SimpleTimelineItem[];
+}) {
+  return (
+    <div className="3xl:my-12 my-8 flex flex-col gap-6 font-sans">
+      {(title || subtitle) && (
+        <div className="flex flex-col gap-1">
+          {subtitle && (
+            <span className="3xl:text-sm 4xl:text-base 5xl:text-lg text-xs font-bold tracking-widest text-zinc-500 uppercase">
+              {subtitle}
+            </span>
+          )}
+          {title && (
+            <h3 className="font-outfit 3xl:text-3xl 4xl:text-4xl 5xl:text-5xl text-xl font-extrabold tracking-tight text-black sm:text-2xl">
+              {title}
+            </h3>
+          )}
+        </div>
+      )}
+
+      {/* Timeline track container */}
+      <div className="relative ml-2 pl-8">
+        {/* Vertical Line */}
+        <div className="absolute top-2 bottom-2 left-2 w-0.5 bg-zinc-200" />
+
+        <div className="space-y-8">
+          {items.map((item, idx) => (
+            <div key={idx} className="relative">
+              {/* Timeline Dot (Centered exactly on the vertical line at left-2) */}
+              <div className="absolute top-1.25 -left-7.5 h-3.5 w-3.5 rounded-full border-2 border-zinc-300 bg-white" />
+
+              <div className="flex flex-col gap-0.5">
+                {/* Date */}
+                <span className="3xl:text-sm 4xl:text-base 5xl:text-lg text-xs font-bold tracking-wider text-zinc-400 uppercase">
+                  {item.date}
+                </span>
+
+                {/* Heading (Title) */}
+                <h4 className="font-outfit 3xl:text-xl 4xl:text-2xl 5xl:text-3xl mt-0.5 text-base leading-snug font-extrabold text-black sm:text-lg">
+                  {item.title}
+                </h4>
+
+                {/* Bullet Points */}
+                {item.points && item.points.length > 0 && (
+                  <ul className="text-zinc-650 3xl:mt-3 3xl:space-y-2.5 3xl:text-lg 4xl:text-xl 5xl:text-2xl mt-2 list-disc space-y-1.5 pl-4 text-sm leading-relaxed">
+                    {item.points.map((pt, pIdx) => (
+                      <li key={pIdx}>{pt}</li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function parseSimpleTimeline(code: string) {
+  const lines = code.split("\n");
+  let title = "";
+  let subtitle = "";
+  const items: SimpleTimelineItem[] = [];
+  let currentItem: SimpleTimelineItem | null = null;
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed) continue;
+
+    // Handle header fields (only before starting any items)
+    if (currentItem === null) {
+      if (trimmed.startsWith("title:")) {
+        title = trimmed.slice(6).trim();
+        continue;
+      }
+      if (trimmed.startsWith("subtitle:")) {
+        subtitle = trimmed.slice(9).trim();
+        continue;
+      }
+    }
+
+    // Handle item initialization
+    let workingLine = trimmed;
+    if (trimmed.startsWith("- ")) {
+      currentItem = {
+        date: "",
+        title: "",
+      };
+      items.push(currentItem);
+      workingLine = trimmed.slice(2).trim();
+    }
+
+    if (currentItem) {
+      if (trimmed.startsWith("* ") || trimmed.startsWith("• ")) {
+        if (!currentItem.points) {
+          currentItem.points = [];
+        }
+        currentItem.points.push(trimmed.slice(2).trim());
+        continue;
+      }
+
+      const colonIndex = workingLine.indexOf(":");
+      if (colonIndex !== -1) {
+        const key = workingLine.slice(0, colonIndex).trim();
+        const value = workingLine.slice(colonIndex + 1).trim();
+
+        if (key === "date" || key === "dateString") currentItem.date = value;
+        else if (key === "title") currentItem.title = value;
+      }
+    }
+  }
+
+  return { title, subtitle, items };
+}
+
 // Helper to copy text to clipboard
 function CodeBlock({ code, lang }: { code: string; lang?: string }) {
   const [copied, setCopied] = useState(false);
@@ -315,6 +443,17 @@ export default function Markdown({ content, className = "" }: MarkdownProps) {
           case "codeblock":
             if (block.lang?.toLowerCase() === "mermaid") {
               return <Mermaid key={index} chart={block.code || ""} id={`mermaid-${index}`} />;
+            }
+            if (block.lang?.toLowerCase() === "timeline") {
+              const { title, subtitle, items } = parseSimpleTimeline(block.code || "");
+              return (
+                <SimpleTimeline
+                  key={index}
+                  title={title || undefined}
+                  subtitle={subtitle || undefined}
+                  items={items}
+                />
+              );
             }
             return <CodeBlock key={index} code={block.code || ""} lang={block.lang} />;
 
