@@ -484,6 +484,7 @@ export default function AdminDashboard() {
                 tags: Array.isArray(item.tags) ? item.tags : [],
                 githubUrl: typeof item.githubUrl === "string" ? item.githubUrl : null,
                 projectUrl: typeof item.projectUrl === "string" ? item.projectUrl : null,
+                imageUrl: typeof item.imageUrl === "string" ? item.imageUrl : null,
                 customFields: Array.isArray(item.customFields) ? item.customFields : [],
                 publishedAt:
                   typeof item.publishedAt === "string"
@@ -617,6 +618,7 @@ export default function AdminDashboard() {
       tags: [],
       projectUrl: "",
       githubUrl: "",
+      imageUrl: "",
       customFields: [],
       publishedAt: new Date().toISOString().split("T")[0],
       featured: false,
@@ -1552,26 +1554,43 @@ export default function AdminDashboard() {
                         {projects.map((proj) => (
                           <tr key={proj.slug} className="transition-colors hover:bg-zinc-50/50">
                             <td className="3xl:px-8 3xl:py-6 4xl:px-10 4xl:py-8 5xl:px-12 5xl:py-10 px-6 py-4">
-                              <div className="flex items-center gap-2">
-                                <span className="3xl:max-w-lg 4xl:max-w-xl 5xl:max-w-2xl block max-w-md truncate font-semibold text-black">
-                                  {proj.title}
-                                </span>
-                                {proj.featured && (
-                                  <span className="inline-flex items-center gap-1 rounded-full border border-blue-500/20 bg-blue-500/5 px-2 py-0.5 text-[10px] font-bold tracking-wider text-blue-700 uppercase">
-                                    <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
-                                    Featured
-                                  </span>
+                              <div className="flex items-center gap-3">
+                                {proj.imageUrl ? (
+                                  <div className="h-10 w-16 shrink-0 overflow-hidden rounded-md border border-zinc-200 bg-zinc-50">
+                                    <img
+                                      src={proj.imageUrl}
+                                      alt=""
+                                      className="h-full w-full object-cover"
+                                    />
+                                  </div>
+                                ) : (
+                                  <div className="flex h-10 w-16 shrink-0 items-center justify-center rounded-md border border-zinc-200 bg-zinc-50 text-[10px] text-zinc-400">
+                                    No Image
+                                  </div>
                                 )}
-                                {proj.preview && (
-                                  <span className="inline-flex items-center gap-1 rounded-full border border-red-500/20 bg-red-500/5 px-2 py-0.5 text-[10px] font-bold tracking-wider text-red-700 uppercase">
-                                    <span className="h-1.5 w-1.5 rounded-full bg-red-500" />
-                                    Preview
+                                <div>
+                                  <div className="flex items-center gap-2">
+                                    <span className="3xl:max-w-lg 4xl:max-w-xl 5xl:max-w-2xl block max-w-md truncate font-semibold text-black">
+                                      {proj.title}
+                                    </span>
+                                    {proj.featured && (
+                                      <span className="inline-flex items-center gap-1 rounded-full border border-blue-500/20 bg-blue-500/5 px-2 py-0.5 text-[10px] font-bold tracking-wider text-blue-700 uppercase">
+                                        <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
+                                        Featured
+                                      </span>
+                                    )}
+                                    {proj.preview && (
+                                      <span className="inline-flex items-center gap-1 rounded-full border border-red-500/20 bg-red-500/5 px-2 py-0.5 text-[10px] font-bold tracking-wider text-red-700 uppercase">
+                                        <span className="h-1.5 w-1.5 rounded-full bg-red-500" />
+                                        Preview
+                                      </span>
+                                    )}
+                                  </div>
+                                  <span className="3xl:text-sm 4xl:text-base 5xl:text-lg block text-xs font-normal text-zinc-400">
+                                    {proj.slug}
                                   </span>
-                                )}
+                                </div>
                               </div>
-                              <span className="3xl:text-sm 4xl:text-base 5xl:text-lg block text-xs font-normal text-zinc-400">
-                                {proj.slug}
-                              </span>
                             </td>
                             <td className="text-zinc-650 3xl:px-8 3xl:py-6 4xl:px-10 4xl:py-8 5xl:px-12 5xl:py-10 px-6 py-4">
                               {proj.publishedAt || "N/A"}
@@ -1983,6 +2002,39 @@ export default function AdminDashboard() {
                   onChange={(e) => setCurrentProj({ ...currentProj, publishedAt: e.target.value })}
                   className="3xl:px-6 3xl:py-4 3xl:text-base 4xl:px-8 4xl:py-5.5 4xl:text-lg 5xl:px-10 5xl:py-7 5xl:text-xl w-full rounded-xl border border-zinc-300 px-4 py-2.5 text-sm focus:border-black focus:ring-1 focus:ring-black"
                 />
+              </div>
+
+              {/* Project Image URL */}
+              <div>
+                <label
+                  htmlFor="proj-image-url"
+                  className="3xl:text-[14px] 4xl:text-[18px] 5xl:text-[22px] mb-1 block text-[10px] font-bold text-zinc-700 uppercase"
+                >
+                  Project Image URL (optional)
+                </label>
+                <input
+                  type="text"
+                  id="proj-image-url"
+                  value={currentProj.imageUrl || ""}
+                  onChange={(e) => setCurrentProj({ ...currentProj, imageUrl: e.target.value })}
+                  className="3xl:px-6 3xl:py-4 3xl:text-base 4xl:px-8 4xl:py-5.5 4xl:text-lg 5xl:px-10 5xl:py-7 5xl:text-xl w-full rounded-xl border border-zinc-300 px-4 py-2.5 text-sm focus:border-black focus:ring-1 focus:ring-black"
+                  placeholder="https://example.com/image.png or /uploads/image.png"
+                />
+                {currentProj.imageUrl && (
+                  <div className="mt-2">
+                    <span className="text-[10px] font-bold text-zinc-500 uppercase">Preview:</span>
+                    <div className="relative mt-1 aspect-[5/3] max-w-xs overflow-hidden rounded-lg border border-zinc-200 bg-zinc-50">
+                      <img
+                        src={currentProj.imageUrl}
+                        alt="Project Preview"
+                        className="h-full w-full object-cover"
+                        onError={(e) => {
+                          (e.target as HTMLElement).style.display = "none";
+                        }}
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Featured Project Checkbox */}

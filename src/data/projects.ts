@@ -17,6 +17,7 @@ export interface Project {
   tags: string[];
   projectUrl?: string | null;
   githubUrl?: string | null;
+  imageUrl?: string | null;
   customFields?: CustomField[];
   publishedAt?: string | null;
   featured?: boolean;

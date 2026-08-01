@@ -30,6 +30,7 @@ model Project {
   tags                Json
   githubUrl           String?
   projectUrl          String?
+  imageUrl            String?
   customFields        Json
   publishedAt         String?
   featured            Boolean  @default(false)

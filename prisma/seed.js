@@ -71,6 +71,7 @@ const defaultProjects = [
     ],
     publishedAt: "2026-01-01",
     featured: true,
+    imageUrl: null,
   },
 ];
 
@@ -106,6 +107,7 @@ async function main() {
         tags: project.tags,
         githubUrl: project.githubUrl,
         projectUrl: project.projectUrl,
+        imageUrl: project.imageUrl,
         customFields: project.customFields || [],
         publishedAt: project.publishedAt,
         featured: project.featured || false,

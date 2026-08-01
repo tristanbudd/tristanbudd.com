@@ -94,8 +94,20 @@ function ProjectCard({
         transition: `opacity 0.6s ease ${delay}ms, transform 0.6s ease ${delay}ms, box-shadow 0.3s ease, border-color 0.3s ease, background-color 0.3s ease`,
       }}
     >
-      {/* Outline Placeholder Top Portion */}
-      <ProjectImagePlaceholder />
+      {/* Image or Outline Placeholder Top Portion */}
+      {project.imageUrl ? (
+        <div className="3xl:p-6 4xl:p-8 5xl:p-10 relative w-full bg-zinc-50/30 p-4">
+          <div className="relative aspect-[5/3] w-full overflow-hidden rounded-lg">
+            <img
+              src={project.imageUrl}
+              alt={project.title}
+              className="h-full w-full object-cover transition-transform duration-500 group-hover/card:scale-105"
+            />
+          </div>
+        </div>
+      ) : (
+        <ProjectImagePlaceholder />
+      )}
 
       {/* Content Bottom Portion */}
       <div className="3xl:px-6 3xl:pb-8 3xl:pt-4 4xl:px-8 4xl:pb-10 4xl:pt-5 5xl:px-10 5xl:pb-12 5xl:pt-6 flex flex-1 flex-col px-4 pt-2 pb-6 sm:pt-3">
