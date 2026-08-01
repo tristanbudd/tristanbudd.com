@@ -276,8 +276,8 @@ export default function Footer({
               Built with Next.js, React &amp; Tailwind CSS
             </p>
           </div>
-          <span className="hidden h-8 w-px bg-zinc-200 sm:block" />
-          <span className="3xl:text-sm 4xl:text-base 5xl:text-lg hidden text-xs font-semibold tracking-tight text-zinc-400 select-none sm:block">
+          <span className="mx-2 hidden w-px self-stretch bg-zinc-200 sm:block" />
+          <span className="3xl:text-2xl 4xl:text-3xl 5xl:text-4xl hidden text-sm font-semibold tracking-tight text-zinc-500 select-none sm:block xl:text-base">
             v{packageJson.version}
           </span>
         </div>
