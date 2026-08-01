@@ -274,7 +274,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
             Projects
           </Link>
           <ChevronRight className="h-3 w-3 text-zinc-400" />
-          <span className="max-w-37.5 truncate text-zinc-400 sm:max-w-xs md:max-w-md lg:max-w-lg">
+          <span className="text-zinc-550 max-w-37.5 truncate sm:max-w-xs md:max-w-md lg:max-w-lg">
             {project.title}
           </span>
         </nav>
@@ -355,7 +355,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                       <div key={idx} className="flex items-center gap-3">
                         <IconComponent className="text-zinc-455 3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 h-4.5 w-4.5 shrink-0" />
                         <div className="flex flex-col">
-                          <span className="3xl:text-[0.75rem] 4xl:text-[0.85rem] 5xl:text-[0.95rem] mb-1 text-[0.65rem] leading-none font-bold tracking-wider text-zinc-400 uppercase">
+                          <span className="3xl:text-[0.75rem] 4xl:text-[0.85rem] 5xl:text-[0.95rem] text-zinc-550 mb-1 text-[0.65rem] leading-none font-bold tracking-wider uppercase">
                             {field.label}
                           </span>
                           <span className="3xl:text-lg 4xl:text-xl 5xl:text-2xl font-semibold text-black">
@@ -371,7 +371,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
               {/* Technologies pill grid */}
               {project.tags.length > 0 && (
                 <div className="3xl:mt-10 3xl:pt-10 mt-6 border-t border-zinc-200/50 pt-6">
-                  <span className="3xl:text-[0.75rem] 4xl:text-[0.85rem] 5xl:text-[0.95rem] mb-3 block text-[0.65rem] font-bold tracking-wider text-zinc-400 uppercase">
+                  <span className="3xl:text-[0.75rem] 4xl:text-[0.85rem] 5xl:text-[0.95rem] text-zinc-550 mb-3 block text-[0.65rem] font-bold tracking-wider uppercase">
                     Technologies
                   </span>
                   <div className="3xl:gap-2.5 flex flex-wrap gap-1.5">
@@ -453,7 +453,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                   <div className="flex items-center gap-3">
                     <Icons.Star className="text-zinc-455 3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 h-4.5 w-4.5 shrink-0" />
                     <div className="flex flex-col">
-                      <span className="3xl:text-[0.75rem] 4xl:text-[0.85rem] 5xl:text-[0.95rem] mb-1 text-[0.65rem] leading-none font-bold tracking-wider text-zinc-400 uppercase">
+                      <span className="3xl:text-[0.75rem] 4xl:text-[0.85rem] 5xl:text-[0.95rem] text-zinc-550 mb-1 text-[0.65rem] leading-none font-bold tracking-wider uppercase">
                         Stars
                       </span>
                       <span className="3xl:text-lg 4xl:text-xl 5xl:text-2xl font-semibold text-black">
@@ -465,7 +465,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                   <div className="flex items-center gap-3">
                     <Icons.GitFork className="text-zinc-455 3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 h-4.5 w-4.5 shrink-0" />
                     <div className="flex flex-col">
-                      <span className="3xl:text-[0.75rem] 4xl:text-[0.85rem] 5xl:text-[0.95rem] mb-1 text-[0.65rem] leading-none font-bold tracking-wider text-zinc-400 uppercase">
+                      <span className="3xl:text-[0.75rem] 4xl:text-[0.85rem] 5xl:text-[0.95rem] text-zinc-550 mb-1 text-[0.65rem] leading-none font-bold tracking-wider uppercase">
                         Forks
                       </span>
                       <span className="3xl:text-lg 4xl:text-xl 5xl:text-2xl font-semibold text-black">
@@ -477,7 +477,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                   <div className="flex items-center gap-3">
                     <Icons.AlertCircle className="text-zinc-455 3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 h-4.5 w-4.5 shrink-0" />
                     <div className="flex flex-col">
-                      <span className="3xl:text-[0.75rem] 4xl:text-[0.85rem] 5xl:text-[0.95rem] mb-1 text-[0.65rem] leading-none font-bold tracking-wider text-zinc-400 uppercase">
+                      <span className="3xl:text-[0.75rem] 4xl:text-[0.85rem] 5xl:text-[0.95rem] text-zinc-550 mb-1 text-[0.65rem] leading-none font-bold tracking-wider uppercase">
                         Issues / PRs
                       </span>
                       <span className="3xl:text-lg 4xl:text-xl 5xl:text-2xl font-semibold text-black">
@@ -489,7 +489,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                   <div className="flex items-center gap-3">
                     <Icons.Clock className="text-zinc-455 3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 h-4.5 w-4.5 shrink-0" />
                     <div className="flex flex-col">
-                      <span className="3xl:text-[0.75rem] 4xl:text-[0.85rem] 5xl:text-[0.95rem] mb-1 text-[0.65rem] leading-none font-bold tracking-wider text-zinc-400 uppercase">
+                      <span className="3xl:text-[0.75rem] 4xl:text-[0.85rem] 5xl:text-[0.95rem] text-zinc-550 mb-1 text-[0.65rem] leading-none font-bold tracking-wider uppercase">
                         Last Updated
                       </span>
                       <span className="3xl:text-lg 4xl:text-xl 5xl:text-2xl font-semibold text-black">
@@ -502,7 +502,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                     <div className="flex items-center gap-3">
                       <Icons.Scale className="text-zinc-455 3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 h-4.5 w-4.5 shrink-0" />
                       <div className="flex flex-col">
-                        <span className="3xl:text-[0.75rem] 4xl:text-[0.85rem] 5xl:text-[0.95rem] mb-1 text-[0.65rem] leading-none font-bold tracking-wider text-zinc-400 uppercase">
+                        <span className="3xl:text-[0.75rem] 4xl:text-[0.85rem] 5xl:text-[0.95rem] text-zinc-550 mb-1 text-[0.65rem] leading-none font-bold tracking-wider uppercase">
                           License
                         </span>
                         <span className="3xl:text-lg 4xl:text-xl 5xl:text-2xl font-semibold text-black">
@@ -516,7 +516,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                 {/* Languages */}
                 {githubStats.languages.length > 0 && (
                   <div className="3xl:mt-10 3xl:pt-10 mt-6 border-t border-zinc-200/50 pt-6">
-                    <span className="3xl:text-[0.75rem] 4xl:text-[0.85rem] 5xl:text-[0.95rem] mb-3 block text-[0.65rem] font-bold tracking-wider text-zinc-400 uppercase">
+                    <span className="3xl:text-[0.75rem] 4xl:text-[0.85rem] 5xl:text-[0.95rem] text-zinc-550 mb-3 block text-[0.65rem] font-bold tracking-wider uppercase">
                       Languages
                     </span>
                     <div className="3xl:gap-2.5 flex flex-wrap gap-1.5">

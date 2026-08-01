@@ -167,7 +167,7 @@ export default async function BlogPostPage({ params }: PageProps) {
             Blog
           </Link>
           <ChevronRight className="h-3 w-3 text-zinc-400" />
-          <span className="max-w-37.5 truncate text-zinc-400 sm:max-w-xs md:max-w-md lg:max-w-lg">
+          <span className="text-zinc-550 max-w-37.5 truncate sm:max-w-xs md:max-w-md lg:max-w-lg">
             {post.title}
           </span>
         </nav>

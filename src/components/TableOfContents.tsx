@@ -121,8 +121,8 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
   return (
     <div className="3xl:p-10 4xl:p-12 5xl:p-16 rounded-2xl border border-zinc-200/60 bg-white/40 p-4 shadow-xs backdrop-blur-md sm:p-6 md:p-8">
       <div className="flex flex-col gap-3">
-        <span className="3xl:text-sm 4xl:text-base 5xl:text-lg flex items-center gap-2 text-xs font-bold tracking-widest text-zinc-500 uppercase">
-          <Menu className="3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 h-4.5 w-4.5 text-zinc-500" />
+        <span className="3xl:text-sm 4xl:text-base 5xl:text-lg text-zinc-550 flex items-center gap-2 text-xs font-bold tracking-widest uppercase">
+          <Menu className="3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 text-zinc-550 h-4.5 w-4.5" />
           Table of Contents
         </span>
 
@@ -143,7 +143,7 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
                   } ${
                     isActive
                       ? "border-black text-black"
-                      : "border-transparent text-zinc-500 hover:border-zinc-300 hover:text-zinc-900"
+                      : "text-zinc-555 border-transparent hover:border-zinc-300 hover:text-zinc-900"
                   }`}
                 >
                   {heading.text}

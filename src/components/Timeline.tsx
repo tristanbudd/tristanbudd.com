@@ -110,7 +110,7 @@ function TimelineItemRow({
                 <ExternalLink className="3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 h-3.5 w-3.5 text-zinc-400 transition-colors duration-300 group-hover/link:text-black sm:h-4 sm:w-4 lg:h-4.5 lg:w-4.5" />
               </span>
               {item.location && (
-                <span className="flex items-center font-normal text-zinc-400">
+                <span className="text-zinc-550 flex items-center font-normal">
                   <span className="mr-1.5 hidden text-zinc-300 sm:inline">|</span>
                   <span>{item.location}</span>
                 </span>
@@ -120,7 +120,7 @@ function TimelineItemRow({
             <div className="text-zinc-550 3xl:text-xl 4xl:text-2xl 5xl:text-3xl flex flex-col gap-0.5 text-sm font-semibold sm:flex-row sm:items-center sm:gap-1.5 sm:text-base lg:text-lg">
               <span>{item.subtitle}</span>
               {item.location && (
-                <span className="flex items-center font-normal text-zinc-400">
+                <span className="text-zinc-550 flex items-center font-normal">
                   <span className="mr-1.5 hidden text-zinc-300 sm:inline">|</span>
                   <span>{item.location}</span>
                 </span>
