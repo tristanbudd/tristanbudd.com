@@ -159,7 +159,10 @@ export default function Mermaid({ chart, id }: MermaidProps) {
   };
 
   return (
-    <div className="relative my-6 w-full overflow-hidden rounded-xl border border-zinc-200 bg-zinc-50/20 shadow-xs select-none">
+    <div
+      data-lenis-prevent
+      className="relative my-6 w-full overflow-hidden rounded-xl border border-zinc-200 bg-zinc-50/20 shadow-xs select-none"
+    >
       {/* Pan & Zoom Container */}
       <div
         ref={containerRef}
