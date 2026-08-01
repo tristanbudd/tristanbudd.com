@@ -236,11 +236,6 @@ export default function Footer({
               </a>
             </div>
           </div>
-
-          {/* Version */}
-          <div className="3xl:text-xl 4xl:text-2xl 5xl:text-3xl mt-2.5 text-base font-semibold tracking-tight text-zinc-500 select-none">
-            v{packageJson.version}
-          </div>
         </div>
 
         {/* Links Groups */}
@@ -272,13 +267,19 @@ export default function Footer({
 
       {/* Bottom Bar */}
       <div className="3xl:mt-20 3xl:pt-12 3xl:gap-10 4xl:mt-24 4xl:pt-16 4xl:gap-12 5xl:mt-32 5xl:pt-20 5xl:gap-16 mt-12 flex flex-col items-start justify-between gap-6 border-t border-zinc-200/50 pt-8 sm:flex-row sm:items-center">
-        <div className="3xl:gap-3 4xl:gap-4 5xl:gap-5 flex flex-col items-start gap-2">
-          <p className="3xl:text-base 4xl:text-lg 5xl:text-xl text-xs font-medium text-zinc-500 xl:text-sm">
-            &copy; {currentYear} Tristan Budd. All rights reserved.
-          </p>
-          <p className="3xl:text-sm 4xl:text-base 5xl:text-lg text-[10px] font-semibold tracking-wider text-zinc-500 uppercase xl:text-xs">
-            Built with Next.js, React &amp; Tailwind CSS
-          </p>
+        <div className="flex flex-row items-center gap-4">
+          <div className="3xl:gap-3 4xl:gap-4 5xl:gap-5 flex flex-col items-start gap-2">
+            <p className="3xl:text-base 4xl:text-lg 5xl:text-xl text-xs font-medium text-zinc-500 xl:text-sm">
+              &copy; {currentYear} Tristan Budd. All rights reserved.
+            </p>
+            <p className="3xl:text-sm 4xl:text-base 5xl:text-lg text-[10px] font-semibold tracking-wider text-zinc-500 uppercase xl:text-xs">
+              Built with Next.js, React &amp; Tailwind CSS
+            </p>
+          </div>
+          <span className="hidden h-8 w-px bg-zinc-200 sm:block" />
+          <span className="3xl:text-sm 4xl:text-base 5xl:text-lg hidden text-xs font-semibold tracking-tight text-zinc-400 select-none sm:block">
+            v{packageJson.version}
+          </span>
         </div>
 
         {/* Back to Top */}
