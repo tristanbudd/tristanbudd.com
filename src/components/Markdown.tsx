@@ -7,6 +7,7 @@
 
 import { AlertOctagon, AlertTriangle, BookOpen, Check, Copy, Lightbulb, Zap } from "lucide-react";
 import React, { useState } from "react";
+import dynamic from "next/dynamic";
 
 interface MarkdownProps {
   content: string;
@@ -14,6 +15,16 @@ interface MarkdownProps {
 }
 
 import { parseMarkdown } from "../lib/markdownParser";
+
+// Dynamically import the Mermaid component on the client side only to avoid SSR issues
+const Mermaid = dynamic(() => import("./Mermaid"), {
+  ssr: false,
+  loading: () => (
+    <div className="3xl:my-10 relative my-6 flex items-center justify-center rounded-xl border border-zinc-200 bg-zinc-50/50 p-8">
+      <span className="animate-pulse text-sm text-zinc-500">Loading diagram...</span>
+    </div>
+  ),
+});
 
 // Tokenizer regex for common web languages (JS/TS/JSON/JSX/TSX/HTML/CSS)
 const TOKEN_REGEX =
@@ -295,6 +306,9 @@ export default function Markdown({ content, className = "" }: MarkdownProps) {
           }
 
           case "codeblock":
+            if (block.lang?.toLowerCase() === "mermaid") {
+              return <Mermaid key={index} chart={block.code || ""} id={`mermaid-${index}`} />;
+            }
             return <CodeBlock key={index} code={block.code || ""} lang={block.lang} />;
 
           case "blockquote": {
