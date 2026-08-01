@@ -80,7 +80,11 @@ export default function BlogPageClient() {
       </main>
 
       {/* Footer Area */}
-      <Footer navGroups={footerNavGroups} socials={footerSocials} />
+      <Footer
+        navGroups={footerNavGroups}
+        socials={footerSocials}
+        pageContext="This is the blog feed on Tristan Budd's portfolio, listing all published articles covering software engineering, web development, technical tutorials, and professional insights. An RSS feed is also available at https://tristanbudd.com/feed.xml."
+      />
     </div>
   );
 }

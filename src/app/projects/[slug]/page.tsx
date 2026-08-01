@@ -244,6 +244,39 @@ export default async function ProjectDetailPage({ params }: PageProps) {
       level: b.level!,
     }));
 
+  // Page context for AI platforms
+  const projectContextParts: string[] = [
+    `I am viewing a project case study titled "${project.title}" by Tristan Budd.`,
+    `Description: ${project.description}`,
+  ];
+  if (project.tags.length > 0) {
+    projectContextParts.push(`Technologies / Tags: ${project.tags.join(", ")}`);
+  }
+  if (project.publishedAt) {
+    projectContextParts.push(
+      `Published: ${new Date(project.publishedAt).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}`
+    );
+  }
+  if (project.githubUrl) {
+    projectContextParts.push(`GitHub Repository: ${project.githubUrl}`);
+  }
+  if (project.projectUrl) {
+    projectContextParts.push(`Live Project URL: ${project.projectUrl}`);
+  }
+  if (githubStats) {
+    projectContextParts.push(
+      `GitHub Stats: ${githubStats.stars} stars, ${githubStats.forks} forks, ${githubStats.openIssues} open issues. Languages used: ${githubStats.languages.join(", ") || "not available"}. Last pushed: ${githubStats.pushedAt ? new Date(githubStats.pushedAt).toLocaleDateString("en-GB") : "unknown"}.`
+    );
+  }
+  if (project.customFields && project.customFields.length > 0) {
+    const fieldStr = project.customFields.map((f) => `${f.label}: ${f.value}`).join("; ");
+    projectContextParts.push(`Additional Details — ${fieldStr}`);
+  }
+  if (headings.length > 0) {
+    projectContextParts.push(`Case Study Sections: ${headings.map((h) => h.text).join(", ")}`);
+  }
+  const projectPageContext = projectContextParts.join("\n");
+
   return (
     <div className="bg-background flex min-h-screen flex-col">
       {/* Header */}
@@ -561,7 +594,11 @@ export default async function ProjectDetailPage({ params }: PageProps) {
       </main>
 
       {/* Footer Area */}
-      <Footer navGroups={footerNavGroups} socials={footerSocials} />
+      <Footer
+        navGroups={footerNavGroups}
+        socials={footerSocials}
+        pageContext={projectPageContext}
+      />
     </div>
   );
 }

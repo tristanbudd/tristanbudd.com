@@ -5,14 +5,16 @@
  * @description Responsive footer component with parameters for navigation links and social connections.
  */
 
+import { trackCTA, trackNavigation } from "@/lib/gtm";
 import { useLenis } from "lenis/react";
 import { ArrowUp, Github, Globe, Linkedin, Mail, Twitter } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import React from "react";
-import { useTransition } from "../context/TransitionContext";
-import { trackNavigation, trackCTA } from "@/lib/gtm";
+import { RiOpenaiFill } from "react-icons/ri";
+import { SiAnthropic, SiGmail, SiGooglegemini, SiNpm, SiPerplexity } from "react-icons/si";
 import packageJson from "../../package.json";
-import { SiNpm, SiGmail } from "react-icons/si";
+import { useTransition } from "../context/TransitionContext";
 
 const footerSlugIconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   npm: SiNpm,
@@ -40,6 +42,7 @@ export interface FooterProps {
   tagline?: string;
   navGroups?: FooterLinkGroup[];
   socials?: FooterSocial[];
+  pageContext?: string;
 }
 
 const socialIcons: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -54,9 +57,31 @@ export default function Footer({
   tagline = "An aspiring software developer & engineer with a strong foundation in building robust digital solutions.",
   navGroups = [],
   socials = [],
+  pageContext,
 }: FooterProps) {
   const lenis = useLenis();
   const { triggerTransition } = useTransition();
+  const pathname = usePathname() || "";
+
+  const pageUrl = `https://tristanbudd.com${pathname}`;
+
+  const baseContext = `You are helping a visitor explore tristanbudd.com, the portfolio of Tristan Budd, a software engineer and developer based in the UK. The site includes project case studies, technical blog articles, work experience, education, tech stack, and certifications. An llms.txt overview is at https://tristanbudd.com/llms.txt.`;
+
+  let explainPrompt: string;
+  if (pageContext) {
+    explainPrompt = `${baseContext}\n\nThe visitor is currently on this page:\n\n${pageContext}\n\nURL: ${pageUrl}\n\nGreet the visitor, give them a brief overview of what this page contains based on the above, and let them know they can ask you anything about the content: the project, the work, the technical details, or anything else they are curious about.`;
+  } else if (pathname.startsWith("/projects/")) {
+    explainPrompt = `${baseContext}\n\nThe visitor is currently reading a project case study. URL: ${pageUrl}\n\nGreet them, let them know you can help them explore this project (what it does, how it was built, the technical decisions involved), and invite them to ask anything.`;
+  } else if (pathname.startsWith("/blog/")) {
+    explainPrompt = `${baseContext}\n\nThe visitor is currently reading a blog article. URL: ${pageUrl}\n\nGreet them and let them know you can help them dig into the article's content, discuss the ideas covered, or answer any questions they have about it.`;
+  } else if (pathname === "/projects") {
+    explainPrompt = `${baseContext}\n\nThe visitor is browsing the projects showcase. URL: ${pageUrl}\n\nGreet them and let them know you can help them navigate the projects, understand what each one involves, or answer any questions about Tristan's work.`;
+  } else if (pathname === "/blog") {
+    explainPrompt = `${baseContext}\n\nThe visitor is browsing the blog. URL: ${pageUrl}\n\nGreet them and let them know you can help them find articles of interest, understand topics covered, or answer questions about the content.`;
+  } else {
+    explainPrompt = `${baseContext}\n\nThe visitor is on: ${pageUrl}\n\nGreet them and let them know you can help them explore the portfolio, whether they want to learn about Tristan's projects, experience, skills, or anything else on the site.`;
+  }
+  const encodedPrompt = encodeURIComponent(explainPrompt);
 
   const handleScrollToTop = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -127,7 +152,7 @@ export default function Footer({
 
           {/* Social Links */}
           {socials.length > 0 && (
-            <div className="3xl:mt-6 3xl:gap-4.5 4xl:mt-8 4xl:gap-6 5xl:mt-10 5xl:gap-8 mt-4 flex items-center gap-3 xl:gap-4">
+            <div className="3xl:mt-4 3xl:gap-4.5 4xl:mt-5 4xl:gap-6 5xl:mt-7 5xl:gap-8 mt-2.5 flex items-center gap-3 xl:gap-4">
               {socials.map((social) => {
                 const IconComponent = socialIcons[social.platform.toLowerCase()];
                 return (
@@ -163,8 +188,45 @@ export default function Footer({
             </div>
           )}
 
+          {/* Explain with AI (Icons Only) */}
+          <div className="mt-2.5 flex flex-col gap-1">
+            <span className="text-[9px] font-bold tracking-widest text-zinc-500 uppercase">
+              Explain Page with AI
+            </span>
+            <div className="flex items-center gap-1.5">
+              <a
+                href={`https://chatgpt.com/?q=${encodedPrompt}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Explain this page with ChatGPT"
+                className="group/llm text-zinc-650 flex h-8 w-8 items-center justify-center rounded-full border border-zinc-200 bg-white/40 backdrop-blur-xs transition-all duration-300 hover:scale-105 hover:border-black hover:bg-black hover:text-white focus:outline-hidden focus-visible:bg-black focus-visible:text-white focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 xl:h-9 xl:w-9"
+              >
+                <RiOpenaiFill className="h-3.5 w-3.5 transition-transform duration-300 group-hover/llm:scale-110 xl:h-4 xl:w-4" />
+              </a>
+              <a
+                href={`https://claude.ai/new?q=${encodedPrompt}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Explain this page with Claude"
+                className="group/llm text-zinc-650 flex h-8 w-8 items-center justify-center rounded-full border border-zinc-200 bg-white/40 backdrop-blur-xs transition-all duration-300 hover:scale-105 hover:border-black hover:bg-black hover:text-white focus:outline-hidden focus-visible:bg-black focus-visible:text-white focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 xl:h-9 xl:w-9"
+              >
+                <SiAnthropic className="h-3.5 w-3.5 transition-transform duration-300 group-hover/llm:scale-110 xl:h-4 xl:w-4" />
+              </a>
+              {/* TODO: Add Gemini button here if Google adds URL prompt pre-fill support */}
+              <a
+                href={`https://www.perplexity.ai/?q=${encodedPrompt}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Explain this page with Perplexity"
+                className="group/llm text-zinc-650 flex h-8 w-8 items-center justify-center rounded-full border border-zinc-200 bg-white/40 backdrop-blur-xs transition-all duration-300 hover:scale-105 hover:border-black hover:bg-black hover:text-white focus:outline-hidden focus-visible:bg-black focus-visible:text-white focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 xl:h-9 xl:w-9"
+              >
+                <SiPerplexity className="h-3.5 w-3.5 transition-transform duration-300 group-hover/llm:scale-110 xl:h-4 xl:w-4" />
+              </a>
+            </div>
+          </div>
+
           {/* Version */}
-          <div className="3xl:text-xl 4xl:text-2xl 5xl:text-3xl mt-4 text-base font-semibold tracking-tight text-zinc-500 select-none">
+          <div className="3xl:text-xl 4xl:text-2xl 5xl:text-3xl mt-2.5 text-base font-semibold tracking-tight text-zinc-500 select-none">
             v{packageJson.version}
           </div>
         </div>

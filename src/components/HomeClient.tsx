@@ -263,7 +263,20 @@ export default function HomeClient() {
       </main>
 
       {/* Footer Area */}
-      <Footer navGroups={footerNavGroups} socials={footerSocials} />
+      {/* Footer Area */}
+      <Footer
+        navGroups={footerNavGroups}
+        socials={footerSocials}
+        pageContext={[
+          "This is the home page of Tristan Budd's software engineering portfolio.",
+          "Tristan is currently a Junior Software Engineer at RadWeb LTD in Portsmouth, UK, and is studying for a BSc (Hons) in Software Engineering at the University of Portsmouth (2024–2028).",
+          "Previous experience includes an industrial placement at Hampshire & Isle of Wight Constabulary (Nov 2022 – Jun 2024), where he built a mobile vehicle defect reporting system and managed the full project lifecycle.",
+          `Languages: ${languages.map((l) => l.name).join(", ")}.`,
+          `Frameworks & Tools: ${tools.map((t) => t.name).join(", ")}.`,
+          `Certifications: ${certificates.map((c) => `${c.title} (${c.issuer}, ${c.date})`).join("; ")}.`,
+          "The home page sections include: experience timeline, education, tech stack, certifications, featured projects, recent blog posts, and a contact form.",
+        ].join("\n")}
+      />
     </div>
   );
 }

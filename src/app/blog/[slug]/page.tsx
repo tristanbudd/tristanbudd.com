@@ -137,6 +137,21 @@ export default async function BlogPostPage({ params }: PageProps) {
 
   const { month, day, year } = parseDate(post.publishedAt);
 
+  // Page context for AI platforms
+  const blogContextParts: string[] = [
+    `I am viewing a blog article titled "${post.title}" by Tristan Budd.`,
+    `Category: ${post.category}`,
+    `Summary: ${post.excerpt}`,
+  ];
+  if (post.readingTime) {
+    blogContextParts.push(`Reading time: ${post.readingTime}`);
+  }
+  blogContextParts.push(`Published: ${month} ${day}, ${year}`);
+  if (post.tags && post.tags.length > 0) {
+    blogContextParts.push(`Tags: ${post.tags.join(", ")}`);
+  }
+  const blogPageContext = blogContextParts.join("\n");
+
   return (
     <div className="bg-background flex min-h-screen flex-col">
       {/* Header */}
@@ -244,7 +259,7 @@ export default async function BlogPostPage({ params }: PageProps) {
       </main>
 
       {/* Footer Area */}
-      <Footer navGroups={footerNavGroups} socials={footerSocials} />
+      <Footer navGroups={footerNavGroups} socials={footerSocials} pageContext={blogPageContext} />
     </div>
   );
 }

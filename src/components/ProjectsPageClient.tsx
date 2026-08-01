@@ -79,7 +79,11 @@ export default function ProjectsPageClient() {
       </main>
 
       {/* Footer Area */}
-      <Footer navGroups={footerNavGroups} socials={footerSocials} />
+      <Footer
+        navGroups={footerNavGroups}
+        socials={footerSocials}
+        pageContext="This is the full projects showcase on Tristan Budd's portfolio, listing all published software development projects and case studies. Each project entry links to a detailed case study with technical architecture, development timeline, and GitHub repository information where available."
+      />
     </div>
   );
 }
