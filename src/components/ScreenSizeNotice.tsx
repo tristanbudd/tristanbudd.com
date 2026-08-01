@@ -28,7 +28,7 @@ export default function ScreenSizeNotice() {
           <h1 className="font-outfit text-lg font-bold tracking-tight text-black">
             Screen Too Small
           </h1>
-          <p className="font-outfit text-[14px] leading-relaxed font-medium text-zinc-700">
+          <p className="font-outfit text-[14px] leading-relaxed font-medium text-zinc-800">
             This portfolio is optimized for viewports of 320px and wider. Please enlarge your
             browser window or rotate your device to landscape.
           </p>

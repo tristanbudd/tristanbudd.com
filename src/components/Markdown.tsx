@@ -152,7 +152,7 @@ function SimpleTimeline({
 
               <div className="flex flex-col gap-0.5">
                 {/* Date */}
-                <span className="3xl:text-sm 4xl:text-base 5xl:text-lg text-xs font-bold tracking-wider text-zinc-400 uppercase">
+                <span className="3xl:text-sm 4xl:text-base 5xl:text-lg text-zinc-550 text-xs font-bold tracking-wider uppercase">
                   {item.date}
                 </span>
 
