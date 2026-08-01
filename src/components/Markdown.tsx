@@ -26,14 +26,14 @@ const Mermaid = dynamic(() => import("./Mermaid"), {
   ),
 });
 
-// Tokenizer regex for common web languages (JS/TS/JSON/JSX/TSX/HTML/CSS)
+// Tokenizer regex for common web and server languages (JS/TS/JSON/JSX/TSX/HTML/CSS/PHP)
 const TOKEN_REGEX =
-  /(\/\/.*|\/\*[\s\S]*?\*\/)|("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|`(?:\\.|[^`\\])*`)|(\b(?:const|let|var|function|return|import|export|class|interface|type|extends|implements|if|else|for|while|async|await|from|default|public|private|protected|readonly|new|typeof|instanceof|throw|try|catch|finally|as|in|of|keyof|break|continue|switch|case|default)\b)|(\b\d+\b)|(\b(?:true|false|null|undefined)\b)|(\b(?:string|number|boolean|any|void|unknown|never|Object|Array|Promise|React|useState|useEffect|useContext|useMemo|useCallback)\b)/g;
+  /(\/\/.*|\/\*[\s\S]*?\*\/|#.*)|("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|`(?:\\.|[^`\\])*`)|(\b(?:const|let|var|function|return|import|export|class|interface|type|extends|implements|if|else|elseif|for|foreach|while|async|await|from|default|public|private|protected|readonly|new|typeof|instanceof|throw|try|catch|finally|as|in|of|keyof|break|continue|switch|case|default|echo|print|require|include|use|namespace|global)\b)|(\$[a-zA-Z_][a-zA-Z0-9_]*)|(\b\d+\b)|(\b(?:true|false|null|undefined)\b)|(\b(?:string|number|boolean|any|void|unknown|never|Object|Array|Promise|React|useState|useEffect|useContext|useMemo|useCallback|int|float|double|bool|object|callable|iterable)\b)/g;
 
 function highlightCode(code: string, lang?: string): React.ReactNode {
   if (
     !lang ||
-    !["typescript", "javascript", "ts", "js", "json", "tsx", "jsx", "html", "css"].includes(
+    !["typescript", "javascript", "ts", "js", "json", "tsx", "jsx", "html", "css", "php"].includes(
       lang.toLowerCase()
     )
   ) {
@@ -53,9 +53,10 @@ function highlightCode(code: string, lang?: string): React.ReactNode {
       const comment = parts[i + 1];
       const str = parts[i + 2];
       const keyword = parts[i + 3];
-      const num = parts[i + 4];
-      const bool = parts[i + 5];
-      const type = parts[i + 6];
+      const variable = parts[i + 4];
+      const num = parts[i + 5];
+      const bool = parts[i + 6];
+      const type = parts[i + 7];
 
       if (comment !== undefined) {
         result.push(
@@ -73,6 +74,12 @@ function highlightCode(code: string, lang?: string): React.ReactNode {
         result.push(
           <span key={i} className="font-bold text-rose-600">
             {keyword}
+          </span>
+        );
+      } else if (variable !== undefined) {
+        result.push(
+          <span key={i} className="font-medium text-purple-700">
+            {variable}
           </span>
         );
       } else if (num !== undefined) {
@@ -95,7 +102,7 @@ function highlightCode(code: string, lang?: string): React.ReactNode {
         );
       }
     }
-    i += 7;
+    i += 8;
   }
   return result;
 }
