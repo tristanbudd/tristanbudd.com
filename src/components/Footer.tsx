@@ -201,7 +201,11 @@ export default function Footer({
                 aria-label="Explain this page with ChatGPT"
                 className="group/llm text-zinc-650 flex h-8 w-8 items-center justify-center rounded-full border border-zinc-200 bg-white/40 backdrop-blur-xs transition-all duration-300 hover:scale-105 hover:border-black hover:bg-black hover:text-white focus:outline-hidden focus-visible:bg-black focus-visible:text-white focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 xl:h-9 xl:w-9"
               >
-                <RiOpenaiFill className="h-3.5 w-3.5 transition-transform duration-300 group-hover/llm:scale-110 xl:h-4 xl:w-4" />
+                <RiOpenaiFill
+                  title="OpenAI Logo"
+                  aria-label="OpenAI"
+                  className="h-3.5 w-3.5 transition-transform duration-300 group-hover/llm:scale-110 xl:h-4 xl:w-4"
+                />
               </a>
               <a
                 href={`https://claude.ai/new?q=${encodedPrompt}`}
@@ -210,7 +214,11 @@ export default function Footer({
                 aria-label="Explain this page with Claude"
                 className="group/llm text-zinc-650 flex h-8 w-8 items-center justify-center rounded-full border border-zinc-200 bg-white/40 backdrop-blur-xs transition-all duration-300 hover:scale-105 hover:border-black hover:bg-black hover:text-white focus:outline-hidden focus-visible:bg-black focus-visible:text-white focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 xl:h-9 xl:w-9"
               >
-                <SiAnthropic className="h-3.5 w-3.5 transition-transform duration-300 group-hover/llm:scale-110 xl:h-4 xl:w-4" />
+                <SiAnthropic
+                  title="Anthropic Logo"
+                  aria-label="Anthropic"
+                  className="h-3.5 w-3.5 transition-transform duration-300 group-hover/llm:scale-110 xl:h-4 xl:w-4"
+                />
               </a>
               {/* TODO: Add Gemini button here if Google adds URL prompt pre-fill support */}
               <a
@@ -220,7 +228,11 @@ export default function Footer({
                 aria-label="Explain this page with Perplexity"
                 className="group/llm text-zinc-650 flex h-8 w-8 items-center justify-center rounded-full border border-zinc-200 bg-white/40 backdrop-blur-xs transition-all duration-300 hover:scale-105 hover:border-black hover:bg-black hover:text-white focus:outline-hidden focus-visible:bg-black focus-visible:text-white focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 xl:h-9 xl:w-9"
               >
-                <SiPerplexity className="h-3.5 w-3.5 transition-transform duration-300 group-hover/llm:scale-110 xl:h-4 xl:w-4" />
+                <SiPerplexity
+                  title="Perplexity Logo"
+                  aria-label="Perplexity"
+                  className="h-3.5 w-3.5 transition-transform duration-300 group-hover/llm:scale-110 xl:h-4 xl:w-4"
+                />
               </a>
             </div>
           </div>
