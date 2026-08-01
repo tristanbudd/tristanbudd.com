@@ -188,23 +188,22 @@ export default function Footer({
             </div>
           )}
 
-          {/* Explain with AI (Icons Only) */}
-          <div className="mt-2.5 flex flex-col gap-1">
-            <span className="text-[9px] font-bold tracking-widest text-zinc-500 uppercase">
+          <div className="3xl:mt-5 3xl:gap-2 4xl:mt-6 4xl:gap-2.5 5xl:mt-8 5xl:gap-3 mt-2.5 flex flex-col gap-1">
+            <span className="3xl:text-xs 4xl:text-sm 5xl:text-base text-[9px] font-bold tracking-widest text-zinc-500 uppercase">
               Explain Page with AI
             </span>
-            <div className="flex items-center gap-1.5">
+            <div className="3xl:gap-2.5 4xl:gap-3 5xl:gap-4 flex items-center gap-1.5">
               <a
                 href={`https://chatgpt.com/?q=${encodedPrompt}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Explain this page with ChatGPT"
-                className="group/llm text-zinc-650 flex h-8 w-8 items-center justify-center rounded-full border border-zinc-200 bg-white/40 backdrop-blur-xs transition-all duration-300 hover:scale-105 hover:border-black hover:bg-black hover:text-white focus:outline-hidden focus-visible:bg-black focus-visible:text-white focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 xl:h-9 xl:w-9"
+                className="group/llm text-zinc-650 3xl:h-11 3xl:w-11 4xl:h-13 4xl:w-13 5xl:h-16 5xl:w-16 flex h-8 w-8 items-center justify-center rounded-full border border-zinc-200 bg-white/40 backdrop-blur-xs transition-all duration-300 hover:scale-105 hover:border-black hover:bg-black hover:text-white focus:outline-hidden focus-visible:bg-black focus-visible:text-white focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 xl:h-9 xl:w-9"
               >
                 <RiOpenaiFill
                   title="OpenAI Logo"
                   aria-label="OpenAI"
-                  className="h-3.5 w-3.5 transition-transform duration-300 group-hover/llm:scale-110 xl:h-4 xl:w-4"
+                  className="3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-8 5xl:w-8 h-3.5 w-3.5 transition-transform duration-300 group-hover/llm:scale-110 xl:h-4 xl:w-4"
                 />
               </a>
               <a
@@ -212,12 +211,12 @@ export default function Footer({
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Explain this page with Claude"
-                className="group/llm text-zinc-650 flex h-8 w-8 items-center justify-center rounded-full border border-zinc-200 bg-white/40 backdrop-blur-xs transition-all duration-300 hover:scale-105 hover:border-black hover:bg-black hover:text-white focus:outline-hidden focus-visible:bg-black focus-visible:text-white focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 xl:h-9 xl:w-9"
+                className="group/llm text-zinc-650 3xl:h-11 3xl:w-11 4xl:h-13 4xl:w-13 5xl:h-16 5xl:w-16 flex h-8 w-8 items-center justify-center rounded-full border border-zinc-200 bg-white/40 backdrop-blur-xs transition-all duration-300 hover:scale-105 hover:border-black hover:bg-black hover:text-white focus:outline-hidden focus-visible:bg-black focus-visible:text-white focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 xl:h-9 xl:w-9"
               >
                 <SiAnthropic
                   title="Anthropic Logo"
                   aria-label="Anthropic"
-                  className="h-3.5 w-3.5 transition-transform duration-300 group-hover/llm:scale-110 xl:h-4 xl:w-4"
+                  className="3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-8 5xl:w-8 h-3.5 w-3.5 transition-transform duration-300 group-hover/llm:scale-110 xl:h-4 xl:w-4"
                 />
               </a>
               {/* TODO: Add Gemini button here if Google adds URL prompt pre-fill support */}
@@ -226,12 +225,12 @@ export default function Footer({
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Explain this page with Perplexity"
-                className="group/llm text-zinc-650 flex h-8 w-8 items-center justify-center rounded-full border border-zinc-200 bg-white/40 backdrop-blur-xs transition-all duration-300 hover:scale-105 hover:border-black hover:bg-black hover:text-white focus:outline-hidden focus-visible:bg-black focus-visible:text-white focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 xl:h-9 xl:w-9"
+                className="group/llm text-zinc-650 3xl:h-11 3xl:w-11 4xl:h-13 4xl:w-13 5xl:h-16 5xl:w-16 flex h-8 w-8 items-center justify-center rounded-full border border-zinc-200 bg-white/40 backdrop-blur-xs transition-all duration-300 hover:scale-105 hover:border-black hover:bg-black hover:text-white focus:outline-hidden focus-visible:bg-black focus-visible:text-white focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 xl:h-9 xl:w-9"
               >
                 <SiPerplexity
                   title="Perplexity Logo"
                   aria-label="Perplexity"
-                  className="h-3.5 w-3.5 transition-transform duration-300 group-hover/llm:scale-110 xl:h-4 xl:w-4"
+                  className="3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-8 5xl:w-8 h-3.5 w-3.5 transition-transform duration-300 group-hover/llm:scale-110 xl:h-4 xl:w-4"
                 />
               </a>
             </div>
