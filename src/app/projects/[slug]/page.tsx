@@ -16,6 +16,8 @@ import Markdown from "../../../components/Markdown";
 import { footerNavGroups, footerSocials, navItems } from "../../../data/portfolio";
 import { type CustomField, type Project } from "../../../data/projects";
 import { prisma } from "../../../lib/db";
+import { parseMarkdown } from "../../../lib/markdownParser";
+import TableOfContents from "../../../components/TableOfContents";
 const { ChevronRight, ExternalLink, Github } = Icons;
 
 interface PageProps {
@@ -120,7 +122,6 @@ export default async function ProjectDetailPage({ params }: PageProps) {
   const { slug } = await params;
   let dbProject = null;
   let dbError = false;
-
   try {
     dbProject = await prisma.project.findUnique({
       where: { slug },
@@ -231,6 +232,17 @@ export default async function ProjectDetailPage({ params }: PageProps) {
   }
 
   const content = project.extendedDescription;
+
+  const blocks = parseMarkdown(content);
+  const headings = blocks
+    .filter(
+      (b) => b.type === "heading" && b.level && b.level > 1 && b.level <= 3 && b.slug && b.text
+    )
+    .map((b) => ({
+      text: b.text!,
+      slug: b.slug!,
+      level: b.level!,
+    }));
 
   return (
     <div className="bg-background flex min-h-screen flex-col">
@@ -410,6 +422,13 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                 </div>
               )}
             </div>
+
+            {/* Table of Contents */}
+            {headings.length > 0 && (
+              <div className="hidden lg:block">
+                <TableOfContents headings={headings} />
+              </div>
+            )}
 
             {/* GitHub Stats Panel */}
             {githubStats && (
