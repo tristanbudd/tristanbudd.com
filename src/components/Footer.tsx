@@ -12,7 +12,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
 import { RiOpenaiFill } from "react-icons/ri";
-import { SiAnthropic, SiGmail, SiGooglegemini, SiNpm, SiPerplexity } from "react-icons/si";
+import { SiAnthropic, SiGmail, SiNpm, SiPerplexity } from "react-icons/si";
 import packageJson from "../../package.json";
 import { useTransition } from "../context/TransitionContext";
 
