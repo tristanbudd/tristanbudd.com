@@ -413,7 +413,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
 
             {/* GitHub Stats Panel */}
             {githubStats && (
-              <div className="3xl:p-10 4xl:p-12 5xl:p-16 rounded-2xl border border-zinc-200/60 bg-white/40 p-4 shadow-xs backdrop-blur-md sm:p-6 md:p-8">
+              <div className="3xl:p-10 4xl:p-12 5xl:p-16 hidden rounded-2xl border border-zinc-200/60 bg-white/40 p-4 shadow-xs backdrop-blur-md sm:p-6 md:p-8 lg:block">
                 <div className="flex flex-col gap-2">
                   <span className="3xl:text-sm 4xl:text-base 5xl:text-lg flex items-center gap-2 text-xs font-bold tracking-widest text-zinc-500 uppercase">
                     <Icons.Github className="3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 h-4.5 w-4.5 text-zinc-500" />
