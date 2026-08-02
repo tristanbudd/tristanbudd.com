@@ -19,6 +19,7 @@ import {
   Search,
   X,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import * as React from "react";
 import { useTransition } from "../context/TransitionContext";
@@ -98,10 +99,12 @@ function ProjectCard({
       {project.imageUrl ? (
         <div className="3xl:p-6 4xl:p-8 5xl:p-10 relative w-full bg-zinc-50/30 p-4">
           <div className="relative aspect-5/3 w-full overflow-hidden rounded-lg">
-            <img
+            <Image
               src={project.imageUrl}
               alt={project.title}
-              className="h-full w-full object-cover transition-transform duration-500 group-hover/card:scale-105"
+              fill
+              unoptimized
+              className="object-cover transition-transform duration-500 group-hover/card:scale-105"
             />
           </div>
         </div>

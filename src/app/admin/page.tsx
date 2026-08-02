@@ -1557,6 +1557,7 @@ export default function AdminDashboard() {
                               <div className="flex items-center gap-3">
                                 {proj.imageUrl ? (
                                   <div className="h-10 w-16 shrink-0 overflow-hidden rounded-md border border-zinc-200 bg-zinc-50">
+                                    {/* eslint-disable-next-line @next/next/no-img-element */}
                                     <img
                                       src={proj.imageUrl}
                                       alt=""
