@@ -834,7 +834,7 @@ export default function AdminDashboard() {
                 setActiveTab("blogs");
                 setIsSidebarOpen(false);
               }}
-              className={`3xl:gap-4.5 3xl:text-base 4xl:gap-6 4xl:text-lg 5xl:gap-8 5xl:text-xl 3xl:pl-[20px] 3xl:pr-4 4xl:pl-[23px] 4xl:pr-4.5 5xl:pl-[26px] 5xl:pr-5 flex w-full items-center gap-3 overflow-hidden rounded-xl px-4 py-3 text-sm font-semibold whitespace-nowrap transition-all lg:justify-start lg:pr-3 lg:pl-[19px] ${
+              className={`3xl:gap-4.5 3xl:text-base 4xl:gap-6 4xl:text-lg 5xl:gap-8 5xl:text-xl 3xl:pl-5 3xl:pr-4 4xl:pl-5.75 4xl:pr-4.5 5xl:pl-6.5 5xl:pr-5 flex w-full items-center gap-3 overflow-hidden rounded-xl px-4 py-3 text-sm font-semibold whitespace-nowrap transition-all lg:justify-start lg:pr-3 lg:pl-4.75 ${
                 activeTab === "blogs"
                   ? "bg-black text-white"
                   : "text-zinc-650 hover:bg-zinc-100 hover:text-black"
@@ -860,7 +860,7 @@ export default function AdminDashboard() {
                 setActiveTab("projects");
                 setIsSidebarOpen(false);
               }}
-              className={`3xl:gap-4.5 3xl:text-base 4xl:gap-6 4xl:text-lg 5xl:gap-8 5xl:text-xl 3xl:pl-[20px] 3xl:pr-4 4xl:pl-[23px] 4xl:pr-4.5 5xl:pl-[26px] 5xl:pr-5 flex w-full items-center gap-3 overflow-hidden rounded-xl px-4 py-3 text-sm font-semibold whitespace-nowrap transition-all lg:justify-start lg:pr-3 lg:pl-[19px] ${
+              className={`3xl:gap-4.5 3xl:text-base 4xl:gap-6 4xl:text-lg 5xl:gap-8 5xl:text-xl 3xl:pl-5 3xl:pr-4 4xl:pl-5.75 4xl:pr-4.5 5xl:pl-6.5 5xl:pr-5 flex w-full items-center gap-3 overflow-hidden rounded-xl px-4 py-3 text-sm font-semibold whitespace-nowrap transition-all lg:justify-start lg:pr-3 lg:pl-4.75 ${
                 activeTab === "projects"
                   ? "bg-black text-white"
                   : "text-zinc-650 hover:bg-zinc-100 hover:text-black"
@@ -886,7 +886,7 @@ export default function AdminDashboard() {
                 setActiveTab("images");
                 setIsSidebarOpen(false);
               }}
-              className={`3xl:gap-4.5 3xl:text-base 4xl:gap-6 4xl:text-lg 5xl:gap-8 5xl:text-xl 3xl:pl-[20px] 3xl:pr-4 4xl:pl-[23px] 4xl:pr-4.5 5xl:pl-[26px] 5xl:pr-5 flex w-full items-center gap-3 overflow-hidden rounded-xl px-4 py-3 text-sm font-semibold whitespace-nowrap transition-all lg:justify-start lg:pr-3 lg:pl-[19px] ${
+              className={`3xl:gap-4.5 3xl:text-base 4xl:gap-6 4xl:text-lg 5xl:gap-8 5xl:text-xl 3xl:pl-5 3xl:pr-4 4xl:pl-5.75 4xl:pr-4.5 5xl:pl-6.5 5xl:pr-5 flex w-full items-center gap-3 overflow-hidden rounded-xl px-4 py-3 text-sm font-semibold whitespace-nowrap transition-all lg:justify-start lg:pr-3 lg:pl-4.75 ${
                 activeTab === "images"
                   ? "bg-black text-white"
                   : "text-zinc-650 hover:bg-zinc-100 hover:text-black"
@@ -912,7 +912,7 @@ export default function AdminDashboard() {
                 setActiveTab("maintenance");
                 setIsSidebarOpen(false);
               }}
-              className={`3xl:gap-4.5 3xl:text-base 4xl:gap-6 4xl:text-lg 5xl:gap-8 5xl:text-xl 3xl:pl-[20px] 3xl:pr-4 4xl:pl-[23px] 4xl:pr-4.5 5xl:pl-[26px] 5xl:pr-5 flex w-full items-center gap-3 overflow-hidden rounded-xl px-4 py-3 text-sm font-semibold whitespace-nowrap transition-all lg:justify-start lg:pr-3 lg:pl-[19px] ${
+              className={`3xl:gap-4.5 3xl:text-base 4xl:gap-6 4xl:text-lg 5xl:gap-8 5xl:text-xl 3xl:pl-5 3xl:pr-4 4xl:pl-5.75 4xl:pr-4.5 5xl:pl-6.5 5xl:pr-5 flex w-full items-center gap-3 overflow-hidden rounded-xl px-4 py-3 text-sm font-semibold whitespace-nowrap transition-all lg:justify-start lg:pr-3 lg:pl-4.75 ${
                 activeTab === "maintenance"
                   ? "bg-black text-white"
                   : "text-zinc-650 hover:bg-zinc-100 hover:text-black"
@@ -931,7 +931,7 @@ export default function AdminDashboard() {
         <div className="3xl:p-6 3xl:px-4 4xl:p-8 4xl:px-4.5 5xl:p-10 5xl:px-5 border-t border-zinc-100 p-4 lg:px-3 lg:py-4">
           <button
             onClick={handleLogout}
-            className="text-red-650 3xl:pl-[20px] 3xl:pr-4 4xl:pl-[23px] 4xl:pr-4.5 5xl:pl-[26px] 5xl:pr-5 3xl:gap-4.5 3xl:text-base 4xl:gap-6 4xl:text-lg 5xl:gap-8 5xl:text-xl flex w-full items-center gap-3 overflow-hidden rounded-xl px-4 py-3 text-sm font-semibold whitespace-nowrap transition-all hover:bg-red-50 hover:text-red-700 focus:ring-2 focus:ring-red-500 focus:outline-hidden lg:justify-start lg:pr-3 lg:pl-[19px]"
+            className="text-red-650 3xl:pl-5 3xl:pr-4 4xl:pl-5.75 4xl:pr-4.5 5xl:pl-6.5 5xl:pr-5 3xl:gap-4.5 3xl:text-base 4xl:gap-6 4xl:text-lg 5xl:gap-8 5xl:text-xl flex w-full items-center gap-3 overflow-hidden rounded-xl px-4 py-3 text-sm font-semibold whitespace-nowrap transition-all hover:bg-red-50 hover:text-red-700 focus:ring-2 focus:ring-red-500 focus:outline-hidden lg:justify-start lg:pr-3 lg:pl-4.75"
             aria-label="Log out of admin panel"
           >
             <LogOut className="3xl:h-6 3xl:w-6 4xl:h-7.5 4xl:w-7.5 5xl:h-9 5xl:w-9 h-4.5 w-4.5 shrink-0" />
@@ -1082,7 +1082,7 @@ export default function AdminDashboard() {
                   {activeTab === "blogs" ? (
                     <>
                       <div className="3xl:rounded-3xl 3xl:p-8 4xl:p-10 5xl:p-12 relative overflow-hidden rounded-2xl border border-zinc-200/80 bg-white p-6 shadow-xs">
-                        <div className="3xl:h-[3px] 4xl:h-[4px] absolute top-0 left-0 h-[2px] w-full bg-zinc-200" />
+                        <div className="3xl:h-0.75 4xl:h-1 absolute top-0 left-0 h-0.5 w-full bg-zinc-200" />
                         <div className="flex items-center justify-between">
                           <span className="3xl:text-sm 4xl:text-base 5xl:text-lg text-xs font-semibold tracking-wider text-zinc-500 uppercase">
                             Total Blogs
@@ -1094,7 +1094,7 @@ export default function AdminDashboard() {
                         </h2>
                       </div>
                       <div className="3xl:rounded-3xl 3xl:p-8 4xl:p-10 5xl:p-12 relative overflow-hidden rounded-2xl border border-zinc-200/80 bg-white p-6 shadow-xs">
-                        <div className="3xl:h-[3px] 4xl:h-[4px] absolute top-0 left-0 h-[2px] w-full bg-zinc-200" />
+                        <div className="3xl:h-0.75 4xl:h-1 absolute top-0 left-0 h-0.5 w-full bg-zinc-200" />
                         <div className="flex items-center justify-between">
                           <span className="3xl:text-sm 4xl:text-base 5xl:text-lg text-xs font-semibold tracking-wider text-zinc-500 uppercase">
                             Latest Post Date
@@ -1117,7 +1117,7 @@ export default function AdminDashboard() {
                   ) : (
                     <>
                       <div className="3xl:rounded-3xl 3xl:p-8 4xl:p-10 5xl:p-12 relative overflow-hidden rounded-2xl border border-zinc-200/80 bg-white p-6 shadow-xs">
-                        <div className="3xl:h-[3px] 4xl:h-[4px] absolute top-0 left-0 h-[2px] w-full bg-zinc-200" />
+                        <div className="3xl:h-0.75 4xl:h-1 absolute top-0 left-0 h-0.5 w-full bg-zinc-200" />
                         <div className="flex items-center justify-between">
                           <span className="3xl:text-sm 4xl:text-base 5xl:text-lg text-xs font-semibold tracking-wider text-zinc-500 uppercase">
                             Total Projects
@@ -1129,7 +1129,7 @@ export default function AdminDashboard() {
                         </h2>
                       </div>
                       <div className="3xl:rounded-3xl 3xl:p-8 4xl:p-10 5xl:p-12 relative overflow-hidden rounded-2xl border border-zinc-200/80 bg-white p-6 shadow-xs">
-                        <div className="3xl:h-[3px] 4xl:h-[4px] absolute top-0 left-0 h-[2px] w-full bg-zinc-200" />
+                        <div className="3xl:h-0.75 4xl:h-1 absolute top-0 left-0 h-0.5 w-full bg-zinc-200" />
                         <div className="flex items-center justify-between">
                           <span className="3xl:text-sm 4xl:text-base 5xl:text-lg text-xs font-semibold tracking-wider text-zinc-500 uppercase">
                             Latest Project Date
@@ -1458,7 +1458,7 @@ export default function AdminDashboard() {
                     </div>
                   ) : (
                     <div className="w-full overflow-x-auto">
-                      <table className="w-full min-w-[650px] border-collapse text-left lg:min-w-0">
+                      <table className="w-full min-w-162.5 border-collapse text-left lg:min-w-0">
                         <thead>
                           <tr className="3xl:text-sm 4xl:text-base 5xl:text-lg border-b border-zinc-200 bg-zinc-50 text-xs font-bold tracking-wider text-zinc-500 uppercase">
                             <th className="3xl:px-8 3xl:py-6 4xl:px-10 4xl:py-8 5xl:px-12 5xl:py-10 px-6 py-4">
@@ -1533,7 +1533,7 @@ export default function AdminDashboard() {
                   </div>
                 ) : (
                   <div className="w-full overflow-x-auto">
-                    <table className="w-full min-w-[650px] border-collapse text-left lg:min-w-0">
+                    <table className="w-full min-w-162.5 border-collapse text-left lg:min-w-0">
                       <thead>
                         <tr className="3xl:text-sm 4xl:text-base 5xl:text-lg border-b border-zinc-200 bg-zinc-50 text-xs font-bold tracking-wider text-zinc-500 uppercase">
                           <th className="3xl:px-8 3xl:py-6 4xl:px-10 4xl:py-8 5xl:px-12 5xl:py-10 px-6 py-4">
@@ -2023,7 +2023,8 @@ export default function AdminDashboard() {
                 {currentProj.imageUrl && (
                   <div className="mt-2">
                     <span className="text-[10px] font-bold text-zinc-500 uppercase">Preview:</span>
-                    <div className="relative mt-1 aspect-[5/3] max-w-xs overflow-hidden rounded-lg border border-zinc-200 bg-zinc-50">
+                    <div className="relative mt-1 aspect-5/3 max-w-xs overflow-hidden rounded-lg border border-zinc-200 bg-zinc-50">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={currentProj.imageUrl}
                         alt="Project Preview"

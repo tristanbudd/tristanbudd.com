@@ -97,7 +97,7 @@ function ProjectCard({
       {/* Image or Outline Placeholder Top Portion */}
       {project.imageUrl ? (
         <div className="3xl:p-6 4xl:p-8 5xl:p-10 relative w-full bg-zinc-50/30 p-4">
-          <div className="relative aspect-[5/3] w-full overflow-hidden rounded-lg">
+          <div className="relative aspect-5/3 w-full overflow-hidden rounded-lg">
             <img
               src={project.imageUrl}
               alt={project.title}
