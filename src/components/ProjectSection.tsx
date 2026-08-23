@@ -331,6 +331,15 @@ export default function ProjectSection({
     } else if (sortBy === "alphabetical-desc") {
       list.sort((a, b) => b.title.localeCompare(a.title));
     }
+
+    if (sortBy !== "relevance") {
+      list.sort((a, b) => {
+        if (a.featured && !b.featured) return -1;
+        if (!a.featured && b.featured) return 1;
+        return 0;
+      });
+    }
+
     return list;
   }, [filteredProjects, sortBy, searchQuery]);
 
