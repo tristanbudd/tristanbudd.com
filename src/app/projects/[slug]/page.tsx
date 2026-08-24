@@ -6,6 +6,7 @@
 import * as Icons from "lucide-react";
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
+import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import BackButton from "../../../components/BackButton";
@@ -13,11 +14,11 @@ import DbOfflineMessage from "../../../components/DbOfflineMessage";
 import Footer from "../../../components/Footer";
 import Header from "../../../components/Header";
 import Markdown from "../../../components/Markdown";
+import TableOfContents from "../../../components/TableOfContents";
 import { footerNavGroups, footerSocials, navItems } from "../../../data/portfolio";
 import { type CustomField, type Project } from "../../../data/projects";
 import { prisma } from "../../../lib/db";
 import { parseMarkdown } from "../../../lib/markdownParser";
-import TableOfContents from "../../../components/TableOfContents";
 const { ChevronRight, ExternalLink, Github } = Icons;
 
 interface PageProps {
@@ -316,144 +317,165 @@ export default async function ProjectDetailPage({ params }: PageProps) {
         <div className="3xl:gap-16 4xl:gap-20 5xl:gap-24 grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-12">
           {/* Sidebar / Specs (4 cols on lg screens, sticky) */}
           <aside className="3xl:gap-10 flex flex-col gap-6 lg:sticky lg:top-28 lg:col-span-4">
-            <div className="3xl:p-10 4xl:p-12 5xl:p-16 rounded-2xl border border-zinc-200/60 bg-white/40 p-4 shadow-xs backdrop-blur-md sm:p-6 md:p-8">
-              <div className="flex flex-col gap-2">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="3xl:text-sm 4xl:text-base 5xl:text-lg text-xs font-bold tracking-widest text-zinc-500 uppercase">
-                    Project Case Study
-                  </span>
-                  {project.featured && (
-                    <span className="3xl:text-[14px] 3xl:px-3 3xl:py-1 3xl:gap-1.5 4xl:text-[18px] 4xl:px-4 4xl:py-1.5 4xl:gap-2 5xl:text-[22px] 5xl:px-5 5xl:py-2 5xl:gap-2.5 inline-flex shrink-0 items-center gap-1 rounded-full border border-blue-500/20 bg-blue-500/5 px-2 py-0.5 text-[9px] font-bold tracking-wider text-blue-700 uppercase select-none">
-                      <span className="3xl:h-2 3xl:w-2 4xl:h-2.5 4xl:w-2.5 5xl:h-3 5xl:w-3 h-1 w-1 rounded-full bg-blue-500" />
-                      Featured
-                    </span>
-                  )}
-                  {project.preview && (
-                    <span className="3xl:text-[14px] 3xl:px-3 3xl:py-1 3xl:gap-1.5 4xl:text-[18px] 4xl:px-4 4xl:py-1.5 4xl:gap-2 5xl:text-[22px] 5xl:px-5 5xl:py-2 5xl:gap-2.5 inline-flex shrink-0 items-center gap-1 rounded-full border border-red-500/20 bg-red-500/5 px-2 py-0.5 text-[9px] font-bold tracking-wider text-red-700 uppercase select-none">
-                      <span className="3xl:h-2 3xl:w-2 4xl:h-2.5 4xl:w-2.5 5xl:h-3 5xl:w-3 h-1 w-1 rounded-full bg-red-500" />
-                      Preview
-                    </span>
-                  )}
-                </div>
-                <h1 className="font-outfit 3xl:text-4xl 4xl:text-5xl 5xl:text-6xl text-2xl font-extrabold tracking-tight text-black sm:text-3xl">
-                  {project.title}
-                </h1>
-              </div>
-
-              {/* Specs Grid */}
-              {Array.isArray(project.customFields) && project.customFields.length > 0 && (
-                <div className="text-zinc-650 3xl:mt-10 3xl:pt-10 3xl:gap-6 3xl:text-base 4xl:text-lg 5xl:text-xl mt-6 flex flex-col gap-4 border-t border-zinc-200/50 pt-6 text-sm">
-                  {(
-                    project.customFields as unknown as {
-                      label: string;
-                      value: string;
-                      icon?: string;
-                    }[]
-                  ).map((field, idx) => {
-                    let IconComponent: React.ComponentType<{ className?: string }> = Icons.Layers;
-
-                    if (field.icon) {
-                      const pascalName = field.icon
-                        .split(/[-_ ]+/)
-                        .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-                        .join("");
-                      const component = (
-                        Icons as unknown as Record<
-                          string,
-                          React.ComponentType<{ className?: string }>
-                        >
-                      )[pascalName];
-                      if (component) {
-                        IconComponent = component;
-                      }
-                    } else {
-                      const labelLower = field.label.toLowerCase();
-                      if (
-                        labelLower.includes("role") ||
-                        labelLower.includes("client") ||
-                        labelLower.includes("team")
-                      ) {
-                        IconComponent = Icons.User;
-                      } else if (
-                        labelLower.includes("time") ||
-                        labelLower.includes("date") ||
-                        labelLower.includes("duration") ||
-                        labelLower.includes("year")
-                      ) {
-                        IconComponent = Icons.Calendar;
-                      }
-                    }
-
-                    return (
-                      <div key={idx} className="flex items-center gap-3">
-                        <IconComponent className="text-zinc-455 3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 h-4.5 w-4.5 shrink-0" />
-                        <div className="flex flex-col">
-                          <span className="3xl:text-[0.75rem] 4xl:text-[0.85rem] 5xl:text-[0.95rem] text-zinc-550 mb-1 text-[0.65rem] leading-none font-bold tracking-wider uppercase">
-                            {field.label}
-                          </span>
-                          <span className="3xl:text-lg 4xl:text-xl 5xl:text-2xl font-semibold text-black">
-                            {field.value}
-                          </span>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-
-              {/* Technologies pill grid */}
-              {project.tags.length > 0 && (
-                <div className="3xl:mt-10 3xl:pt-10 mt-6 border-t border-zinc-200/50 pt-6">
-                  <span className="3xl:text-[0.75rem] 4xl:text-[0.85rem] 5xl:text-[0.95rem] text-zinc-550 mb-3 block text-[0.65rem] font-bold tracking-wider uppercase">
-                    Technologies
-                  </span>
-                  <div className="3xl:gap-2.5 flex flex-wrap gap-1.5">
-                    {project.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="3xl:px-3.5 3xl:py-1 3xl:text-sm 4xl:px-4 4xl:py-1.5 4xl:text-base 5xl:px-5 5xl:py-2 5xl:text-lg rounded-full border border-zinc-200/50 bg-zinc-100/30 px-2.5 py-0.5 text-xs font-semibold text-zinc-600"
-                      >
-                        {tag}
-                      </span>
-                    ))}
+            <div className="overflow-hidden rounded-2xl border border-zinc-200/60 bg-white/40 shadow-xs backdrop-blur-md">
+              {project.imageUrl && (
+                <div className="3xl:p-6 4xl:p-8 5xl:p-10 relative w-full bg-zinc-50/30 p-4 sm:p-5 md:p-6">
+                  <div className="relative aspect-5/3 w-full overflow-hidden rounded-lg border border-zinc-200/40">
+                    <Image
+                      src={project.imageUrl}
+                      alt={project.title}
+                      fill
+                      unoptimized
+                      className="object-cover"
+                    />
                   </div>
                 </div>
               )}
-
-              {/* Quick Links */}
-              {(project.githubUrl || project.projectUrl) && (
-                <div className="3xl:mt-10 3xl:pt-10 3xl:gap-4 mt-6 flex flex-col gap-2.5 border-t border-zinc-200/50 pt-6">
-                  {project.githubUrl && (
-                    <a
-                      href={project.githubUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="3xl:px-6 3xl:py-3.5 3xl:text-base 4xl:px-8 4xl:py-4 4xl:text-lg 5xl:px-10 5xl:py-5 5xl:text-xl flex items-center justify-between rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm font-semibold text-black shadow-xs transition-all hover:border-zinc-400 hover:bg-zinc-50 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
-                    >
-                      <span className="flex items-center gap-2">
-                        <Github className="3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 h-4.5 w-4.5 text-zinc-500" />
-                        <span>Source Code</span>
+              <div
+                className={`3xl:px-10 3xl:pb-10 4xl:px-12 4xl:pb-12 5xl:px-16 5xl:pb-16 flex flex-col px-4 pb-4 sm:px-6 sm:pb-6 md:px-8 md:pb-8 ${
+                  project.imageUrl
+                    ? "3xl:pt-6 4xl:pt-8 5xl:pt-10 pt-4 sm:pt-4 md:pt-4"
+                    : "3xl:pt-10 4xl:pt-12 5xl:pt-16 pt-4 sm:pt-6 md:pt-8"
+                }`}
+              >
+                <div className="flex flex-col gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="3xl:text-sm 4xl:text-base 5xl:text-lg text-xs font-bold tracking-widest text-zinc-500 uppercase">
+                      Project Case Study
+                    </span>
+                    {project.featured && (
+                      <span className="3xl:text-[14px] 3xl:px-3 3xl:py-1 3xl:gap-1.5 4xl:text-[18px] 4xl:px-4 4xl:py-1.5 4xl:gap-2 5xl:text-[22px] 5xl:px-5 5xl:py-2 5xl:gap-2.5 inline-flex shrink-0 items-center gap-1 rounded-full border border-blue-500/20 bg-blue-500/5 px-2 py-0.5 text-[9px] font-bold tracking-wider text-blue-700 uppercase select-none">
+                        <span className="3xl:h-2 3xl:w-2 4xl:h-2.5 4xl:w-2.5 5xl:h-3 5xl:w-3 h-1 w-1 rounded-full bg-blue-500" />
+                        Featured
                       </span>
-                      <ChevronRight className="3xl:h-5 3xl:w-5 h-4 w-4 text-zinc-400" />
-                    </a>
-                  )}
-
-                  {project.projectUrl && (
-                    <a
-                      href={project.projectUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="3xl:px-6 3xl:py-3.5 3xl:text-base 4xl:px-8 4xl:py-4 4xl:text-lg 5xl:px-10 5xl:py-5 5xl:text-xl flex items-center justify-between rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm font-semibold text-black shadow-xs transition-all hover:border-zinc-400 hover:bg-zinc-50 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
-                    >
-                      <span className="flex items-center gap-2">
-                        <ExternalLink className="3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 h-4.5 w-4.5 text-zinc-500" />
-                        <span>Live Preview</span>
+                    )}
+                    {project.preview && (
+                      <span className="3xl:text-[14px] 3xl:px-3 3xl:py-1 3xl:gap-1.5 4xl:text-[18px] 4xl:px-4 4xl:py-1.5 4xl:gap-2 5xl:text-[22px] 5xl:px-5 5xl:py-2 5xl:gap-2.5 inline-flex shrink-0 items-center gap-1 rounded-full border border-red-500/20 bg-red-500/5 px-2 py-0.5 text-[9px] font-bold tracking-wider text-red-700 uppercase select-none">
+                        <span className="3xl:h-2 3xl:w-2 4xl:h-2.5 4xl:w-2.5 5xl:h-3 5xl:w-3 h-1 w-1 rounded-full bg-red-500" />
+                        Preview
                       </span>
-                      <ChevronRight className="3xl:h-5 3xl:w-5 h-4 w-4 text-zinc-400" />
-                    </a>
-                  )}
+                    )}
+                  </div>
+                  <h1 className="font-outfit 3xl:text-4xl 4xl:text-5xl 5xl:text-6xl text-2xl font-extrabold tracking-tight text-black sm:text-3xl">
+                    {project.title}
+                  </h1>
                 </div>
-              )}
+
+                {/* Specs Grid */}
+                {Array.isArray(project.customFields) && project.customFields.length > 0 && (
+                  <div className="text-zinc-650 3xl:mt-10 3xl:pt-10 3xl:gap-6 3xl:text-base 4xl:text-lg 5xl:text-xl mt-6 flex flex-col gap-4 border-t border-zinc-200/50 pt-6 text-sm">
+                    {(
+                      project.customFields as unknown as {
+                        label: string;
+                        value: string;
+                        icon?: string;
+                      }[]
+                    ).map((field, idx) => {
+                      let IconComponent: React.ComponentType<{ className?: string }> = Icons.Layers;
+
+                      if (field.icon) {
+                        const pascalName = field.icon
+                          .split(/[-_ ]+/)
+                          .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+                          .join("");
+                        const component = (
+                          Icons as unknown as Record<
+                            string,
+                            React.ComponentType<{ className?: string }>
+                          >
+                        )[pascalName];
+                        if (component) {
+                          IconComponent = component;
+                        }
+                      } else {
+                        const labelLower = field.label.toLowerCase();
+                        if (
+                          labelLower.includes("role") ||
+                          labelLower.includes("client") ||
+                          labelLower.includes("team")
+                        ) {
+                          IconComponent = Icons.User;
+                        } else if (
+                          labelLower.includes("time") ||
+                          labelLower.includes("date") ||
+                          labelLower.includes("duration") ||
+                          labelLower.includes("year")
+                        ) {
+                          IconComponent = Icons.Calendar;
+                        }
+                      }
+
+                      return (
+                        <div key={idx} className="flex items-center gap-3">
+                          <IconComponent className="text-zinc-455 3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 h-4.5 w-4.5 shrink-0" />
+                          <div className="flex flex-col">
+                            <span className="3xl:text-[0.75rem] 4xl:text-[0.85rem] 5xl:text-[0.95rem] text-zinc-550 mb-1 text-[0.65rem] leading-none font-bold tracking-wider uppercase">
+                              {field.label}
+                            </span>
+                            <span className="3xl:text-lg 4xl:text-xl 5xl:text-2xl font-semibold text-black">
+                              {field.value}
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {/* Technologies pill grid */}
+                {project.tags.length > 0 && (
+                  <div className="3xl:mt-10 3xl:pt-10 mt-6 border-t border-zinc-200/50 pt-6">
+                    <span className="3xl:text-[0.75rem] 4xl:text-[0.85rem] 5xl:text-[0.95rem] text-zinc-550 mb-3 block text-[0.65rem] font-bold tracking-wider uppercase">
+                      Technologies
+                    </span>
+                    <div className="3xl:gap-2.5 flex flex-wrap gap-1.5">
+                      {project.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="3xl:px-3.5 3xl:py-1 3xl:text-sm 4xl:px-4 4xl:py-1.5 4xl:text-base 5xl:px-5 5xl:py-2 5xl:text-lg rounded-full border border-zinc-200/50 bg-zinc-100/30 px-2.5 py-0.5 text-xs font-semibold text-zinc-600"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Quick Links */}
+                {(project.githubUrl || project.projectUrl) && (
+                  <div className="3xl:mt-10 3xl:pt-10 3xl:gap-4 mt-6 flex flex-col gap-2.5 border-t border-zinc-200/50 pt-6">
+                    {project.githubUrl && (
+                      <a
+                        href={project.githubUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="3xl:px-6 3xl:py-3.5 3xl:text-base 4xl:px-8 4xl:py-4 4xl:text-lg 5xl:px-10 5xl:py-5 5xl:text-xl flex items-center justify-between rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm font-semibold text-black shadow-xs transition-all hover:border-zinc-400 hover:bg-zinc-50 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
+                      >
+                        <span className="flex items-center gap-2">
+                          <Github className="3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 h-4.5 w-4.5 text-zinc-500" />
+                          <span>Source Code</span>
+                        </span>
+                        <ChevronRight className="3xl:h-5 3xl:w-5 h-4 w-4 text-zinc-400" />
+                      </a>
+                    )}
+
+                    {project.projectUrl && (
+                      <a
+                        href={project.projectUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="3xl:px-6 3xl:py-3.5 3xl:text-base 4xl:px-8 4xl:py-4 4xl:text-lg 5xl:px-10 5xl:py-5 5xl:text-xl flex items-center justify-between rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm font-semibold text-black shadow-xs transition-all hover:border-zinc-400 hover:bg-zinc-50 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
+                      >
+                        <span className="flex items-center gap-2">
+                          <ExternalLink className="3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 h-4.5 w-4.5 text-zinc-500" />
+                          <span>Live Preview</span>
+                        </span>
+                        <ChevronRight className="3xl:h-5 3xl:w-5 h-4 w-4 text-zinc-400" />
+                      </a>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Table of Contents */}
