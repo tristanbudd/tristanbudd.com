@@ -5,7 +5,7 @@
  * @description A Table of Contents sidebar component with scroll spy behavior.
  */
 
-import { Menu } from "lucide-react";
+import { ChevronDown, ChevronRight, Menu } from "lucide-react";
 import React, { useEffect, useState } from "react";
 
 interface HeadingItem {
@@ -20,6 +20,7 @@ interface TableOfContentsProps {
 
 export default function TableOfContents({ headings }: TableOfContentsProps) {
   const [activeSlug, setActiveSlug] = useState<string>(headings[0]?.slug || "");
+  const [isExpanded, setIsExpanded] = useState(false);
 
   useEffect(() => {
     if (headings.length === 0) return;
@@ -121,37 +122,46 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
   return (
     <div className="3xl:p-10 4xl:p-12 5xl:p-16 rounded-2xl border border-zinc-200/60 bg-white/40 p-4 shadow-xs backdrop-blur-md sm:p-6 md:p-8">
       <div className="flex flex-col gap-3">
-        <span className="3xl:text-sm 4xl:text-base 5xl:text-lg text-zinc-550 flex items-center gap-2 text-xs font-bold tracking-widest uppercase">
-          <Menu className="3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 text-zinc-550 h-4.5 w-4.5" />
-          Table of Contents
-        </span>
+        <button
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="3xl:text-sm 4xl:text-base 5xl:text-lg text-zinc-550 flex w-full items-center justify-between gap-2 rounded-sm text-left text-xs font-bold tracking-widest uppercase transition-colors hover:text-black focus:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
+          aria-expanded={isExpanded}
+        >
+          <span className="flex items-center gap-2">
+            <Menu className="3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 text-zinc-550 h-4.5 w-4.5" />
+            Table of Contents
+          </span>
+          {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+        </button>
 
-        <div className="relative mt-2 pl-0.5">
-          {/* Background continuous track line */}
-          <div className="absolute top-1.5 bottom-1.5 left-0 w-px bg-zinc-200/60" />
+        {isExpanded && (
+          <div className="relative mt-2 pl-0.5">
+            {/* Background continuous track line */}
+            <div className="absolute top-1.5 bottom-1.5 left-0 w-px bg-zinc-200/60" />
 
-          <nav className="flex flex-col gap-1">
-            {headings.map((heading) => {
-              const isActive = activeSlug === heading.slug;
-              return (
-                <a
-                  key={heading.slug}
-                  href={`#${heading.slug}`}
-                  onClick={(e) => handleClick(e, heading.slug)}
-                  className={`group -ml-px block border-l py-1.5 transition-all duration-200 ${
-                    heading.level === 3 ? "pl-6 text-xs" : "pl-3 text-sm font-semibold"
-                  } ${
-                    isActive
-                      ? "border-black text-black"
-                      : "text-zinc-555 border-transparent hover:border-zinc-300 hover:text-zinc-900"
-                  }`}
-                >
-                  {heading.text}
-                </a>
-              );
-            })}
-          </nav>
-        </div>
+            <nav className="flex flex-col gap-1">
+              {headings.map((heading) => {
+                const isActive = activeSlug === heading.slug;
+                return (
+                  <a
+                    key={heading.slug}
+                    href={`#${heading.slug}`}
+                    onClick={(e) => handleClick(e, heading.slug)}
+                    className={`group -ml-px block border-l py-1.5 transition-all duration-200 ${
+                      heading.level === 3 ? "pl-6 text-xs" : "pl-3 text-sm font-semibold"
+                    } ${
+                      isActive
+                        ? "border-black text-black"
+                        : "text-zinc-555 border-transparent hover:border-zinc-300 hover:text-zinc-900"
+                    }`}
+                  >
+                    {heading.text}
+                  </a>
+                );
+              })}
+            </nav>
+          </div>
+        )}
       </div>
     </div>
   );
