@@ -119,6 +119,121 @@ interface GitHubStats {
   pushedAt: string;
 }
 
+function GithubStatsPanel({
+  githubStats,
+  githubUrl,
+  className = "",
+}: {
+  githubStats: GitHubStats;
+  githubUrl: string | null | undefined;
+  className?: string;
+}) {
+  return (
+    <div
+      className={`3xl:p-10 4xl:p-12 5xl:p-16 rounded-2xl border border-zinc-200/60 bg-white/40 p-4 shadow-xs backdrop-blur-md sm:p-6 md:p-8 ${className}`}
+    >
+      <div className="flex flex-col gap-2">
+        <span className="3xl:text-sm 4xl:text-base 5xl:text-lg flex items-center gap-2 text-xs font-bold tracking-widest text-zinc-500 uppercase">
+          <Icons.Github className="3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 h-4.5 w-4.5 text-zinc-500" />
+          GitHub Stats
+        </span>
+        <a
+          href={githubUrl || undefined}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-outfit 3xl:text-2xl 4xl:text-3xl 5xl:text-4xl rounded-sm text-lg font-bold tracking-tight break-all text-black hover:underline focus:outline-hidden focus-visible:underline focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
+        >
+          {githubStats.fullName}
+        </a>
+      </div>
+
+      <div className="3xl:mt-10 3xl:pt-10 mt-6 grid grid-cols-2 gap-4 border-t border-zinc-200/50 pt-6">
+        {/* Stars */}
+        <div className="flex items-center gap-3">
+          <Icons.Star className="text-zinc-455 3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 h-4.5 w-4.5 shrink-0" />
+          <div className="flex flex-col">
+            <span className="3xl:text-[0.75rem] 4xl:text-[0.85rem] 5xl:text-[0.95rem] text-zinc-550 mb-1 text-[0.65rem] leading-none font-bold tracking-wider uppercase">
+              Stars
+            </span>
+            <span className="3xl:text-lg 4xl:text-xl 5xl:text-2xl font-semibold text-black">
+              {githubStats.stars.toLocaleString()}
+            </span>
+          </div>
+        </div>
+        {/* Forks */}
+        <div className="flex items-center gap-3">
+          <Icons.GitFork className="text-zinc-455 3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 h-4.5 w-4.5 shrink-0" />
+          <div className="flex flex-col">
+            <span className="3xl:text-[0.75rem] 4xl:text-[0.85rem] 5xl:text-[0.95rem] text-zinc-550 mb-1 text-[0.65rem] leading-none font-bold tracking-wider uppercase">
+              Forks
+            </span>
+            <span className="3xl:text-lg 4xl:text-xl 5xl:text-2xl font-semibold text-black">
+              {githubStats.forks.toLocaleString()}
+            </span>
+          </div>
+        </div>
+        {/* Open Issues */}
+        <div className="flex items-center gap-3">
+          <Icons.AlertCircle className="text-zinc-455 3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 h-4.5 w-4.5 shrink-0" />
+          <div className="flex flex-col">
+            <span className="3xl:text-[0.75rem] 4xl:text-[0.85rem] 5xl:text-[0.95rem] text-zinc-550 mb-1 text-[0.65rem] leading-none font-bold tracking-wider uppercase">
+              Issues / PRs
+            </span>
+            <span className="3xl:text-lg 4xl:text-xl 5xl:text-2xl font-semibold text-black">
+              {githubStats.openIssues.toLocaleString()}
+            </span>
+          </div>
+        </div>
+        {/* Last Updated */}
+        <div className="flex items-center gap-3">
+          <Icons.Clock className="text-zinc-455 3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 h-4.5 w-4.5 shrink-0" />
+          <div className="flex flex-col">
+            <span className="3xl:text-[0.75rem] 4xl:text-[0.85rem] 5xl:text-[0.95rem] text-zinc-550 mb-1 text-[0.65rem] leading-none font-bold tracking-wider uppercase">
+              Last Updated
+            </span>
+            <span className="3xl:text-lg 4xl:text-xl 5xl:text-2xl font-semibold text-black">
+              {formatRelativeTime(githubStats.pushedAt)}
+            </span>
+          </div>
+        </div>
+        {/* License */}
+        {githubStats.license && (
+          <div className="flex items-center gap-3">
+            <Icons.Scale className="text-zinc-455 3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 h-4.5 w-4.5 shrink-0" />
+            <div className="flex flex-col">
+              <span className="3xl:text-[0.75rem] 4xl:text-[0.85rem] 5xl:text-[0.95rem] text-zinc-550 mb-1 text-[0.65rem] leading-none font-bold tracking-wider uppercase">
+                License
+              </span>
+              <span className="3xl:text-lg 4xl:text-xl 5xl:text-2xl font-semibold text-black">
+                {githubStats.license}
+              </span>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Languages */}
+      {githubStats.languages.length > 0 && (
+        <div className="3xl:mt-10 3xl:pt-10 mt-6 border-t border-zinc-200/50 pt-6">
+          <span className="3xl:text-[0.75rem] 4xl:text-[0.85rem] 5xl:text-[0.95rem] text-zinc-550 mb-3 block text-[0.65rem] font-bold tracking-wider uppercase">
+            Languages
+          </span>
+          <div className="3xl:gap-2.5 flex flex-wrap gap-1.5">
+            {githubStats.languages.map((lang) => (
+              <span
+                key={lang}
+                className="3xl:px-3.5 3xl:py-1 3xl:text-sm 4xl:px-4 4xl:py-1.5 4xl:text-base 5xl:px-5 5xl:py-2 5xl:text-lg text-zinc-650 rounded-full border border-zinc-200/50 bg-zinc-100/30 px-2.5 py-0.5 text-xs font-semibold"
+              >
+                {lang}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default async function ProjectDetailPage({ params }: PageProps) {
   const { slug } = await params;
   let dbProject = null;
@@ -478,116 +593,17 @@ export default async function ProjectDetailPage({ params }: PageProps) {
               </div>
             </div>
 
-            {/* Table of Contents */}
-            {headings.length > 0 && (
-              <div className="hidden lg:block">
-                <TableOfContents headings={headings} />
-              </div>
-            )}
-
             {/* GitHub Stats Panel */}
             {githubStats && (
-              <div className="3xl:p-10 4xl:p-12 5xl:p-16 hidden rounded-2xl border border-zinc-200/60 bg-white/40 p-4 shadow-xs backdrop-blur-md sm:p-6 md:p-8 lg:block">
-                <div className="flex flex-col gap-2">
-                  <span className="3xl:text-sm 4xl:text-base 5xl:text-lg flex items-center gap-2 text-xs font-bold tracking-widest text-zinc-500 uppercase">
-                    <Icons.Github className="3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 h-4.5 w-4.5 text-zinc-500" />
-                    GitHub Stats
-                  </span>
-                  <a
-                    href={project.githubUrl || undefined}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-outfit 3xl:text-2xl 4xl:text-3xl 5xl:text-4xl rounded-sm text-lg font-bold tracking-tight break-all text-black hover:underline focus:outline-hidden focus-visible:underline focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
-                  >
-                    {githubStats.fullName}
-                  </a>
-                </div>
-
-                <div className="3xl:mt-10 3xl:pt-10 mt-6 grid grid-cols-2 gap-4 border-t border-zinc-200/50 pt-6">
-                  {/* Stars */}
-                  <div className="flex items-center gap-3">
-                    <Icons.Star className="text-zinc-455 3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 h-4.5 w-4.5 shrink-0" />
-                    <div className="flex flex-col">
-                      <span className="3xl:text-[0.75rem] 4xl:text-[0.85rem] 5xl:text-[0.95rem] text-zinc-550 mb-1 text-[0.65rem] leading-none font-bold tracking-wider uppercase">
-                        Stars
-                      </span>
-                      <span className="3xl:text-lg 4xl:text-xl 5xl:text-2xl font-semibold text-black">
-                        {githubStats.stars.toLocaleString()}
-                      </span>
-                    </div>
-                  </div>
-                  {/* Forks */}
-                  <div className="flex items-center gap-3">
-                    <Icons.GitFork className="text-zinc-455 3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 h-4.5 w-4.5 shrink-0" />
-                    <div className="flex flex-col">
-                      <span className="3xl:text-[0.75rem] 4xl:text-[0.85rem] 5xl:text-[0.95rem] text-zinc-550 mb-1 text-[0.65rem] leading-none font-bold tracking-wider uppercase">
-                        Forks
-                      </span>
-                      <span className="3xl:text-lg 4xl:text-xl 5xl:text-2xl font-semibold text-black">
-                        {githubStats.forks.toLocaleString()}
-                      </span>
-                    </div>
-                  </div>
-                  {/* Open Issues */}
-                  <div className="flex items-center gap-3">
-                    <Icons.AlertCircle className="text-zinc-455 3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 h-4.5 w-4.5 shrink-0" />
-                    <div className="flex flex-col">
-                      <span className="3xl:text-[0.75rem] 4xl:text-[0.85rem] 5xl:text-[0.95rem] text-zinc-550 mb-1 text-[0.65rem] leading-none font-bold tracking-wider uppercase">
-                        Issues / PRs
-                      </span>
-                      <span className="3xl:text-lg 4xl:text-xl 5xl:text-2xl font-semibold text-black">
-                        {githubStats.openIssues.toLocaleString()}
-                      </span>
-                    </div>
-                  </div>
-                  {/* Last Updated */}
-                  <div className="flex items-center gap-3">
-                    <Icons.Clock className="text-zinc-455 3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 h-4.5 w-4.5 shrink-0" />
-                    <div className="flex flex-col">
-                      <span className="3xl:text-[0.75rem] 4xl:text-[0.85rem] 5xl:text-[0.95rem] text-zinc-550 mb-1 text-[0.65rem] leading-none font-bold tracking-wider uppercase">
-                        Last Updated
-                      </span>
-                      <span className="3xl:text-lg 4xl:text-xl 5xl:text-2xl font-semibold text-black">
-                        {formatRelativeTime(githubStats.pushedAt)}
-                      </span>
-                    </div>
-                  </div>
-                  {/* License */}
-                  {githubStats.license && (
-                    <div className="flex items-center gap-3">
-                      <Icons.Scale className="text-zinc-455 3xl:h-5.5 3xl:w-5.5 4xl:h-6.5 4xl:w-6.5 5xl:h-7.5 5xl:w-7.5 h-4.5 w-4.5 shrink-0" />
-                      <div className="flex flex-col">
-                        <span className="3xl:text-[0.75rem] 4xl:text-[0.85rem] 5xl:text-[0.95rem] text-zinc-550 mb-1 text-[0.65rem] leading-none font-bold tracking-wider uppercase">
-                          License
-                        </span>
-                        <span className="3xl:text-lg 4xl:text-xl 5xl:text-2xl font-semibold text-black">
-                          {githubStats.license}
-                        </span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Languages */}
-                {githubStats.languages.length > 0 && (
-                  <div className="3xl:mt-10 3xl:pt-10 mt-6 border-t border-zinc-200/50 pt-6">
-                    <span className="3xl:text-[0.75rem] 4xl:text-[0.85rem] 5xl:text-[0.95rem] text-zinc-550 mb-3 block text-[0.65rem] font-bold tracking-wider uppercase">
-                      Languages
-                    </span>
-                    <div className="3xl:gap-2.5 flex flex-wrap gap-1.5">
-                      {githubStats.languages.map((lang) => (
-                        <span
-                          key={lang}
-                          className="3xl:px-3.5 3xl:py-1 3xl:text-sm 4xl:px-4 4xl:py-1.5 4xl:text-base 5xl:px-5 5xl:py-2 5xl:text-lg text-zinc-650 rounded-full border border-zinc-200/50 bg-zinc-100/30 px-2.5 py-0.5 text-xs font-semibold"
-                        >
-                          {lang}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
+              <GithubStatsPanel
+                githubStats={githubStats}
+                githubUrl={project.githubUrl}
+                className="hidden lg:block"
+              />
             )}
+
+            {/* Table of Contents */}
+            {headings.length > 0 && <TableOfContents headings={headings} />}
 
             <div className="hidden lg:block">
               <BackButton
@@ -603,6 +619,15 @@ export default async function ProjectDetailPage({ params }: PageProps) {
             <div className="3xl:p-10 4xl:p-12 5xl:p-16 rounded-2xl border border-zinc-200/60 bg-white/40 p-4 shadow-xs backdrop-blur-md sm:p-6 md:p-8">
               <Markdown content={content} className="3xl:text-lg 4xl:text-xl 5xl:text-2xl" />
             </div>
+
+            {/* Mobile GitHub Stats Panel */}
+            {githubStats && (
+              <GithubStatsPanel
+                githubStats={githubStats}
+                githubUrl={project.githubUrl}
+                className="mt-6 block sm:mt-8 md:mt-10 lg:hidden"
+              />
+            )}
 
             <div className="mt-8 block lg:hidden">
               <BackButton
