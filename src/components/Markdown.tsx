@@ -6,8 +6,8 @@
  */
 
 import { AlertOctagon, AlertTriangle, BookOpen, Check, Copy, Lightbulb, Zap } from "lucide-react";
-import React, { useState } from "react";
 import dynamic from "next/dynamic";
+import React, { useState } from "react";
 
 interface MarkdownProps {
   content: string;
@@ -343,7 +343,7 @@ function parseInline(text: string): React.ReactNode[] {
       return (
         <code
           key={i}
-          className="bg-zinc-150/50 rounded-md border border-zinc-200/60 px-1.5 py-0.5 font-mono text-[0.85em] font-semibold text-black"
+          className="bg-zinc-150/50 rounded-md border border-zinc-200/60 px-1.5 py-0.5 font-mono text-[0.85em] font-semibold wrap-break-word text-black"
         >
           {part.slice(1, -1)}
         </code>
