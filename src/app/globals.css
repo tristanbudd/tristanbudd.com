@@ -105,6 +105,15 @@ html.lenis body {
   background: #a1a1aa;
 }
 
+/* Hide scrollbar while keeping scroll behaviour (e.g. carousels with their own controls) */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 /* Screen Size Notice visibility and scrollbar lock */
 #screen-size-notice {
   display: none !important;

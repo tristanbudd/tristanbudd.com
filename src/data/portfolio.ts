@@ -13,6 +13,7 @@ export interface CertificationItem {
   skills: string[];
   logoSlug: string;
   credentialUrl?: string;
+  credentials?: { label: string; url: string }[];
 }
 
 export interface TechItem {
@@ -133,6 +134,23 @@ export const tools: TechItem[] = [
 ];
 
 export const certificates: CertificationItem[] = [
+  {
+    title: "Claude Academy: Claude 101 & Claude Code 101",
+    issuer: "Anthropic",
+    date: "October 2026",
+    skills: ["Prompt Engineering", "AI Fluency", "AI Pair Programming", "Agentic Workflows"],
+    logoSlug: "anthropic",
+    credentials: [
+      {
+        label: "Claude 101",
+        url: "https://academy.claude.com/verify/b551918ea6cc0e6b92a10d4552a3da4a",
+      },
+      {
+        label: "Claude Code 101",
+        url: "https://academy.claude.com/verify/5ff1b0ea4cfc0e2fb6426899b2035075",
+      },
+    ],
+  },
   {
     title: "DataCamp AI Engineer",
     issuer: "DataCamp",
