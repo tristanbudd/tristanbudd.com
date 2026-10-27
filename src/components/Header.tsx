@@ -401,25 +401,39 @@ export default function Header({
               {navItems.map((item) => {
                 const isActive = pathname === item.href;
                 return (
-                  <div key={item.label} className="group relative py-2">
+                  <div
+                    key={item.label}
+                    className="group relative py-2"
+                    onPointerEnter={(e) => {
+                      if (item.dropdownItems && e.pointerType === "mouse")
+                        setOpenDropdown(item.label);
+                    }}
+                    onPointerLeave={(e) => {
+                      if (item.dropdownItems && e.pointerType === "mouse") setOpenDropdown(null);
+                    }}
+                  >
                     {item.dropdownItems ? (
                       <>
                         <button
-                          onClick={() =>
-                            setOpenDropdown(openDropdown === item.label ? null : item.label)
-                          }
+                          onClick={(e) => {
+                            if ((e.nativeEvent as PointerEvent).pointerType === "mouse") {
+                              setOpenDropdown(item.label);
+                            } else {
+                              setOpenDropdown(openDropdown === item.label ? null : item.label);
+                            }
+                          }}
                           aria-haspopup="true"
                           aria-expanded={openDropdown === item.label}
-                          className="relative -mx-1 flex cursor-pointer items-center gap-1 rounded-sm px-1 py-1 whitespace-nowrap transition-colors after:absolute after:bottom-0 after:left-1 after:h-0.5 after:w-[calc(100%-8px)] after:origin-center after:scale-x-0 after:bg-black after:transition-transform after:duration-300 hover:text-black hover:after:scale-x-100 focus:outline-hidden focus-visible:text-black focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-4 focus-visible:after:scale-x-100 active:text-black active:after:scale-x-100"
+                          className="relative -mx-1 flex cursor-pointer items-center gap-1 rounded-sm px-1 py-1 whitespace-nowrap transition-colors hover:text-black focus:outline-hidden focus-visible:text-black focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-4 active:text-black"
                         >
                           <span>{item.label}</span>
                           <ChevronDown
-                            className={`3xl:h-5.5 3xl:w-5.5 4xl:h-6 4xl:w-6 5xl:h-7 5xl:w-7 h-4.5 w-4.5 text-black transition-transform duration-200 ${openDropdown === item.label ? "rotate-180" : "group-hover:rotate-180"}`}
+                            className={`3xl:h-5.5 3xl:w-5.5 4xl:h-6 4xl:w-6 5xl:h-7 5xl:w-7 h-4.5 w-4.5 text-black transition-transform duration-200 ${openDropdown === item.label ? "rotate-180" : ""}`}
                           />
                         </button>
                         {/* Dropdown Menu Panel */}
                         <div
-                          className={`3xl:w-64 4xl:w-72 5xl:w-80 absolute top-full left-0 z-50 w-52 translate-y-2 pt-2 transition-all duration-300 ${openDropdown === item.label ? "visible translate-y-0 opacity-100" : "invisible opacity-0 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100"}`}
+                          className={`3xl:w-64 4xl:w-72 5xl:w-80 absolute top-full left-0 z-50 w-52 pt-2 transition-all duration-300 ${openDropdown === item.label ? "visible translate-y-0 opacity-100" : "invisible translate-y-2 opacity-0"}`}
                         >
                           <div
                             role="menu"
