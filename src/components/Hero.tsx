@@ -49,8 +49,7 @@ export default function Hero({
   // Combine actual key skills dynamically from shared portfolio data
   const featuredSkills = [...languages, ...tools].map((skill) => skill.name);
 
-  // Join with bullets but end with space instead of a final bullet point
-  const skillsText = featuredSkills.join(" • ") + "   ";
+  const skillsText = featuredSkills.join(" • ") + " •\u00A0";
 
   return (
     <section
@@ -109,8 +108,13 @@ export default function Hero({
                     d="M 100, 100 m -90, 0 a 90,90 0 1,1 180,0 a 90,90 0 1,1 -180,0"
                   />
                 </defs>
-                <text className="fill-zinc-400 font-mono text-[5.5px] font-bold tracking-[0.14em] uppercase transition-colors duration-500 group-hover:fill-zinc-800">
-                  <textPath href="#textCircle" startOffset="0%">
+                <text className="fill-zinc-400 font-mono text-[4.5px] font-bold tracking-[0.08em] uppercase transition-colors duration-500 group-hover:fill-zinc-800">
+                  <textPath
+                    href="#textCircle"
+                    startOffset="0%"
+                    textLength={565.49}
+                    lengthAdjust="spacing"
+                  >
                     {skillsText}
                   </textPath>
                 </text>
