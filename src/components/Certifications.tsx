@@ -12,14 +12,28 @@ import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 const AUTOPLAY_INTERVAL_MS = 5000;
 
-const certIconMap: Record<
-  string,
-  React.ComponentType<{ className?: string; style?: React.CSSProperties }>
-> = {
+type CertIconProps = { className?: string; style?: React.CSSProperties };
+
+function UopLogo({ className, style }: CertIconProps) {
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src="/uop.svg"
+      alt="University of Portsmouth"
+      width={24}
+      height={24}
+      className={`${className ?? ""} object-contain`}
+      style={style}
+    />
+  );
+}
+
+const certIconMap: Record<string, React.ComponentType<CertIconProps>> = {
   anthropic: SiAnthropic,
   datacamp: SiDatacamp,
   github: SiGithub,
   google: SiGoogle,
+  uop: UopLogo,
 };
 
 export interface Certificate {
@@ -28,7 +42,6 @@ export interface Certificate {
   date: string;
   skills: string[];
   logoSlug: string;
-  credentialUrl?: string;
   credentials?: { label: string; url: string }[];
 }
 
@@ -73,22 +86,9 @@ function CertificateCard({
             ) : null;
           })()}
         </div>
-        {cert.credentialUrl ? (
-          <a
-            href={cert.credentialUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={`Verify ${cert.title} credential by ${cert.issuer}`}
-            className="group/link 3xl:text-sm 4xl:text-base 5xl:text-lg inline-flex items-center gap-1.5 rounded-sm text-xs font-bold tracking-widest text-zinc-500 uppercase transition-colors duration-300 hover:text-black focus:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
-          >
-            <span>{cert.issuer}</span>
-            <ExternalLink className="3xl:h-4.5 3xl:w-4.5 4xl:h-5 4xl:w-5 5xl:h-6 5xl:w-6 h-3.5 w-3.5 text-zinc-400 transition-colors duration-300 group-hover/link:text-black" />
-          </a>
-        ) : (
-          <span className="3xl:text-sm 4xl:text-base 5xl:text-lg text-xs font-bold tracking-widest text-zinc-500 uppercase">
-            {cert.issuer}
-          </span>
-        )}
+        <span className="3xl:text-sm 4xl:text-base 5xl:text-lg text-xs font-bold tracking-widest text-zinc-500 uppercase">
+          {cert.issuer}
+        </span>
       </div>
 
       {/* Certificate Title */}
@@ -119,7 +119,7 @@ function CertificateCard({
         </div>
       </div>
 
-      {/* Verification Links: For combined certificates with multiple credentials */}
+      {/* Verification Links */}
       {cert.credentials?.length ? (
         <div className="3xl:mt-2 4xl:mt-3 5xl:mt-4 mt-2 flex flex-col gap-3">
           <span className="3xl:text-xs 4xl:text-sm 5xl:text-base text-[0.68rem] font-bold tracking-widest text-zinc-400 uppercase">

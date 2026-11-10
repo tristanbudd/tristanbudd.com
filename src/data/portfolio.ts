@@ -12,7 +12,6 @@ export interface CertificationItem {
   date: string;
   skills: string[];
   logoSlug: string;
-  credentialUrl?: string;
   credentials?: { label: string; url: string }[];
 }
 
@@ -135,6 +134,25 @@ export const tools: TechItem[] = [
 
 export const certificates: CertificationItem[] = [
   {
+    title: "Using AI at University and in the Workplace",
+    issuer: "University of Portsmouth",
+    date: "November 2026",
+    skills: [
+      "Artificial Intelligence (AI)",
+      "Prompt Engineering",
+      "Generative AI",
+      "Machine Learning",
+      "Responsible AI",
+    ],
+    logoSlug: "uop",
+    credentials: [
+      {
+        label: "Generative AI Micro-Credential",
+        url: "https://moodle.port.ac.uk/badges/badge.php?hash=bcd29febdc84231c10f1a56a0bee9cae0a2b8d9d",
+      },
+    ],
+  },
+  {
     title: "Claude Academy: Claude 101 & Claude Code 101",
     issuer: "Anthropic",
     date: "October 2026",
@@ -164,7 +182,12 @@ export const certificates: CertificationItem[] = [
       "Deep Learning",
     ],
     logoSlug: "datacamp",
-    credentialUrl: "https://www.datacamp.com/certificate/AIEDA0011387218901",
+    credentials: [
+      {
+        label: "AI Engineer",
+        url: "https://www.datacamp.com/certificate/AIEDA0011387218901",
+      },
+    ],
   },
   {
     title: "GitHub Foundations",
@@ -179,8 +202,12 @@ export const certificates: CertificationItem[] = [
       "CI/CD Foundations",
     ],
     logoSlug: "github",
-    credentialUrl:
-      "https://learn.microsoft.com/en-us/users/tristanbudd/credentials/314f5807b4d2c1d8",
+    credentials: [
+      {
+        label: "GitHub Foundations",
+        url: "https://learn.microsoft.com/en-us/users/tristanbudd/credentials/314f5807b4d2c1d8",
+      },
+    ],
   },
   {
     title: "Google UX Design Professional Certificate",
@@ -196,7 +223,12 @@ export const certificates: CertificationItem[] = [
       "Information Architecture",
     ],
     logoSlug: "google",
-    credentialUrl: "https://www.credly.com/badges/4af22da5-a24c-4b69-b619-6bc880e33b84/",
+    credentials: [
+      {
+        label: "Google UX Design",
+        url: "https://www.credly.com/badges/4af22da5-a24c-4b69-b619-6bc880e33b84/",
+      },
+    ],
   },
 ];
 
