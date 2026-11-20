@@ -19,6 +19,7 @@ import {
   Search,
   X,
 } from "lucide-react";
+import { useLenis } from "lenis/react";
 import Image from "next/image";
 import Link from "next/link";
 import * as React from "react";
@@ -278,6 +279,19 @@ export default function ProjectSection({
 
   const { ref, visible: revealVisible } = useScrollReveal<HTMLDivElement>({ threshold: 0.05 });
   const visible = revealVisible;
+
+  const lenis = useLenis();
+
+  // Change page and scroll back to the top so the new page starts from the beginning
+  const goToPage = (page: number) => {
+    setCurrentPage(page);
+
+    if (lenis) {
+      lenis.scrollTo(0, { immediate: true });
+    } else {
+      window.scrollTo({ top: 0, behavior: "instant" });
+    }
+  };
 
   // Filter projects based on search query
   const filteredProjects = React.useMemo(() => {
@@ -594,7 +608,7 @@ export default function ProjectSection({
             {!isPreview && totalPages > 1 && (
               <div className="mt-8 flex items-center justify-center gap-2">
                 <button
-                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                  onClick={() => goToPage(Math.max(1, currentPage - 1))}
                   disabled={currentPage === 1}
                   className="group flex h-10 w-10 items-center justify-center rounded-full border border-zinc-200 bg-white/40 shadow-xs backdrop-blur-md transition-all duration-300 hover:border-zinc-300 hover:bg-white/80 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:opacity-40 disabled:hover:border-zinc-200 disabled:hover:bg-white/40"
                   aria-label="Previous Page"
@@ -605,7 +619,7 @@ export default function ProjectSection({
                 {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
                   <button
                     key={page}
-                    onClick={() => setCurrentPage(page)}
+                    onClick={() => goToPage(page)}
                     className={`flex h-10 w-10 items-center justify-center rounded-full border text-sm font-semibold transition-all duration-300 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 ${
                       currentPage === page
                         ? "border-black bg-black text-white"
@@ -619,7 +633,7 @@ export default function ProjectSection({
                 ))}
 
                 <button
-                  onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                  onClick={() => goToPage(Math.min(totalPages, currentPage + 1))}
                   disabled={currentPage === totalPages}
                   className="group flex h-10 w-10 items-center justify-center rounded-full border border-zinc-200 bg-white/40 shadow-xs backdrop-blur-md transition-all duration-300 hover:border-zinc-300 hover:bg-white/80 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:opacity-40 disabled:hover:border-zinc-200 disabled:hover:bg-white/40"
                   aria-label="Next Page"
