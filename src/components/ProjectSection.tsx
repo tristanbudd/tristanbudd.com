@@ -357,7 +357,7 @@ export default function ProjectSection({
     return list;
   }, [filteredProjects, sortBy, searchQuery]);
 
-  const itemsPerPage = 6;
+  const itemsPerPage = 9;
   const totalPages = Math.ceil(sortedProjects.length / itemsPerPage);
 
   // Render pre-sorted/randomised projects list in preview (home page), otherwise normal filtering/sorting/pagination
